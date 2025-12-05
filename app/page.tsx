@@ -30,7 +30,7 @@ export default function Home() {
     //
     chunks.map((chunk, index) => {
       const formData = new FormData();
-      formData.set("name-file", file.name + "-" + index);
+      formData.set("name", file.name + "-" + index);
       formData.append("large-file", chunk);
 
       fetch("http://localhost:9000/api/upload/large-file", {
