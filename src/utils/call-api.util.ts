@@ -1,9 +1,6 @@
-import { deleteStorage } from "./delete-storage.util";
+"use client";
 import { OkResponse } from "@/shared/classes/response.class";
-import { useStaffStore } from "@/storages/staff.storage";
-
-const apiUrl = process.env.SERVER_API_URL;
-const apiKey = process.env.API_KEY || '';
+import { deleteStorage } from "./delete-storage.util";
 
 interface ResRefreshToken {
   access_token: string;
@@ -13,18 +10,10 @@ interface ResRefreshToken {
 export const apiCall = async <T>(
   endpoint: string,
   options: any = {},
-  isClientId: boolean = false,
 ): Promise<OkResponse<T>> => {
   try {
-    const staff = useStaffStore.getState().staff;
-
     // Tạo headers object
     const headers: HeadersInit = {};
-
-    //
-    if (isClientId && staff) {
-      headers["x-client-id"] = staff?.id || "";
-    }
 
     // CHỈ set Content-Type cho non-FormData requests
     // Nếu là FormData, để browser tự động set Content-Type với boundary
@@ -38,12 +27,11 @@ export const apiCall = async <T>(
       headers: {
         ...headers,
         ...options.headers, // Allow override từ options
-        "x-api-key": apiKey, // Add API key to headers
       },
     };
 
     // Initial API call
-    let response = await fetch(`${apiUrl}${endpoint}`, config);
+    let response = await fetch(`/api/${endpoint}`, config);
     // console.log("Đang gọi api::", `${apiUrl}${endpoint}`);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result = (await response.json()) as OkResponse<T>;
@@ -59,11 +47,10 @@ export const apiCall = async <T>(
       const refresh_token = localStorage.getItem("refresh_token") || "";
 
       // Fix: Proper fetch call with headers
-      const refreshResponse = await fetch(`${apiUrl}/auth/refresh-token`, {
+      const refreshResponse = await fetch(`/api/auth/refresh-token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": apiKey, // Add API key to headers
         },
         body: JSON.stringify({ refresh_token }),
       });
@@ -79,7 +66,7 @@ export const apiCall = async <T>(
         };
 
         // Retry the original request with new token
-        response = await fetch(`${apiUrl}${endpoint}`, config);
+        response = await fetch(`/api/${endpoint}`, config);
         result = await response.json();
       } else {
         deleteStorage();

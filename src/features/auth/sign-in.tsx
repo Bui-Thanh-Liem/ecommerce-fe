@@ -15,17 +15,21 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { SignInFormSchema } from "@/shared/dtos/req/sign-in.dto"
+import { useSignIn } from "@/hooks/use-auth"
 
 
 
 export function SignInPage() {
+
+  const signInApi = useSignIn();
+  
+  
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -34,10 +38,8 @@ export function SignInPage() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof SignInFormSchema>) {
-    console.log("onSubmit - data :::", data);
-    toast.success("You submitted the following values")
-    
+  async  function onSubmit(data: z.infer<typeof SignInFormSchema>) {
+    const res = await signInApi.mutateAsync(data);
   }
   
   return (
