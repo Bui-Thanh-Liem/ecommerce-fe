@@ -1,6 +1,6 @@
 import z from "zod"
 
-export const CreateRoleSchema = z.object({
+export const CreateStoreSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required.")
@@ -11,7 +11,7 @@ export const CreateRoleSchema = z.object({
     .optional(),
   permissions: z.array(z.uuidv4()).nonempty("Permissions cannot be empty."),
   isActive: z.boolean().optional(),
-  stores: z.array(z.uuidv4()).optional(),
+  store: z.uuidv4().optional(),
 })
 
-export type CreateRoleDto = z.infer<typeof CreateRoleSchema>
+export type CreateStoreDto = z.infer<typeof CreateStoreSchema>
