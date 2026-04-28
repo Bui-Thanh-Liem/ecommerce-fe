@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -15,8 +14,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon, UserRoundKey, User, Target, Store } from "lucide-react"
-import { NavClouds } from "./nav-clouds"
+import {
+  LayoutDashboardIcon,
+  UsersIcon,
+  CameraIcon,
+  FileTextIcon,
+  Settings2Icon,
+  CircleHelpIcon,
+  SearchIcon,
+  DatabaseIcon,
+  FileChartColumnIcon,
+  FileIcon,
+  CommandIcon,
+  UserRoundKey,
+  User,
+  Target,
+  Store,
+} from "lucide-react"
 import { NavManagement } from "./nav-management"
 
 const data = {
@@ -28,55 +42,46 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
-      icon: (
-        <LayoutDashboardIcon
-        />
-      ),
+      url: "dashboard",
+      icon: <LayoutDashboardIcon />,
     },
     {
       title: "campaigns",
-      url: "#",
-      icon: ( <Target /> ),
+      url: "campaigns",
+      icon: <Target />,
     },
   ],
   navManager: [
     {
       title: "Permissions",
       url: "permissions",
-      icon: ( <UserRoundKey /> ),
+      icon: <UserRoundKey />,
     },
     {
       title: "Roles",
-      url: "#",
-      icon: ( <UserRoundKey /> ),
+      url: "roles",
+      icon: <UserRoundKey />,
     },
     {
       title: "Staffs",
-      url: "#",
-      icon: ( <User /> ),
+      url: "staffs",
+      icon: <User />,
     },
     {
       title: "Stores",
-      url: "#",
-      icon: ( < Store /> ),
+      url: "stores",
+      icon: <Store />,
     },
     {
       title: "Teams",
-      url: "#",
-      icon: (
-        <UsersIcon
-        />
-      ),
+      url: "teams",
+      icon: <UsersIcon />,
     },
   ],
   navClouds: [
     {
       title: "Capture",
-      icon: (
-        <CameraIcon
-        />
-      ),
+      icon: <CameraIcon />,
       isActive: true,
       url: "#",
       items: [
@@ -92,10 +97,7 @@ const data = {
     },
     {
       title: "Proposal",
-      icon: (
-        <FileTextIcon
-        />
-      ),
+      icon: <FileTextIcon />,
       url: "#",
       items: [
         {
@@ -110,10 +112,7 @@ const data = {
     },
     {
       title: "Prompts",
-      icon: (
-        <FileTextIcon
-        />
-      ),
+      icon: <FileTextIcon />,
       url: "#",
       items: [
         {
@@ -131,52 +130,34 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
+      icon: <Settings2Icon />,
     },
     {
       title: "Get Help",
       url: "#",
-      icon: (
-        <CircleHelpIcon
-        />
-      ),
+      icon: <CircleHelpIcon />,
     },
     {
       title: "Search",
       url: "#",
-      icon: (
-        <SearchIcon
-        />
-      ),
+      icon: <SearchIcon />,
     },
   ],
   documents: [
     {
       name: "Data Library",
       url: "#",
-      icon: (
-        <DatabaseIcon
-        />
-      ),
+      icon: <DatabaseIcon />,
     },
     {
       name: "Reports",
       url: "#",
-      icon: (
-        <FileChartColumnIcon
-        />
-      ),
+      icon: <FileChartColumnIcon />,
     },
     {
       name: "Word Assistant",
       url: "#",
-      icon: (
-        <FileIcon
-        />
-      ),
+      icon: <FileIcon />,
     },
   ],
 }
@@ -201,8 +182,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavClouds items={data.navClouds} /> */}
         <NavManagement items={data.navManager} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

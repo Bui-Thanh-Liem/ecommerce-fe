@@ -42,6 +42,7 @@ export function NavManagement({
                 <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction

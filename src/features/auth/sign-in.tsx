@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,13 +22,9 @@ import { Input } from "@/components/ui/input"
 import { SignInFormSchema } from "@/shared/dtos/req/sign-in.dto"
 import { useSignIn } from "@/hooks/use-auth"
 
-
-
 export function SignInPage() {
+  const signInApi = useSignIn()
 
-  const signInApi = useSignIn();
-  
-  
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -38,10 +33,10 @@ export function SignInPage() {
     },
   })
 
-  async  function onSubmit(data: z.infer<typeof SignInFormSchema>) {
-    const res = await signInApi.mutateAsync(data);
+  async function onSubmit(data: z.infer<typeof SignInFormSchema>) {
+    const res = await signInApi.mutateAsync(data)
   }
-  
+
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader>
@@ -51,16 +46,18 @@ export function SignInPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="form-rhf-input" className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          id="form-rhf-input"
+          className="space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FieldGroup>
             <Controller
               name="phone"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-phone">
-                    Phone
-                  </FieldLabel>
+                  <FieldLabel htmlFor="form-rhf-input-phone">Phone</FieldLabel>
                   <Input
                     {...field}
                     type="tel"

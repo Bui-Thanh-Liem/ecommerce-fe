@@ -22,6 +22,7 @@ async function handler(req: Request, { params }: { params: Promise<{ path: strin
       headers["Cookie"] = cookieHeader;
     }
     
+    console.log(`${BE_URL}/${path}?${url.searchParams}`);
     const res = await fetch(`${BE_URL}/${path}?${url.searchParams}`, {
       method: req.method,
       headers,

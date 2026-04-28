@@ -1,22 +1,21 @@
-import { SignInDto } from "@/shared/dtos/req/sign-in.dto";
-import { ResSignInDto } from "@/shared/dtos/res/sign-in.dto";
-import { apiCall } from "@/utils/call-api.util";
-import { toast } from "sonner";
+import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
+import { ResSignInDto } from "@/shared/dtos/res/sign-in.dto"
+import { apiCall } from "@/utils/call-api.util"
+import { toast } from "sonner"
 
-export const authServices =  {
+export const authServices = {
   signIn: async (payload: SignInDto) => {
     const res = await apiCall<ResSignInDto>("/auth/signin", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
 
     if (res.statusCode === 200) {
-      toast.success("You submitted the following values")
-      return res;
+      toast.success("")
+      return res
     } else {
-      toast.error(res.message || "Failed to sign in");
+      toast.error(res.message || "Failed to sign in")
       return null
     }
-
-  }
+  },
 }

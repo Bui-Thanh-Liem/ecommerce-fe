@@ -8,6 +8,6 @@ export interface IPermission extends IBase {
   code: string; // mã định danh duy nhất cho quyền, thường được sử dụng trong hệ thống phân quyền để kiểm tra quyền của người dùng.
   isActive: boolean; // trạng thái hoạt động của quyền, giúp quản lý và kiểm soát quyền trong hệ thống.
   // eslint-disable-next-line max-len
-  roles?: IRole[]; // danh sách mã vai trò mà quyền này thuộc về, giúp xác định những vai trò nào có quyền này trong hệ thống.
   keyGroup?: string; // Nhóm quyền, ví dụ: 'User Management', 'Product Management', v.v. Giúp phân loại và tổ chức các quyền trong hệ thống.
+  roles?: IRole[]; // danh sách mã vai trò mà quyền này thuộc về, giúp xác định những vai trò nào có quyền này trong hệ thống.
 }
