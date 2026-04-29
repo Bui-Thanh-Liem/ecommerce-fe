@@ -2,8 +2,8 @@
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
+  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -32,7 +32,7 @@ function RoleCard({ role }: { role: IRole }) {
           {role.name}
         </CardTitle>
       </CardHeader>
-      <CardFooter className="max-h-[]calc(100vh-120px) flex-col items-start gap-1.5 overflow-y-auto text-sm">
+      <CardContent className="max-h-[calc(100vh-250px)] flex-col items-start gap-1.5 overflow-y-auto text-sm">
         {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (
           <div key={keyGroup} className="w-full">
             <p className="bg-muted mb-2 rounded-sm px-2 py-1 text-sm font-medium">
@@ -66,19 +66,19 @@ function RoleCard({ role }: { role: IRole }) {
             ))}
           </div>
         ))}
-      </CardFooter>
+      </CardContent>
     </Card>
   )
 }
 
 export function RolePage() {
   const { data } = useFindAllRoles()
-  const role = data?.metadata || []
+  const roles = data?.metadata || []
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <AddCard />
-      {role.map((role) => (
+      {roles.map((role) => (
         <RoleCard role={role} key={role.id} />
       ))}
     </div>

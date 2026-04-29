@@ -10,8 +10,8 @@ export const authServices = {
       body: JSON.stringify(payload),
     })
 
-    if (res.statusCode === 200) {
-      toast.success("")
+    if (res.statusCode === 201) {
+      toast.success(res.message || "Signed in successfully")
       return res
     } else {
       toast.error(res.message || "Failed to sign in")

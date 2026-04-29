@@ -105,14 +105,14 @@ export function AddCard() {
             Fill in the details to create a new role.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-5">
-            <FieldGroup className="col-span-1 mb-4">
-              <Controller
-                name="isActive"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FieldGroup>
+            <Controller
+              name="isActive"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex items-center justify-between">
                     <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
                     <Switch
                       id="form-isActive"
@@ -120,130 +120,128 @@ export function AddCard() {
                       onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
                       aria-invalid={fieldState.invalid}
                     />
+                  </div>
 
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
 
-            <FieldGroup className="mb-4">
-              <Controller
-                name="stores" // Tên field trong Zod schema (nên là z.array(z.string()))
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Stores</FieldLabel>
-
-                      <Combobox
-                        multiple
-                        autoHighlight
-                        // Chuyển danh sách store từ API thành mảng string hoặc object tùy component yêu cầu
-                        items={stores.map((s) => s.id)}
-                        value={field.value} // Gán giá trị từ RHF
-                        onValueChange={field.onChange} // Cập nhật lại RHF khi chọn
-                      >
-                        <ComboboxChips ref={anchor} className="w-full">
-                          <ComboboxValue>
-                            {(values: string[]) => (
-                              <React.Fragment>
-                                {values.map((value) => {
-                                  const storeName = stores.find(
-                                    (s) => s.id === value
-                                  )?.name
-                                  return (
-                                    <ComboboxChip key={value}>
-                                      {storeName || value}
-                                    </ComboboxChip>
-                                  )
-                                })}
-                                <ComboboxChipsInput placeholder="Select stores..." />
-                              </React.Fragment>
-                            )}
-                          </ComboboxValue>
-                        </ComboboxChips>
-
-                        <ComboboxContent anchor={anchor}>
-                          <ComboboxEmpty>No stores found.</ComboboxEmpty>
-                          <ComboboxList>
-                            {(id: string) => {
-                              const storeName = stores.find(
-                                (s) => s.id === id
-                              )?.name
-                              return (
-                                <ComboboxItem key={id} value={id}>
-                                  {storeName}
-                                </ComboboxItem>
-                              )
-                            }}
-                          </ComboboxList>
-                        </ComboboxContent>
-                      </Combobox>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-          </div>
-
-          <div className="grid grid-cols-2 gap-x-4">
-            <FieldGroup>
-              <Controller
-                name="name"
-                control={form.control}
-                render={({ field, fieldState }) => (
+          <FieldGroup>
+            <Controller
+              name="stores" // Tên field trong Zod schema (nên là z.array(z.string()))
+              control={form.control}
+              render={({ field, fieldState }) => {
+                return (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="name"
-                      autoComplete="name"
-                      id="form-rhf-input-name"
-                    />
+                    <FieldLabel>Stores</FieldLabel>
+
+                    <Combobox
+                      multiple
+                      autoHighlight
+                      // Chuyển danh sách store từ API thành mảng string hoặc object tùy component yêu cầu
+                      items={stores.map((s) => s.id)}
+                      value={field.value} // Gán giá trị từ RHF
+                      onValueChange={field.onChange} // Cập nhật lại RHF khi chọn
+                    >
+                      <ComboboxChips ref={anchor} className="w-full">
+                        <ComboboxValue>
+                          {(values: string[]) => (
+                            <React.Fragment>
+                              {values.map((value) => {
+                                const storeName = stores.find(
+                                  (s) => s.id === value
+                                )?.name
+                                return (
+                                  <ComboboxChip key={value}>
+                                    {storeName || value}
+                                  </ComboboxChip>
+                                )
+                              })}
+                              <ComboboxChipsInput placeholder="Select stores..." />
+                            </React.Fragment>
+                          )}
+                        </ComboboxValue>
+                      </ComboboxChips>
+
+                      <ComboboxContent anchor={anchor}>
+                        <ComboboxEmpty>No stores found.</ComboboxEmpty>
+                        <ComboboxList>
+                          {(id: string) => {
+                            const storeName = stores.find(
+                              (s) => s.id === id
+                            )?.name
+                            return (
+                              <ComboboxItem key={id} value={id}>
+                                {storeName}
+                              </ComboboxItem>
+                            )
+                          }}
+                        </ComboboxList>
+                      </ComboboxContent>
+                    </Combobox>
+
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                )}
-              />
-            </FieldGroup>
+                )
+              }}
+            />
+          </FieldGroup>
 
-            <FieldGroup>
-              <Controller
-                name="desc"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-desc">
-                      Description
-                    </FieldLabel>
-                    <Textarea
-                      {...field}
-                      rows={2}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter description here..."
-                      id="form-rhf-textarea-desc"
-                      className="resize-none"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
+          <FieldGroup>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
+                  <Input
+                    {...field}
+                    type="text"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="name"
+                    autoComplete="name"
+                    id="form-rhf-input-name"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
 
-          <div className="mb-4">
+          <FieldGroup>
+            <Controller
+              name="desc"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-desc">
+                    Description
+                  </FieldLabel>
+                  <Textarea
+                    {...field}
+                    rows={2}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Enter description here..."
+                    id="form-rhf-textarea-desc"
+                    className="resize-none"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <div>
             <FieldLabel
               className={cn("mb-2", permissionErrors && "text-destructive")}
             >

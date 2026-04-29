@@ -23,6 +23,8 @@ export const storeServices = {
       method: "GET",
     })
 
+    console.log(res)
+
     return res
   },
 }
