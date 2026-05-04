@@ -1,7 +1,7 @@
 import { CreateRoleDto } from "@/shared/dtos/req/create-role.dto"
 import { IRole } from "@/shared/interfaces/models/role.interface"
 import { apiCall } from "@/utils/call-api.util"
-import { toast } from "sonner"
+import { handleResponse } from "@/utils/handle-response.util"
 
 export const roleServices = {
   create: async (payload: CreateRoleDto) => {
@@ -10,12 +10,7 @@ export const roleServices = {
       body: JSON.stringify(payload),
     })
 
-    if (res.statusCode !== 201) {
-      toast.error(res.message || "Failed to create role")
-      return null
-    }
-
-    return res
+    return handleResponse<IRole>(res)
   },
 
   findAll: async () => {
@@ -23,6 +18,6 @@ export const roleServices = {
       method: "GET",
     })
 
-    return res
+    return handleResponse<IRole[]>(res)
   },
 }

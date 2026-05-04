@@ -1,4 +1,5 @@
 "use client"
+import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -9,7 +10,6 @@ import {
 } from "@/components/ui/card"
 import { useFindAllPermissions } from "@/hooks/use-permission"
 import { IPermission } from "@/shared/interfaces/models/permission.interface"
-import { CircleCheckIcon, LoaderIcon } from "lucide-react"
 
 export function groupByKeyGroup(permissions: IPermission[]) {
   return permissions.reduce(
@@ -53,22 +53,7 @@ function PermissionCard({
                 <p>
                   {perm.code} - {perm.desc}
                 </p>
-                <Badge
-                  variant="outline"
-                  className="text-muted-foreground px-1.5"
-                >
-                  {perm.isActive ? (
-                    <>
-                      <CircleCheckIcon className="fill-green-400 dark:fill-green-300" />
-                      Active
-                    </>
-                  ) : (
-                    <>
-                      <LoaderIcon />
-                      Inactive
-                    </>
-                  )}
-                </Badge>
+                <Active isActive={perm.isActive} />
               </div>
             ))}
           </>

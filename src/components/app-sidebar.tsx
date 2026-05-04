@@ -30,6 +30,7 @@ import {
   User,
   Target,
   Store,
+  MapPinned,
 } from "lucide-react"
 import { NavManagement } from "./nav-management"
 
@@ -68,14 +69,19 @@ const data = {
       icon: <User />,
     },
     {
-      title: "Stores",
-      url: "stores",
-      icon: <Store />,
-    },
-    {
       title: "Teams",
       url: "teams",
       icon: <UsersIcon />,
+    },
+    {
+      title: "Locations & Regions",
+      url: "location-regions",
+      icon: <MapPinned />,
+    },
+    {
+      title: "Stores",
+      url: "stores",
+      icon: <Store />,
     },
   ],
   navClouds: [

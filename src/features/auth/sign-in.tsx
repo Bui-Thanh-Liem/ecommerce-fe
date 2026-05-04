@@ -21,8 +21,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { SignInFormSchema } from "@/shared/dtos/req/sign-in.dto"
 import { useSignIn } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 export function SignInPage() {
+  const router = useRouter()
+
   const signInApi = useSignIn()
 
   const form = useForm<z.infer<typeof SignInFormSchema>>({
@@ -35,6 +38,9 @@ export function SignInPage() {
 
   async function onSubmit(data: z.infer<typeof SignInFormSchema>) {
     const res = await signInApi.mutateAsync(data)
+    if (res?.statusCode === 201) {
+      router.push("/dashboard")
+    }
   }
 
   return (

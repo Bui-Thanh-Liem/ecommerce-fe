@@ -1,25 +1,24 @@
-import { staffServices } from '@/services/staff.service';
-import { CreateStaffDto } from '@/shared/dtos/req/create-staff.dto';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { staffServices } from "@/services/staff.service"
+import { CreateStaffDto } from "@/shared/dtos/req/create-staff.dto"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
-
-export const useFindAllStaff = () => {
+export const useFindAllStaffs = () => {
   return useQuery({
-    queryKey: ['staffs'],
+    queryKey: ["staffs"],
     queryFn: staffServices.findAll,
-  });
-};
+  })
+}
 
 export const useCreateStaff = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
-    // 
+    //
     mutationFn: (payload: CreateStaffDto) => staffServices.create(payload),
-    
-    // 
+
+    //
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['staffs'] });
+      queryClient.invalidateQueries({ queryKey: ["staffs"] })
     },
-  });
-};
+  })
+}
