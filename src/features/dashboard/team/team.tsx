@@ -46,12 +46,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { generateTypeByParent } from "./location-region.helper"
+import { generateTypeByParent } from "../location-region/location-region.helper"
 
-export function LocationRegionPage() {
+export function TeamPage() {
   const { data } = useGetTreeDataByRootId("")
   const treeData = data?.metadata || []
-  return <LocationRegionTree treeData={treeData} />
+  return <TeamTree treeData={treeData} />
 }
 
 // --- Cấu hình Dagre để tính toán vị trí ---
@@ -184,7 +184,7 @@ const LocationNode = ({ data }: { data: ILocationRegion }) => {
 
 const nodeTypes = { location: LocationNode }
 
-function LocationRegionTree({ treeData }: { treeData: ILocationRegion[] }) {
+function TeamTree({ treeData }: { treeData: ILocationRegion[] }) {
   const [open, setOpen] = useState(false)
   const [parent, setParent] = useState<ILocationRegion | undefined>(undefined)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -284,30 +284,51 @@ function LocationRegionTree({ treeData }: { treeData: ILocationRegion[] }) {
   }, [treeData])
 
   return (
-    <div
-      ref={containerRef}
-      className="relative h-[calc(100vh-120px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
-    >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodeContextMenu={onNodeContextMenu}
-        onPaneClick={() => setMenu(null)}
-        connectionLineType={ConnectionLineType.SmoothStep}
-        fitView
-      >
-        <Background gap={24} size={1} color="#999" />
-        <Controls showInteractive={false} className="bg-white shadow-sm" />
-        {menu && (
-          <ContextMenu
-            onClick={handleMenuAction}
-            onClose={() => setMenu(null)}
-            {...menu}
-          />
-        )}
-      </ReactFlow>
+    <div>
+      <div className="mb-6">
+        <Select defaultValue={LocationRegionType.PROVINCE_CITY}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(LocationRegionType).map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t.replace("_", " ")}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
 
+      {/*  */}
+      <div
+        ref={containerRef}
+        className="relative col-span-10 h-[calc(100vh-170px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+      >
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodeContextMenu={onNodeContextMenu}
+          onPaneClick={() => setMenu(null)}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          fitView
+        >
+          <Background gap={24} size={1} color="#999" />
+          <Controls showInteractive={false} className="bg-white shadow-sm" />
+          {menu && (
+            <ContextMenu
+              onClick={handleMenuAction}
+              onClose={() => setMenu(null)}
+              {...menu}
+            />
+          )}
+        </ReactFlow>
+      </div>
+
+      {/*  */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>

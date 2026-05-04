@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/card"
 import { useFindAllRoles } from "@/hooks/use-role"
 import { IRole } from "@/shared/interfaces/models/role.interface"
-import { CircleCheckIcon, LoaderIcon } from "lucide-react"
 import { groupByKeyGroup } from "../permisson/permission"
 import { AddCard } from "./add-role"
+import { Active } from "@/components/active"
 
 function RoleCard({ role }: { role: IRole }) {
   const groupedPermissions = groupByKeyGroup(role.permissions)
@@ -46,22 +46,7 @@ function RoleCard({ role }: { role: IRole }) {
                 <span className="text-sm">
                   {perm.code} - {perm.desc}
                 </span>
-                <Badge
-                  variant="outline"
-                  className="text-muted-foreground px-1.5"
-                >
-                  {perm.isActive ? (
-                    <>
-                      <CircleCheckIcon className="fill-green-400 dark:fill-green-300" />
-                      Active
-                    </>
-                  ) : (
-                    <>
-                      <LoaderIcon />
-                      Inactive
-                    </>
-                  )}
-                </Badge>
+                <Active isActive={perm.isActive} />
               </div>
             ))}
           </div>

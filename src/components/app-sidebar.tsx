@@ -69,6 +69,11 @@ const data = {
       icon: <User />,
     },
     {
+      title: "Teams",
+      url: "teams",
+      icon: <UsersIcon />,
+    },
+    {
       title: "Locations & Regions",
       url: "location-regions",
       icon: <MapPinned />,
@@ -77,11 +82,6 @@ const data = {
       title: "Stores",
       url: "stores",
       icon: <Store />,
-    },
-    {
-      title: "Teams",
-      url: "teams",
-      icon: <UsersIcon />,
     },
   ],
   navClouds: [

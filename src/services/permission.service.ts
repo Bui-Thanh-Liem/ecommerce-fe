@@ -1,6 +1,6 @@
 import { IPermission } from "@/shared/interfaces/models/permission.interface"
 import { apiCall } from "@/utils/call-api.util"
-import { toast } from "sonner"
+import { handleResponse } from "@/utils/handle-response.util"
 
 export const permissionServices = {
   findAll: async () => {
@@ -8,11 +8,6 @@ export const permissionServices = {
       method: "GET",
     })
 
-    if (res.statusCode !== 200) {
-      toast.error(res.message || "Failed to sign in")
-      return null
-    }
-
-    return res
+    return handleResponse<IPermission[]>(res)
   },
 }

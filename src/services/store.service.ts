@@ -1,7 +1,7 @@
 import { CreateStoreDto } from "@/shared/dtos/req/create-store.dto"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { apiCall } from "@/utils/call-api.util"
-import { toast } from "sonner"
+import { handleResponse } from "@/utils/handle-response.util"
 
 export const storeServices = {
   create: async (payload: CreateStoreDto) => {
@@ -10,12 +10,7 @@ export const storeServices = {
       body: JSON.stringify(payload),
     })
 
-    if (res.statusCode !== 201) {
-      toast.error(res.message || "Failed to create store")
-      return null
-    }
-
-    return res
+    return handleResponse<IStore>(res)
   },
 
   findAll: async () => {
@@ -23,8 +18,6 @@ export const storeServices = {
       method: "GET",
     })
 
-    console.log(res)
-
-    return res
+    return handleResponse<IStore[]>(res)
   },
 }

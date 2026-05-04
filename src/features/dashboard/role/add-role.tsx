@@ -92,7 +92,7 @@ export function AddCard() {
       <DialogTrigger asChild>
         <Card className="@container/card border-2 border-dashed">
           <CardContent className="flex h-full cursor-pointer items-center justify-center">
-            <Button variant="outline">
+            <Button variant="ghost" className="hover:bg-transparent">
               <Plus />
             </Button>
           </CardContent>

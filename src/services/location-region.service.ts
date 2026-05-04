@@ -1,7 +1,7 @@
 import { CreateLocationRegionDto } from "@/shared/dtos/req/create-location-region.dto"
 import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
 import { apiCall } from "@/utils/call-api.util"
-import { toast } from "sonner"
+import { handleResponse } from "@/utils/handle-response.util"
 
 export const locationRegionServices = {
   create: async (payload: CreateLocationRegionDto) => {
@@ -10,12 +10,7 @@ export const locationRegionServices = {
       body: JSON.stringify(payload),
     })
 
-    if (res.statusCode !== 201) {
-      toast.error(res.message || "Failed to create location region")
-      return null
-    }
-
-    return res
+    return handleResponse<ILocationRegion>(res)
   },
 
   findAll: async () => {
@@ -23,7 +18,7 @@ export const locationRegionServices = {
       method: "GET",
     })
 
-    return res
+    return handleResponse<ILocationRegion[]>(res)
   },
 
   getTreeDataByRootId: async (id: string) => {
@@ -33,7 +28,6 @@ export const locationRegionServices = {
         method: "GET",
       }
     )
-
-    return res
+    return handleResponse<ILocationRegion[]>(res)
   },
 }
