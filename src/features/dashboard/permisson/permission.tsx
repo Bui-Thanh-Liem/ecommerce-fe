@@ -8,8 +8,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useFindAllPermissions } from "@/hooks/use-permission"
+import { Field, FieldError, FieldGroup } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import {
+  useFindAllPermissions,
+  useUpdatePermission,
+} from "@/hooks/use-permission"
+import { UpdatePermissionSchema } from "@/shared/dtos/req/permission.dto"
 import { IPermission } from "@/shared/interfaces/models/permission.interface"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useRef, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import z from "zod"
 
 export function groupByKeyGroup(permissions: IPermission[]) {
   return permissions.reduce(
@@ -32,6 +42,66 @@ function PermissionCard({
   keyGroup: string
   permission: IPermission[]
 }) {
+  const [openInputKey, setOpenInput] = useState(false)
+  const updatePermissionApi = useUpdatePermission()
+  const formRef = useRef<HTMLFormElement>(null) // 1. Tạo ref
+
+  // 2. Logic xử lý click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setOpenInput(false)
+        // Tùy chọn: form.reset() nếu bạn muốn hủy các thay đổi chưa lưu
+      }
+    }
+
+    if (openInput) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [openInput])
+
+  //
+  const form = useForm<z.infer<typeof UpdatePermissionSchema>>({
+    resolver: zodResolver(UpdatePermissionSchema),
+    defaultValues: {
+      keyGroup: keyGroup,
+    },
+  })
+
+  //
+  async function togglePermissionStatus(id: string, isActive: boolean) {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    updatePermissionApi.mutate({
+      id: id,
+      payload: {
+        isActive: !isActive,
+      },
+    })
+  }
+
+  //
+  async function onSubmitKeyGroup(data: z.infer<typeof UpdatePermissionSchema>) {
+    try {
+      await Promise.all(
+        permission.map((perm) =>
+          updatePermissionApi.mutateAsync({
+            id: perm.id,
+            payload: {
+              keyGroup: data.keyGroup,
+            },
+          })
+        )
+      )
+      setOpenInput(false)
+    } catch (error) {
+      console.error("Failed to update permissions:", error)
+    }
+  }
+
   return (
     <Card className="@container/card" key={keyGroup}>
       <CardHeader>
@@ -39,7 +109,34 @@ function PermissionCard({
           <Badge variant="outline">{permission.length} permissions</Badge>
         </CardDescription>
         <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {keyGroup}
+          {openInput ? (
+            <form onSubmit={form.handleSubmit(onSubmitKeyGroup)} ref={formRef}>
+              <FieldGroup>
+                <Controller
+                  name="keyGroup"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <Input
+                        {...field}
+                        type="text"
+                        autoFocus
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Key Group"
+                        autoComplete="keyGroup"
+                        id="form-rhf-input-keyGroup"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </form>
+          ) : (
+            <p onDoubleClick={() => setOpenInput(true)}>{keyGroup}</p>
+          )}
         </CardTitle>
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
@@ -53,7 +150,12 @@ function PermissionCard({
                 <p>
                   {perm.code} - {perm.desc}
                 </p>
-                <Active isActive={perm.isActive} />
+                <span
+                  className="cursor-pointer"
+                  onClick={() => togglePermissionStatus(perm.id, perm.isActive)}
+                >
+                  <Active isActive={perm.isActive} />
+                </span>
               </div>
             ))}
           </>

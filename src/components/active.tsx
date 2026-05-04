@@ -1,4 +1,4 @@
-import { CircleCheckIcon, LoaderIcon } from "lucide-react"
+import { CircleCheckIcon, CircleX, X } from "lucide-react"
 import { Badge } from "./ui/badge"
 
 export function Active({ isActive }: { isActive: boolean }) {
@@ -11,7 +11,7 @@ export function Active({ isActive }: { isActive: boolean }) {
         </>
       ) : (
         <>
-          <LoaderIcon />
+          <CircleX className="fill-red-400 dark:fill-red-300" />
           Inactive
         </>
       )}

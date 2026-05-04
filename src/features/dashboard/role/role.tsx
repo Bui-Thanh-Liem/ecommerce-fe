@@ -1,7 +1,9 @@
 "use client"
+import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -11,7 +13,6 @@ import { useFindAllRoles } from "@/hooks/use-role"
 import { IRole } from "@/shared/interfaces/models/role.interface"
 import { groupByKeyGroup } from "../permisson/permission"
 import { AddCard } from "./add-role"
-import { Active } from "@/components/active"
 
 function RoleCard({ role }: { role: IRole }) {
   const groupedPermissions = groupByKeyGroup(role.permissions)
@@ -20,17 +21,19 @@ function RoleCard({ role }: { role: IRole }) {
   return (
     <Card className="@container/card" key={role.id}>
       <CardHeader>
-        <CardDescription>
-          <Badge variant="outline">{role.permissions.length} permissions</Badge>
-          {store && (
-            <Badge variant="outline" className="ml-2">
-              {store.name}
-            </Badge>
-          )}
-        </CardDescription>
+        <Badge variant="outline">{role.permissions.length} permissions</Badge>
+        {store && (
+          <Badge variant="outline" className="ml-2">
+            {store.name}
+          </Badge>
+        )}
         <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {role.name}
         </CardTitle>
+        <CardDescription>{role.desc}</CardDescription>
+        <CardAction>
+          <Active isActive={role.isActive} />
+        </CardAction>
       </CardHeader>
       <CardContent className="max-h-[calc(100vh-250px)] flex-col items-start gap-1.5 overflow-y-auto text-sm">
         {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (
