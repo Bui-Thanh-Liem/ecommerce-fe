@@ -35,7 +35,6 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -208,10 +207,7 @@ export function DataTable<T extends IBase>({
   }
 
   return (
-    <Tabs
-      defaultValue="outline"
-      className="w-full flex-col justify-start gap-6"
-    >
+    <Tabs defaultValue="data" className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between">
         <Label htmlFor="view-selector" className="sr-only">
           View
@@ -234,14 +230,14 @@ export function DataTable<T extends IBase>({
           </SelectContent>
         </Select>
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Outline</TabsTrigger>
-          <TabsTrigger value="past-performance">
+          <TabsTrigger value="data">Data</TabsTrigger>
+          {/* <TabsTrigger value="past-performance">
             Past Performance <Badge variant="secondary">3</Badge>
           </TabsTrigger>
           <TabsTrigger value="key-personnel">
             Key Personnel <Badge variant="secondary">2</Badge>
           </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger> */}
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -285,9 +281,9 @@ export function DataTable<T extends IBase>({
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl">
               <DialogHeader>
-                <DialogTitle>Add Role</DialogTitle>
+                <DialogTitle>Add item</DialogTitle>
                 <DialogDescription>
-                  Fill in the details to create a new role.
+                  Fill in the details to create a new item.
                 </DialogDescription>
               </DialogHeader>
               {actionForm}
@@ -295,8 +291,9 @@ export function DataTable<T extends IBase>({
           </Dialog>
         </div>
       </div>
+
       <TabsContent
-        value="outline"
+        value="data"
         className="relative flex flex-col gap-4 overflow-auto"
       >
         <div className="overflow-hidden rounded-lg border">
@@ -431,7 +428,7 @@ export function DataTable<T extends IBase>({
         </div>
       </TabsContent>
 
-      <TabsContent
+      {/* <TabsContent
         value="past-performance"
         className="flex flex-col px-4 lg:px-6"
       ></TabsContent>
@@ -444,7 +441,7 @@ export function DataTable<T extends IBase>({
       <TabsContent
         value="focus-documents"
         className="flex flex-col px-4 lg:px-6"
-      ></TabsContent>
+      ></TabsContent> */}
     </Tabs>
   )
 }

@@ -24,6 +24,27 @@ import {
 } from "@/components/ui/drawer"
 import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
+import { useUpdateStaff } from "@/hooks/use-staff"
+
+//
+const StatusCell = ({ row }: { row: any }) => {
+  const { mutate } = useUpdateStaff()
+
+  function toggleActiveStatus() {
+    mutate({
+      id: row.original.id,
+      payload: {
+        isActive: !row.original.isActive,
+      },
+    })
+  }
+
+  return (
+    <span className="cursor-pointer" onClick={toggleActiveStatus}>
+      <Active isActive={row.original.isActive} />
+    </span>
+  )
+}
 
 export const columns: ColumnDef<IStaff>[] = [
   {
@@ -106,11 +127,16 @@ export const columns: ColumnDef<IStaff>[] = [
     },
   },
   {
+    accessorKey: "directManager",
+    header: "Direct Manager",
+    cell: ({ row }) => {
+      return <p>{row.original.directManager?.fullName || "-"}</p>
+    },
+  },
+  {
     accessorKey: "isActive",
     header: "Active",
-    cell: ({ row }) => {
-      return <Active isActive={row.original.isActive} />
-    },
+    cell: ({ row }) => <StatusCell row={row} />,
     enableHiding: false,
   },
   {
