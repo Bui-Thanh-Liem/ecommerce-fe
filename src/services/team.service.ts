@@ -1,10 +1,12 @@
-import { CreateStoreDto } from "@/shared/dtos/req/create-store.dto"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
+import { CreateTeamDto } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const teamServices = {
-  create: async (payload: CreateStoreDto) => {
+  create: async (payload: CreateTeamDto) => {
     const res = await apiCall<ITeam>("/teams", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -13,20 +15,20 @@ export const teamServices = {
     return handleResponse<ITeam>(res)
   },
 
-  findAll: async (query?: { storeId?: string }) => {
-    const queryParams = new URLSearchParams()
+  findAll: async (query: QueryDto) => {
+    const queryParams = generateQueryParams(query)
 
-    const validUUID = (str: string) => {
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-      return uuidRegex.test(str)
-    }
+    const res = await apiCall<ITeam[]>(`/teams?${queryParams}`, {
+      method: "GET",
+    })
 
-    if (query?.storeId && validUUID(query.storeId)) {
-      queryParams.append("store", query.storeId)
-    }
+    return handleResponse<ITeam[]>(res)
+  },
 
-    const res = await apiCall<ITeam[]>(`/teams?${queryParams.toString()}`, {
+  findAllByStore: async (storeId: string) => {
+    console.log(`Fetching teams for store: ${storeId}`)
+
+    const res = await apiCall<ITeam[]>(`/teams/store/${storeId}`, {
       method: "GET",
     })
 

@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useFindRegions } from "@/hooks/use-location-region"
-import { CreateStoreSchema } from "@/shared/dtos/req/create-store.dto"
+import { CreateStoreSchema } from "@/shared/dtos/req/store.dto"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
 import { Controller, UseFormReturn } from "react-hook-form"
 import z from "zod"

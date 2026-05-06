@@ -1,5 +1,5 @@
 import { locationRegionServices } from "@/services/location-region.service"
-import { CreateLocationRegionDto } from "@/shared/dtos/req/create-location-region.dto"
+import { CreateLocationRegionDto } from "@/shared/dtos/req/location-region.dto"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 

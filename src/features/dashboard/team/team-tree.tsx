@@ -7,6 +7,8 @@ import {
   ReactFlow,
   Handle,
   Position,
+  NodeProps,
+  BackgroundVariant,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 import dagre from "dagre"
@@ -14,32 +16,26 @@ import {
   Plus,
   Pencil,
   Trash2,
-  Users,
-  UserCircle,
   Building2,
+  Layers,
+  ShieldCheck,
+  User,
+  Users,
+  UserPlus,
 } from "lucide-react"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { FieldGroup, FieldLabel } from "@/components/ui/field"
-import { useForm } from "react-hook-form"
-import { Input } from "@/components/ui/input"
-import { useCreateTeam } from "@/hooks/use-team"
+import { TeamAdd } from "./team-add"
+// Giả sử bạn có component này để quản lý thành viên
+// import { MemberAdd } from "./member-add"
 
-const nodeWidth = 220
+// --- UTILS: Tự động sắp xếp vị trí node ---
+const nodeWidth = 240
 const nodeHeight = 80
 
 const getLayoutedElements = (nodes: any[], edges: any[]) => {
   const dagreGraph = new dagre.graphlib.Graph()
   dagreGraph.setDefaultEdgeLabel(() => ({}))
-  dagreGraph.setGraph({ rankdir: "TB", nodesep: 70, ranksep: 100 })
+  dagreGraph.setGraph({ rankdir: "TB", nodesep: 100, ranksep: 120 })
 
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
@@ -65,76 +61,140 @@ const getLayoutedElements = (nodes: any[], edges: any[]) => {
   }
 }
 
-// Menu chuột phải
-const ContextMenu = ({ id, data, top, left, onClick, onClose }: any) => {
+// --- CUSTOM NODES ---
+
+const RootNode = ({ data }: NodeProps) => (
+  <div className="min-w-[260px] rounded-2xl border-2 border-blue-600 bg-blue-600 p-4 shadow-xl">
+    <div className="flex items-center gap-3 text-white">
+      <div className="rounded-lg bg-white/20 p-2">
+        <Building2 size={24} />
+      </div>
+      <div>
+        <p className="text-[10px] font-bold uppercase opacity-80">
+          Hệ thống / Cửa hàng
+        </p>
+        <p className="text-lg leading-tight font-black">{data.name}</p>
+      </div>
+    </div>
+    <Handle
+      type="source"
+      position={Position.Bottom}
+      className="!h-3 !w-3 !bg-blue-400"
+    />
+  </div>
+)
+
+const TeamNode = ({ data }: NodeProps) => (
+  <div className="group min-w-[220px] rounded-xl border-2 border-indigo-200 bg-white p-3 shadow-md transition-all hover:border-indigo-500">
+    <div className="mb-2 flex items-center justify-between border-b border-slate-100 pb-2">
+      <div className="flex items-center gap-2">
+        <Layers size={18} className="text-indigo-500" />
+        <span className="font-bold text-slate-700">{data.name}</span>
+      </div>
+      <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600">
+        TEAM
+      </span>
+    </div>
+    <div className="flex items-center gap-2 text-[11px] text-slate-500">
+      <Users size={12} /> <span>{data.members?.length || 0} thành viên</span>
+    </div>
+    <Handle type="target" position={Position.Top} className="!bg-indigo-300" />
+    <Handle
+      type="source"
+      position={Position.Bottom}
+      className="!bg-indigo-300"
+    />
+  </div>
+)
+
+const LeaderNode = ({ data }: NodeProps) => (
+  <div className="flex min-w-[180px] items-center gap-3 rounded-full border-2 border-amber-400 bg-amber-50 px-4 py-2 shadow-sm">
+    <div className="rounded-full bg-amber-500 p-1.5 text-white">
+      <ShieldCheck size={14} />
+    </div>
+    <div className="flex flex-col">
+      <span className="text-[9px] font-bold text-amber-600 uppercase">
+        Trưởng nhóm
+      </span>
+      <span className="max-w-[100px] truncate text-xs font-bold text-slate-800">
+        {data.fullName}
+      </span>
+    </div>
+    <Handle type="target" position={Position.Top} className="!bg-amber-400" />
+  </div>
+)
+
+const MemberNode = ({ data }: NodeProps) => (
+  <div className="flex min-w-[160px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
+    <div className="h-2 w-2 rounded-full bg-emerald-400" />
+    <span className="truncate text-xs font-medium text-slate-600">
+      {data.fullName}
+    </span>
+    <Handle type="target" position={Position.Left} className="!bg-slate-300" />
+  </div>
+)
+
+const nodeTypes = {
+  rootNode: RootNode,
+  teamNode: TeamNode,
+  leaderNode: LeaderNode,
+  memberNode: MemberNode,
+}
+
+// --- CONTEXT MENU ---
+const ContextMenu = ({ data, top, left, onClick, onClose }: any) => {
+  if (["leaderNode", "memberNode"].includes(data.type)) return null
+
   return (
     <div
-      style={{ top: `${top}px`, left: `${left}px` }}
-      className="absolute z-[100] min-w-44 rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl shadow-slate-200/50"
+      style={{ top, left }}
+      className="absolute z-[100] min-w-56 rounded-xl border border-slate-200 bg-white/95 py-2 shadow-2xl backdrop-blur-md transition-all"
       onMouseLeave={onClose}
     >
-      <div className="px-3 py-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-        {data.isRoot ? "Thao tác Gốc" : "Thao tác Team"}
+      <div className="mb-1 border-b border-slate-100 px-4 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+        {data.name}
       </div>
-      <button
-        onClick={() => onClick("add", data)}
-        className="flex w-full items-center px-3 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600"
-      >
-        <Plus size={14} className="mr-2" /> Thêm team con
-      </button>
-      {!data.isRoot && (
+
+      {/* Logic hiển thị dựa trên loại Node */}
+      {data.type === "rootNode" ? (
+        <button
+          onClick={() => onClick("add-team", data)}
+          className="flex w-full items-center px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600"
+        >
+          <Plus size={16} className="mr-3 text-blue-500" /> Thêm Team mới
+        </button>
+      ) : (
         <>
           <button
-            onClick={() => onClick("edit", data)}
-            className="flex w-full items-center px-3 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50"
+            onClick={() => onClick("add-member", data)}
+            className="flex w-full items-center px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-600"
           >
-            <Pencil size={14} className="mr-2" /> Chỉnh sửa
+            <UserPlus size={16} className="mr-3 text-emerald-500" /> Thêm thành
+            viên
           </button>
-          <hr className="my-1 border-slate-100" />
           <button
-            onClick={() => onClick("delete", data)}
-            className="flex w-full items-center px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+            onClick={() => onClick("edit-team", data)}
+            className="flex w-full items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
           >
-            <Trash2 size={14} className="mr-2" /> Xóa team
+            <Pencil size={16} className="mr-3 text-slate-400" /> Sửa thông tin
+            Team
           </button>
         </>
+      )}
+
+      {!data.isRoot && (
+        <button
+          onClick={() => onClick("delete", data)}
+          className="mt-1 flex w-full items-center border-t border-slate-50 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+        >
+          <Trash2 size={16} className="mr-3" /> Xóa
+        </button>
       )}
     </div>
   )
 }
 
-const TeamNode = ({ data }: { data: any }) => {
-  const isRoot = data.isRoot
-  return (
-    <div
-      className={`min-w-[220px] rounded-xl border p-3 shadow-sm transition-all hover:shadow-md ${isRoot ? "border-blue-600 bg-blue-50" : "border-slate-200 bg-white hover:border-blue-500"}`}
-    >
-      <div className="flex items-center">
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white shadow-md ${isRoot ? "bg-blue-700" : "bg-slate-600"}`}
-        >
-          {isRoot ? <Building2 size={18} /> : <Users size={18} />}
-        </div>
-        <div className="ml-3 overflow-hidden">
-          <div className="truncate text-sm font-bold text-slate-800">
-            {data.name}
-          </div>
-          <div className="mt-0.5 flex items-center text-[10px] text-slate-500">
-            <UserCircle size={10} className="mr-1" />
-            <span className="truncate">
-              {data.leader?.fullName || (isRoot ? "Admin" : "No leader")}
-            </span>
-          </div>
-        </div>
-      </div>
-      <Handle type="target" position={Position.Top} className="!opacity-0" />
-      <Handle type="source" position={Position.Bottom} className="!opacity-0" />
-    </div>
-  )
-}
-
-const nodeTypes = { team: TeamNode }
-
+// --- MAIN COMPONENT ---
 export function TeamTree({
   treeData,
   rootName,
@@ -144,60 +204,87 @@ export function TeamTree({
   rootName: string
   storeId: string
 }) {
-  const [open, setOpen] = useState(false)
-  const [selectedParent, setSelectedParent] = useState<any>(null)
+  const [isTeamOpen, setIsTeamOpen] = useState(false)
+  const [isMemberOpen, setIsMemberOpen] = useState(false)
+  const [selectedNode, setSelectedNode] = useState<any>(null)
   const [menu, setMenu] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const createApi = useCreateTeam()
-
-  const form = useForm({
-    defaultValues: { name: "", parentId: "", storeId: "" },
-  })
 
   const { nodes, edges } = useMemo(() => {
     const rawNodes: any[] = []
     const rawEdges: any[] = []
 
-    // Tạo Virtual Root Node
-    const virtualRootId = "VIRTUAL-ROOT"
+    const rootId = `ROOT-${storeId}`
     rawNodes.push({
-      id: virtualRootId,
-      type: "team",
-      data: { id: virtualRootId, name: rootName, isRoot: true },
+      id: rootId,
+      type: "rootNode",
+      data: { name: rootName, isRoot: true, type: "rootNode" },
       position: { x: 0, y: 0 },
     })
 
-    const traverse = (items: any[], pId: string) => {
-      items.forEach((item) => {
+    treeData.forEach((team) => {
+      // Node Team
+      rawNodes.push({
+        id: team.id,
+        type: "teamNode",
+        data: { ...team, type: "teamNode" },
+        position: { x: 0, y: 0 },
+      })
+
+      rawEdges.push({
+        id: `e-${rootId}-${team.id}`,
+        source: rootId,
+        target: team.id,
+        style: { stroke: "#6366f1", strokeWidth: 2 },
+      })
+
+      // Leader
+      if (team.leader) {
+        const lId = `leader-${team.id}-${team.leader.id}`
         rawNodes.push({
-          id: item.id,
-          type: "team",
-          data: item,
+          id: lId,
+          type: "leaderNode",
+          data: team.leader,
           position: { x: 0, y: 0 },
         })
         rawEdges.push({
-          id: `e${pId}-${item.id}`,
-          source: pId,
-          target: item.id,
-          type: "smoothstep",
-          animated: true,
-          style: { stroke: "#3b82f6", strokeWidth: 2 },
+          id: `el-${team.id}`,
+          source: team.id,
+          target: lId,
+          style: { stroke: "#f59e0b" },
         })
-        if (item.children?.length > 0) traverse(item.children, item.id)
-      })
-    }
+      }
 
-    traverse(treeData, virtualRootId)
+      // Members
+      if (team.members) {
+        team.members.forEach((m) => {
+          if (m.id === team.leader?.id) return
+          const mId = `mem-${team.id}-${m.id}`
+          rawNodes.push({
+            id: mId,
+            type: "memberNode",
+            data: m,
+            position: { x: 0, y: 0 },
+          })
+          rawEdges.push({
+            id: `em-${mId}`,
+            source: team.id,
+            target: mId,
+            style: { stroke: "#cbd5e1" },
+          })
+        })
+      }
+    })
+
     return getLayoutedElements(rawNodes, rawEdges)
-  }, [treeData, rootName])
+  }, [treeData, rootName, storeId])
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
       event.preventDefault()
-      if (!containerRef.current) return
-      const pane = containerRef.current.getBoundingClientRect()
+      const pane = containerRef.current?.getBoundingClientRect()
+      if (!pane) return
       setMenu({
-        id: node.id,
         data: node.data,
         top: event.clientY - pane.top,
         left: event.clientX - pane.left,
@@ -206,34 +293,19 @@ export function TeamTree({
     []
   )
 
-  const handleMenuAction = (action: string, data: any) => {
-    if (action === "add") {
-      setSelectedParent(data)
-      // Nếu node cha là Virtual Root, parentId sẽ là null
-      const actualParentId = data.isRoot ? null : data.id
-      // Nếu storeId là "company-root" thì gửi rỗng, ngược lại gửi storeId
-      const actualStoreId = storeId === "company-root" ? "" : storeId
-
-      form.reset({
-        name: "",
-        parentId: actualParentId as any,
-        storeId: actualStoreId,
-      })
-      setOpen(true)
-    }
+  const handleAction = (action: string, data: any) => {
     setMenu(null)
-  }
-
-  const onSubmit = async (values: any) => {
-    await createApi.mutateAsync(values)
-    setOpen(false)
+    setSelectedNode(data)
+    if (action === "add-team") setIsTeamOpen(true)
+    if (action === "add-member") setIsMemberOpen(true)
+    if (action === "delete") alert("Xử lý xóa ID: " + data.id)
   }
 
   return (
     <>
       <div
         ref={containerRef}
-        className="relative h-[calc(100vh-180px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+        className="relative h-[calc(100vh-220px)] w-full overflow-hidden rounded-3xl border bg-slate-50/50 shadow-inner"
       >
         <ReactFlow
           nodes={nodes}
@@ -243,11 +315,11 @@ export function TeamTree({
           onPaneClick={() => setMenu(null)}
           fitView
         >
-          <Background gap={20} color="#e2e8f0" />
+          <Background variant={BackgroundVariant.Lines} color="#f1f5f9" />
           <Controls />
           {menu && (
             <ContextMenu
-              onClick={handleMenuAction}
+              onClick={handleAction}
               onClose={() => setMenu(null)}
               {...menu}
             />
@@ -255,43 +327,19 @@ export function TeamTree({
         </ReactFlow>
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Thêm team con vào [{selectedParent?.name}]
-            </DialogTitle>
-            <DialogDescription>
-              Team mới sẽ thuộc{" "}
-              {storeId === "company-root"
-                ? "Hệ thống tổng"
-                : "Chi nhánh hiện tại"}
-              .
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FieldGroup>
-              <FieldLabel>Tên Team</FieldLabel>
-              <Input
-                {...form.register("name")}
-                placeholder="Ví dụ: Team Marketing"
-              />
-            </FieldGroup>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setOpen(false)}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={createApi.isPending}>
-                Lưu thay đổi
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <TeamAdd
+        open={isTeamOpen}
+        onOpenChange={setIsTeamOpen}
+        storeId={storeId}
+        selectedParent={selectedNode}
+      />
+
+      {/* MemberAdd Modal xử lý thêm người vào Team */}
+      {/* <MemberAdd 
+        open={isMemberOpen} 
+        onOpenChange={setIsMemberOpen} 
+        teamId={selectedNode?.id} 
+      /> */}
     </>
   )
 }

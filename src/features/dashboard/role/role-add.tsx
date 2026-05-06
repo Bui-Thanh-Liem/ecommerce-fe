@@ -35,7 +35,7 @@ import { useFindAllPermissions } from "@/hooks/use-permission"
 import { useCreateRole } from "@/hooks/use-role"
 import { useFindAllStores } from "@/hooks/use-store"
 import { cn } from "@/lib/utils"
-import { CreateRoleSchema } from "@/shared/dtos/req/create-role.dto"
+import { CreateRoleSchema } from "@/shared/dtos/req/role.dto"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Plus } from "lucide-react"
 import React, { useState } from "react"
@@ -170,7 +170,10 @@ export function RoleAdd() {
                             </ComboboxValue>
                           </ComboboxChips>
 
-                          <ComboboxContent anchor={anchor}>
+                          <ComboboxContent
+                            anchor={anchor}
+                            className="pointer-events-auto"
+                          >
                             <ComboboxEmpty>No stores found.</ComboboxEmpty>
                             <ComboboxList>
                               {(id: string) => {

@@ -1,5 +1,5 @@
 import { roleServices } from "@/services/role.service"
-import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/create-role.dto"
+import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/role.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllRoles = () => {

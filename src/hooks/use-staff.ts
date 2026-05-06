@@ -1,8 +1,5 @@
 import { staffServices } from "@/services/staff.service"
-import {
-  CreateStaffDto,
-  UpdateStaffDto,
-} from "@/shared/dtos/req/create-staff.dto"
+import { CreateStaffDto, UpdateStaffDto } from "@/shared/dtos/req/staff.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllStaffs = () => {

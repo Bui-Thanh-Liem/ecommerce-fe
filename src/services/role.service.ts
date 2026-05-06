@@ -1,4 +1,4 @@
-import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/create-role.dto"
+import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/role.dto"
 import { IRole } from "@/shared/interfaces/models/role.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"

@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/field"
 import { Controller, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { CreateLocationRegionSchema } from "@/shared/dtos/req/create-location-region.dto"
+import { CreateLocationRegionSchema } from "@/shared/dtos/req/location-region.dto"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 import {
