@@ -1,6 +1,31 @@
 "use client"
 
-import * as React from "react"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { IBase } from "@/shared/interfaces/common/base.interface"
 import {
   closestCenter,
   DndContext,
@@ -35,42 +60,18 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  GripVerticalIcon,
-  Columns3Icon,
   ChevronDownIcon,
-  PlusIcon,
-  ChevronsLeftIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronsLeftIcon,
   ChevronsRightIcon,
+  Columns3Icon,
+  GripVerticalIcon,
+  PlusIcon,
 } from "lucide-react"
-import { IBase } from "@/shared/interfaces/common/base.interface"
+import * as React from "react"
+import { Badge } from "./ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -128,12 +129,16 @@ function DraggableRow<T extends IBase>({ row }: { row: Row<T> }) {
 
 export function DataTable<T extends IBase>({
   columns,
+  tabHeader,
   actionForm,
+  tabContent,
   data: initialData,
 }: {
   data: T[]
+  tabHeader?: string
   columns: ColumnDef<T>[]
   actionForm?: React.ReactNode
+  tabContent?: React.ReactNode
 }) {
   const [open, setOpen] = React.useState(false)
   const [data, setData] = React.useState(() => initialData)
@@ -209,6 +214,7 @@ export function DataTable<T extends IBase>({
   return (
     <Tabs defaultValue="data" className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between">
+        {/* Mobile */}
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
@@ -222,22 +228,24 @@ export function DataTable<T extends IBase>({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="outline">Outline</SelectItem>
+              <SelectItem value="table">
+                Table <Badge variant="secondary">3</Badge>
+              </SelectItem>
               <SelectItem value="past-performance">Past Performance</SelectItem>
-              <SelectItem value="key-personnel">Key Personnel</SelectItem>
-              <SelectItem value="focus-documents">Focus Documents</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        {/* Desktop */}
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="data">Data</TabsTrigger>
-          {/* <TabsTrigger value="past-performance">
-            Past Performance <Badge variant="secondary">3</Badge>
+          <TabsTrigger value="table">
+            Table <Badge variant="secondary">3</Badge>
           </TabsTrigger>
-          <TabsTrigger value="key-personnel">
-            Key Personnel <Badge variant="secondary">2</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger> */}
+          {tabHeader && (
+            <TabsTrigger value={tabHeader?.toLowerCase()}>
+              {tabHeader}
+            </TabsTrigger>
+          )}
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -274,7 +282,7 @@ export function DataTable<T extends IBase>({
           </DropdownMenu>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button size="sm">
                 <PlusIcon />
                 <span className="hidden lg:inline">Add item</span>
               </Button>
@@ -293,7 +301,7 @@ export function DataTable<T extends IBase>({
       </div>
 
       <TabsContent
-        value="data"
+        value="table"
         className="relative flex flex-col gap-4 overflow-auto"
       >
         <div className="overflow-hidden rounded-lg border">
@@ -428,20 +436,12 @@ export function DataTable<T extends IBase>({
         </div>
       </TabsContent>
 
-      {/* <TabsContent
-        value="past-performance"
-        className="flex flex-col px-4 lg:px-6"
-      ></TabsContent>
-
-      <TabsContent
-        value="key-personnel"
-        className="flex flex-col px-4 lg:px-6"
-      ></TabsContent>
-
-      <TabsContent
-        value="focus-documents"
-        className="flex flex-col px-4 lg:px-6"
-      ></TabsContent> */}
+      {tabContent && (
+        <TabsContent
+          value="past-performance"
+          className="flex flex-col px-4 lg:px-6"
+        ></TabsContent>
+      )}
     </Tabs>
   )
 }

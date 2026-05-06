@@ -1,4 +1,4 @@
-import { PermissionPage } from "@/features/dashboard/permisson/permission"
+import { PermissionPage } from "@/features/dashboard/permission/permission"
 
 export default function Page() {
   return (

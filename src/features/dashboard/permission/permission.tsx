@@ -11,6 +11,11 @@ import {
 import { Field, FieldError, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   useFindAllPermissions,
   useUpdatePermission,
 } from "@/hooks/use-permission"
@@ -44,7 +49,9 @@ function PermissionCard({
 }) {
   const [openInputKeyGroup, setOpenInputKeyGroup] = useState(false)
   const updatePermissionApi = useUpdatePermission()
-  const formRef = useRef<HTMLFormElement>(null) // 1. Tạo ref
+
+  // 1. Tạo ref
+  const formRef = useRef<HTMLFormElement>(null)
 
   // 2. Logic xử lý click outside
   useEffect(() => {
@@ -136,7 +143,16 @@ function PermissionCard({
               </FieldGroup>
             </form>
           ) : (
-            <p onDoubleClick={() => setOpenInputKeyGroup(true)}>{keyGroup}</p>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p onDoubleClick={() => setOpenInputKeyGroup(true)}>
+                  {keyGroup}
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Double-click to edit</p>
+              </TooltipContent>
+            </Tooltip>
           )}
         </CardTitle>
       </CardHeader>

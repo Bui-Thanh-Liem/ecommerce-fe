@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -15,22 +14,22 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
-  LayoutDashboardIcon,
-  UsersIcon,
   CameraIcon,
-  FileTextIcon,
-  Settings2Icon,
   CircleHelpIcon,
-  SearchIcon,
   DatabaseIcon,
   FileChartColumnIcon,
   FileIcon,
-  CommandIcon,
-  UserRoundKey,
-  User,
-  Target,
-  Store,
+  FileTextIcon,
+  LayoutDashboardIcon,
   MapPinned,
+  SearchIcon,
+  Settings2Icon,
+  ShoppingBag,
+  Store,
+  Target,
+  User,
+  UserRoundKey,
+  UsersIcon,
 } from "lucide-react"
 import { NavManagement } from "./nav-management"
 
@@ -179,8 +178,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="#">
-                <CommandIcon className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <ShoppingBag className="size-5!" />
+                <span className="text-base font-semibold">E-commerce.</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

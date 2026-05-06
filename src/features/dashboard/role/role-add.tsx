@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Combobox,
   ComboboxChip,
@@ -41,7 +40,7 @@ import { Plus } from "lucide-react"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { groupByKeyGroup } from "../permisson/permission"
+import { groupByKeyGroup } from "../permission/permission"
 
 export function RoleAdd() {
   const anchor = useComboboxAnchor()
@@ -90,13 +89,11 @@ export function RoleAdd() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card className="@container/card border-2 border-dashed">
-          <CardContent className="flex h-full cursor-pointer items-center justify-center">
-            <Button variant="ghost" className="hover:bg-transparent">
-              <Plus />
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-between">
+          <Button size="sm">
+            <Plus /> Add role
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-6xl">
         <DialogHeader>
