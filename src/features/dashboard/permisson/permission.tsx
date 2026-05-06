@@ -42,7 +42,7 @@ function PermissionCard({
   keyGroup: string
   permission: IPermission[]
 }) {
-  const [openInputKey, setOpenInput] = useState(false)
+  const [openInputKeyGroup, setOpenInputKeyGroup] = useState(false)
   const updatePermissionApi = useUpdatePermission()
   const formRef = useRef<HTMLFormElement>(null) // 1. Tạo ref
 
@@ -50,19 +50,18 @@ function PermissionCard({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (formRef.current && !formRef.current.contains(event.target as Node)) {
-        setOpenInput(false)
-        // Tùy chọn: form.reset() nếu bạn muốn hủy các thay đổi chưa lưu
+        setOpenInputKeyGroup(false)
       }
     }
 
-    if (openInput) {
+    if (openInputKeyGroup) {
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [openInput])
+  }, [openInputKeyGroup])
 
   //
   const form = useForm<z.infer<typeof UpdatePermissionSchema>>({
@@ -84,7 +83,9 @@ function PermissionCard({
   }
 
   //
-  async function onSubmitKeyGroup(data: z.infer<typeof UpdatePermissionSchema>) {
+  async function onSubmitKeyGroup(
+    data: z.infer<typeof UpdatePermissionSchema>
+  ) {
     try {
       await Promise.all(
         permission.map((perm) =>
@@ -96,7 +97,7 @@ function PermissionCard({
           })
         )
       )
-      setOpenInput(false)
+      setOpenInputKeyGroup(false)
     } catch (error) {
       console.error("Failed to update permissions:", error)
     }
@@ -109,7 +110,7 @@ function PermissionCard({
           <Badge variant="outline">{permission.length} permissions</Badge>
         </CardDescription>
         <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {openInput ? (
+          {openInputKeyGroup ? (
             <form onSubmit={form.handleSubmit(onSubmitKeyGroup)} ref={formRef}>
               <FieldGroup>
                 <Controller
@@ -135,7 +136,7 @@ function PermissionCard({
               </FieldGroup>
             </form>
           ) : (
-            <p onDoubleClick={() => setOpenInput(true)}>{keyGroup}</p>
+            <p onDoubleClick={() => setOpenInputKeyGroup(true)}>{keyGroup}</p>
           )}
         </CardTitle>
       </CardHeader>
@@ -160,7 +161,7 @@ function PermissionCard({
             ))}
           </>
         ) : (
-          <>No permissions found</>
+          <p>No permissions found</p>
         )}
       </CardFooter>
     </Card>

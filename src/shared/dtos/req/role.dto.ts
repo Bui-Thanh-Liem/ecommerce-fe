@@ -14,4 +14,7 @@ export const CreateRoleSchema = z.object({
   stores: z.array(z.uuidv4()).optional(),
 })
 
+export const UpdateRoleSchema = CreateRoleSchema.partial()
+
 export type CreateRoleDto = z.infer<typeof CreateRoleSchema>
+export type UpdateRoleDto = z.infer<typeof UpdateRoleSchema>

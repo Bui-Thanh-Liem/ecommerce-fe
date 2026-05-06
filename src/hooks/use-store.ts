@@ -1,5 +1,5 @@
 import { storeServices } from "@/services/store.service"
-import { CreateStoreDto } from "@/shared/dtos/req/create-store.dto"
+import { CreateStoreDto } from "@/shared/dtos/req/store.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllStores = () => {

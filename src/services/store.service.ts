@@ -1,4 +1,4 @@
-import { CreateStoreDto } from "@/shared/dtos/req/create-store.dto"
+import { CreateStoreDto } from "@/shared/dtos/req/store.dto"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
