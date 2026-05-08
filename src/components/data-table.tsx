@@ -5,6 +5,8 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
@@ -67,19 +69,12 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   Columns3Icon,
+  EllipsisVerticalIcon,
   GripVerticalIcon,
   PlusIcon,
 } from "lucide-react"
 import * as React from "react"
 import { Badge } from "./ui/badge"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog"
 
 // Create a separate component for the drag handle
 export function DragHandle({ id }: { id: string }) {
@@ -129,18 +124,21 @@ function DraggableRow<T extends IBase>({ row }: { row: Row<T> }) {
 
 export function DataTable<T extends IBase>({
   columns,
+  onEditRow,
+  onAddRow,
   tabHeader,
-  actionForm,
   tabContent,
+  onDeleteRow,
   data: initialData,
 }: {
   data: T[]
   tabHeader?: string
   columns: ColumnDef<T>[]
-  actionForm?: React.ReactNode
   tabContent?: React.ReactNode
+  onAddRow?: () => void
+  onEditRow?: (row: Row<T>) => void
+  onDeleteRow?: (row: Row<T>) => void
 }) {
-  const [open, setOpen] = React.useState(false)
   const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -166,7 +164,44 @@ export function DataTable<T extends IBase>({
 
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      ...columns,
+      {
+        id: "actions",
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="text-muted-foreground data-[state=open]:bg-muted flex size-8"
+                size="icon"
+              >
+                <EllipsisVerticalIcon />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <DropdownMenuItem
+                onClick={() => {
+                  onEditRow?.(row)
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => {
+                  onDeleteRow?.(row)
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ],
     state: {
       sorting,
       columnVisibility,
@@ -212,7 +247,7 @@ export function DataTable<T extends IBase>({
   }
 
   return (
-    <Tabs defaultValue="data" className="w-full flex-col justify-start gap-6">
+    <Tabs defaultValue="table" className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between">
         {/* Mobile */}
         <Label htmlFor="view-selector" className="sr-only">
@@ -280,23 +315,10 @@ export function DataTable<T extends IBase>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm">
-                <PlusIcon />
-                <span className="hidden lg:inline">Add item</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
-              <DialogHeader>
-                <DialogTitle>Add item</DialogTitle>
-                <DialogDescription>
-                  Fill in the details to create a new item.
-                </DialogDescription>
-              </DialogHeader>
-              {actionForm}
-            </DialogContent>
-          </Dialog>
+          <Button size="sm" onClick={onAddRow}>
+            <PlusIcon />
+            <span className="hidden lg:inline">Add item</span>
+          </Button>
         </div>
       </div>
 
@@ -438,9 +460,11 @@ export function DataTable<T extends IBase>({
 
       {tabContent && (
         <TabsContent
-          value="past-performance"
+          value={tabHeader?.toLowerCase() ?? ""}
           className="flex flex-col px-4 lg:px-6"
-        ></TabsContent>
+        >
+          {tabContent}
+        </TabsContent>
       )}
     </Tabs>
   )

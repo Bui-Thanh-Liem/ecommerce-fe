@@ -37,3 +37,17 @@ export const useUpdateStaff = () => {
     },
   })
 }
+
+export const useDeleteStaff = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    //
+    mutationFn: (id: string) => staffServices.delete(id),
+
+    //
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staffs"] })
+    },
+  })
+}

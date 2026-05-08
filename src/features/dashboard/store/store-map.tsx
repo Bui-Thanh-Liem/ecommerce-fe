@@ -5,8 +5,9 @@ import { IStore } from "@/shared/interfaces/models/store.interface"
 import Image from "next/image"
 import { useMapEvents } from "react-leaflet"
 import React from "react"
-import { StoreAdd } from "./add-store"
-import { X } from "lucide-react"
+import { StoreAdd } from "./store-add"
+import { Clock, Phone, User, X } from "lucide-react"
+import { Active } from "@/components/active"
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -125,11 +126,12 @@ const handleGetLocation = (map: L.Map) => {
 // Tạo icon cho marker của cửa hàng
 const storeIcon = L.icon({
   iconUrl: "/images/dmx.jpg", // Đường dẫn đến file ảnh trong thư mục public
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  // shadowUrl:
+  //   "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   iconSize: [35, 35], // Kích thước icon [rộng, cao]
   iconAnchor: [17, 35], // Điểm của icon sẽ đặt chính xác vào tọa độ (thường là dưới cùng giữa)
   popupAnchor: [0, -35], // Điểm mà popup sẽ hiện ra so với iconAnchor
+  className: "rounded-full border-2 border-white", // Thêm lớp CSS để làm tròn và viền trắng
 })
 
 //
@@ -206,38 +208,81 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
         {/* Hiển thị các điểm cửa hàng */}
         {stores.map((store) => {
           const position: LatLngExpression = [store.lat, store.lng]
-          const open = [store.closingHours, store.openingHours]
-          const provinceCity = store.provinceCity?.name || "N/A"
-          const districtTown = store.districtTown?.name || "N/A"
-          const wardCommune = store.wardCommune?.name || "N/A"
-          const phone = store.phone || "N/A"
+
+          const opening = store.openingHours?.slice(0, 5) || "08:00"
+          const closing = store.closingHours?.slice(0, 5) || "20:00"
+
+          const province = store.provinceCity?.name || "N/A"
+          const district = store.districtTown?.name || "N/A"
+          const ward = store.wardCommune?.name || "N/A"
 
           return (
             <Marker key={store.id} position={position} icon={storeIcon}>
-              <Popup>
-                {store.imageUrl && (
-                  <Image
-                    alt={store.name}
-                    src={store.imageUrl}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                )}
-                <br />
-                <strong>{store.name}</strong>
-                <br />
-                {store.address}
-                <br />
-                <span>
-                  {open[0]} - {open[1]}
-                </span>
-                <br />
-                <span>
-                  {wardCommune}, {districtTown}, {provinceCity}
-                </span>
-                <br />
-                <span>
-                  {phone.map((p) => `${p.name}: ${p.phone}`).join(", ")}
-                </span>
+              <Popup className="custom-popup" minWidth={320} maxWidth={420}>
+                <div className="space-y-3">
+                  {/* Image */}
+                  {store.imageUrl && (
+                    <Image
+                      // width={400}
+                      // height={300}
+                      src={store.imageUrl}
+                      alt={store.name}
+                      className="h-auto w-full rounded-lg object-cover"
+                    />
+                  )}
+
+                  {/* Thông tin chính */}
+                  <div>
+                    <h3 className="flex items-center gap-x-2 text-lg leading-tight font-semibold">
+                      {store.name}
+                      <Active isActive={store.isActive} />
+                    </h3>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      {store.address}
+                    </p>
+                  </div>
+
+                  {/* Giờ mở cửa */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-green-600">
+                      <Clock size={20} />
+                    </span>
+                    <span>
+                      <strong>{opening}</strong> - <strong>{closing}</strong>
+                    </span>
+                  </div>
+
+                  {/* Địa chỉ hành chính */}
+                  <div className="text-muted-foreground text-sm">
+                    {ward}, {district}, {province}
+                  </div>
+
+                  {/* Số điện thoại */}
+                  {store.phone && store.phone.length > 0 && (
+                    <div className="space-y-1 text-sm">
+                      {store.phone.map((p: any, index: number) => (
+                        <a
+                          key={index}
+                          href={`tel:${p.phone}`}
+                          className="hover:text-primary flex items-center gap-2 transition-colors"
+                        >
+                          <Phone size={20} /> {p.name ? `${p.name}: ` : ""}
+                          <span className="font-medium">{p.phone}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Quản lý */}
+                  {store.manager && (
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <User size={20} /> Quản lý:{" "}
+                      <span className="text-foreground font-medium">
+                        {store.manager.fullName}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </Popup>
             </Marker>
           )

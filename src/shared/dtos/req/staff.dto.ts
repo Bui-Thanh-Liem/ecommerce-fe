@@ -2,6 +2,8 @@ import { REGEX_PASSWORD, REGEX_PHONE } from "@/shared/constants/regex.contstant"
 import z from "zod"
 
 export const StaffBaseSchema = z.object({
+  avatarUrl: z.string().optional(),
+
   fullName: z
     .string()
     .min(1, "Full name is required.")
@@ -48,7 +50,10 @@ export const CreateStaffSchema = StaffBaseSchema.refine(
   }
 )
 
-export const UpdateStaffSchema = StaffBaseSchema.partial()
+export const UpdateStaffSchema = StaffBaseSchema.partial().extend({
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
+})
 
 export type CreateStaffDto = z.infer<typeof StaffBaseSchema>
 export type UpdateStaffDto = z.infer<typeof UpdateStaffSchema>

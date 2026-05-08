@@ -10,6 +10,6 @@ export function handleResponse<T>(res: OkResponse<T>): OkResponse<T> | null {
     return null
   } else {
     toast.error(res.message || "An error occurred")
-    return null
+    throw new Error(res.message || "Request failed")
   }
 }

@@ -2,14 +2,6 @@ import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { type ColumnDef } from "@tanstack/react-table"
 import { DragHandle } from "@/components/data-table"
 import { Checkbox } from "@/components/ui/checkbox"
-import { EllipsisVerticalIcon } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -25,6 +17,7 @@ import {
 import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
 import { useUpdateStaff } from "@/hooks/use-staff"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 //
 const StatusCell = ({ row }: { row: any }) => {
@@ -77,6 +70,22 @@ export const columns: ColumnDef<IStaff>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "avatarUrl",
+    header: "Avatar",
+    cell: ({ row }) => {
+      return (
+        <Avatar>
+          <AvatarImage
+            src={row.original.avatarUrl}
+            alt={row.original.fullName}
+          />
+          <AvatarFallback>AV</AvatarFallback>
+        </Avatar>
+      )
+    },
+    enableHiding: false, // always show full name column
   },
   {
     accessorKey: "fullName",
@@ -139,28 +148,6 @@ export const columns: ColumnDef<IStaff>[] = [
     cell: ({ row }) => <StatusCell row={row} />,
     enableHiding: false,
   },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="text-muted-foreground data-[state=open]:bg-muted flex size-8"
-            size="icon"
-          >
-            <EllipsisVerticalIcon />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
 ]
 
 function TableCellViewer({ item }: { item: IStaff }) {
@@ -169,45 +156,129 @@ function TableCellViewer({ item }: { item: IStaff }) {
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
+        <Button
+          variant="link"
+          className="text-foreground w-fit px-0 text-left hover:underline"
+        >
           {item.fullName}
         </Button>
       </DrawerTrigger>
+
       <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.isSuperAdmin}</DrawerTitle>
-          <DrawerDescription>
-            Showing total visitors for the last 6 months
-          </DrawerDescription>
+        <DrawerHeader>
+          <DrawerTitle className="flex items-center gap-2">
+            {item.fullName}
+            <Active isActive={item.isActive} />
+          </DrawerTitle>
+          <DrawerDescription>Staff Details</DrawerDescription>
         </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          {!isMobile && (
-            <>
-              <div>
-                <p>
-                  <span className="font-medium">Note:</span> This is a read-only
-                  view of the staff details. To make changes, please use the
-                  edit option in the actions menu.
-                </p>
+
+        <div className="flex flex-col gap-6 overflow-y-auto px-4 pb-6 text-sm">
+          {/* Basic Info */}
+          <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="flex items-center justify-center">
+                <Avatar className="h-28 w-28 border">
+                  <AvatarImage src={item.avatarUrl} alt={item.fullName} />
+                  <AvatarFallback>AV</AvatarFallback>
+                </Avatar>
               </div>
-            </>
-          )}
-          <div>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              euismod, nisl vel tincidunt lacinia, nunc est aliquam nunc, eget
-              aliquam nisl nunc vel nisl. Sed euismod, nisl vel tincidunt
-              lacinia, nunc est aliquam nunc, eget aliquam nisl nunc vel nisl.
-            </p>
+
+              <div className="grid grid-cols-1 gap-3">
+                <InfoRow label="Full Name" value={item.fullName} />
+                <InfoRow label="Email" value={item.email} />
+                <InfoRow label="Phone" value={formatPhone(item.phone)} />
+                <InfoRow label="Work Location ID" value={item.workLocationID} />
+              </div>
+            </div>
+
+            {/* Store */}
+            {item.store && (
+              <div>
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
+                  Store
+                </p>
+                <div className="bg-muted/50 rounded-lg p-3">
+                  <p className="font-medium">{item.store?.name}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Direct Manager */}
+            {item.directManager && (
+              <div>
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
+                  Direct Manager
+                </p>
+                <div className="bg-muted/50 rounded-lg p-3">
+                  <p className="font-medium">{item.directManager?.fullName}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Roles */}
+            {item.roles && item.roles.length > 0 && (
+              <div>
+                <p className="text-muted-foreground mb-2 text-xs font-medium">
+                  Roles
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {item.roles.map((role: any, index: number) => (
+                    <Badge key={index} variant="outline">
+                      {role.name || role.roleName || "N/A"}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Note */}
+          {!isMobile && (
+            <div className="border-border rounded-lg border bg-amber-50 p-4 text-sm">
+              <p className="text-foreground font-medium">Note:</p>
+              <p className="text-muted-foreground mt-1">
+                This is a read-only view of the staff details. To edit, please
+              </p>
+            </div>
+          )}
         </div>
+
         <DrawerFooter>
-          <Button>Submit</Button>
           <DrawerClose asChild>
-            <Button variant="outline">Done</Button>
+            <Button variant="outline">Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )
+}
+
+/* ====================== Helper Components ====================== */
+
+function InfoRow({
+  label,
+  value,
+  className = "",
+}: {
+  label: string
+  value: string | undefined
+  className?: string
+}) {
+  return (
+    <div className="flex items-center justify-between py-1">
+      <span className="text-muted-foreground">{label}</span>
+      <span className={`text-right font-medium ${className}`}>
+        {value || "—"}
+      </span>
+    </div>
+  )
+}
+
+function formatPhone(phone: string | undefined): string {
+  if (!phone) return "—"
+  if (phone.startsWith("84")) {
+    return `+${phone.slice(0, 2)} ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8)}`
+  }
+  return phone
 }

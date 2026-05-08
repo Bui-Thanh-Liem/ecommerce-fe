@@ -19,6 +19,7 @@ export const useCreateStore = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stores"] })
+      queryClient.invalidateQueries({ queryKey: ["staffs"] })
     },
   })
 }

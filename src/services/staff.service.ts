@@ -29,4 +29,12 @@ export const staffServices = {
 
     return handleResponse(res)
   },
+
+  delete: async (id: string) => {
+    const res = await apiCall(`/staffs/${id}`, {
+      method: "DELETE",
+    })
+
+    return handleResponse(res)
+  },
 }
