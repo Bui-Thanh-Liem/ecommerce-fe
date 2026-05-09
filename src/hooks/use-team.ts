@@ -1,6 +1,6 @@
 import { teamServices } from "@/services/team.service"
 import { QueryDto } from "@/shared/dtos/common/query.dto"
-import { CreateTeamDto } from "@/shared/dtos/req/team.dto"
+import { CreateTeamDto, UpdateTeamDto } from "@/shared/dtos/req/team.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllTeams = (query: QueryDto) => {
@@ -16,6 +16,35 @@ export const useCreateTeam = () => {
   return useMutation({
     //
     mutationFn: (payload: CreateTeamDto) => teamServices.create(payload),
+
+    //
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teams"] })
+    },
+  })
+}
+
+export const useUpdateTeam = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    //
+    mutationFn: ({ id, payload }: { payload: UpdateTeamDto; id: string }) =>
+      teamServices.update(id, payload),
+
+    //
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teams"] })
+    },
+  })
+}
+
+export const useDeleteTeam = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    //
+    mutationFn: (id: string) => teamServices.delete(id),
 
     //
     onSuccess: () => {

@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useFindAllStores } from "@/hooks/use-store"
+import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
 import { useEffect } from "react"
 
 export function StoreSelect({
@@ -22,7 +23,7 @@ export function StoreSelect({
   const stores = data?.metadata || []
 
   const dataOptions = [
-    { label: "Công ty (Tổng)", value: "company-root" },
+    { label: "Công ty (Tổng)", value: VALUE_COMPANY_ROOT },
     ...stores.map((s) => ({ label: s.name, value: s.id })),
   ]
 

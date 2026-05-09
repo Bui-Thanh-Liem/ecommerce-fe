@@ -38,6 +38,7 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useFindAllStaffs } from "@/hooks/use-staff"
 import { useCreateTeam } from "@/hooks/use-team"
+import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
 import { CreateTeamDto, CreateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { Plus } from "lucide-react"
@@ -67,20 +68,20 @@ export function TeamAdd({
       members: [],
       isActive: true,
       leader: undefined,
-      store: storeId === "company-root" ? undefined : storeId,
+      store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
     },
   })
 
   //
   const createApi = useCreateTeam()
   const { data: staffData } = useFindAllStaffs()
-  const staffs = staffData?.metadata || []
+  const staffs = staffData?.metadata?.data || []
 
   //
   const onSubmit = async (values: CreateTeamDto) => {
     await createApi.mutateAsync({
       ...values,
-      store: storeId || undefined,
+      store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
     })
     form.reset()
     onOpenChange(false)

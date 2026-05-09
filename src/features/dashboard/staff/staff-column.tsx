@@ -18,6 +18,7 @@ import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
 import { useUpdateStaff } from "@/hooks/use-staff"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
 
 //
 const StatusCell = ({ row }: { row: any }) => {
@@ -39,38 +40,7 @@ const StatusCell = ({ row }: { row: any }) => {
   )
 }
 
-export const columns: ColumnDef<IStaff>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+export const staffColumns: ColumnDef<IStaff>[] = [
   {
     accessorKey: "avatarUrl",
     header: "Avatar",
@@ -189,6 +159,33 @@ function TableCellViewer({ item }: { item: IStaff }) {
                 <InfoRow label="Email" value={item.email} />
                 <InfoRow label="Phone" value={formatPhone(item.phone)} />
                 <InfoRow label="Work Location ID" value={item.workLocationID} />
+                {item.isStoreAdmin && (
+                  <InfoRow
+                    label="Store admin"
+                    value={item.isStoreAdmin ? "Yes" : "No"}
+                    className={
+                      item.isStoreAdmin ? "text-green-500" : "text-red-500"
+                    }
+                  />
+                )}
+                {item.isSubAdmin && (
+                  <InfoRow
+                    label="Sub Admin"
+                    value={item.isSubAdmin ? "Yes" : "No"}
+                    className={
+                      item.isSubAdmin ? "text-green-500" : "text-red-500"
+                    }
+                  />
+                )}
+                {item.isSuperAdmin && (
+                  <InfoRow
+                    label="Super Admin"
+                    value={item.isSuperAdmin ? "Yes" : "No"}
+                    className={
+                      item.isSuperAdmin ? "text-green-500" : "text-red-500"
+                    }
+                  />
+                )}
               </div>
             </div>
 
@@ -232,16 +229,6 @@ function TableCellViewer({ item }: { item: IStaff }) {
               </div>
             )}
           </div>
-
-          {/* Note */}
-          {!isMobile && (
-            <div className="border-border rounded-lg border bg-amber-50 p-4 text-sm">
-              <p className="text-foreground font-medium">Note:</p>
-              <p className="text-muted-foreground mt-1">
-                This is a read-only view of the staff details. To edit, please
-              </p>
-            </div>
-          )}
         </div>
 
         <DrawerFooter>
@@ -262,13 +249,13 @@ function InfoRow({
   className = "",
 }: {
   label: string
-  value: string | undefined
   className?: string
+  value: string | undefined
 }) {
   return (
     <div className="flex items-center justify-between py-1">
       <span className="text-muted-foreground">{label}</span>
-      <span className={`text-right font-medium ${className}`}>
+      <span className={cn("text-right font-medium", className)}>
         {value || "—"}
       </span>
     </div>

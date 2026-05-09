@@ -75,6 +75,8 @@ import {
 } from "lucide-react"
 import * as React from "react"
 import { Badge } from "./ui/badge"
+import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
+import { Checkbox } from "./ui/checkbox"
 
 // Create a separate component for the drag handle
 export function DragHandle({ id }: { id: string }) {
@@ -129,9 +131,9 @@ export function DataTable<T extends IBase>({
   tabHeader,
   tabContent,
   onDeleteRow,
-  data: initialData,
+  dataSource,
 }: {
-  data: T[]
+  dataSource: ResMetadataDto<T>
   tabHeader?: string
   columns: ColumnDef<T>[]
   tabContent?: React.ReactNode
@@ -139,7 +141,9 @@ export function DataTable<T extends IBase>({
   onEditRow?: (row: Row<T>) => void
   onDeleteRow?: (row: Row<T>) => void
 }) {
-  const [data, setData] = React.useState(() => initialData)
+  const { data: tableData, totalData, page, totalPage } = dataSource
+
+  const [data, setData] = React.useState(() => tableData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -159,12 +163,45 @@ export function DataTable<T extends IBase>({
   )
 
   React.useEffect(() => {
-    setData(initialData)
-  }, [initialData])
+    setData(tableData)
+  }, [tableData])
 
   const table = useReactTable({
     data,
     columns: [
+      {
+        id: "drag",
+        header: () => null,
+        cell: ({ row }) => <DragHandle id={row.original.id} />,
+      },
+      {
+        id: "select",
+        header: ({ table }) => (
+          <div className="flex items-center justify-center">
+            <Checkbox
+              checked={
+                table.getIsAllPageRowsSelected() ||
+                (table.getIsSomePageRowsSelected() && "indeterminate")
+              }
+              onCheckedChange={(value) =>
+                table.toggleAllPageRowsSelected(!!value)
+              }
+              aria-label="Select all"
+            />
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="flex items-center justify-center">
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </div>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
       ...columns,
       {
         id: "actions",
@@ -255,18 +292,20 @@ export function DataTable<T extends IBase>({
         </Label>
         <Select defaultValue="outline">
           <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
             size="sm"
             id="view-selector"
+            className="flex w-fit @4xl/main:hidden"
           >
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectItem value="table">
-                Table <Badge variant="secondary">3</Badge>
+                Table <Badge variant="secondary">{totalData}</Badge>
               </SelectItem>
-              <SelectItem value="past-performance">Past Performance</SelectItem>
+              <SelectItem value={tabHeader?.toLowerCase() || ""}>
+                {tabHeader} <Badge variant="secondary">{totalData}</Badge>
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -274,11 +313,11 @@ export function DataTable<T extends IBase>({
         {/* Desktop */}
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           <TabsTrigger value="table">
-            Table <Badge variant="secondary">3</Badge>
+            Table <Badge variant="secondary">{totalData}</Badge>
           </TabsTrigger>
           {tabHeader && (
             <TabsTrigger value={tabHeader?.toLowerCase()}>
-              {tabHeader}
+              {tabHeader} <Badge variant="secondary">{totalData}</Badge>
             </TabsTrigger>
           )}
         </TabsList>
@@ -326,7 +365,7 @@ export function DataTable<T extends IBase>({
         value="table"
         className="relative flex flex-col gap-4 overflow-auto"
       >
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-2xl border">
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
@@ -377,6 +416,8 @@ export function DataTable<T extends IBase>({
             </Table>
           </DndContext>
         </div>
+
+        {/* Pagination */}
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -459,10 +500,7 @@ export function DataTable<T extends IBase>({
       </TabsContent>
 
       {tabContent && (
-        <TabsContent
-          value={tabHeader?.toLowerCase() ?? ""}
-          className="flex flex-col px-4 lg:px-6"
-        >
+        <TabsContent value={tabHeader?.toLowerCase() ?? ""}>
           {tabContent}
         </TabsContent>
       )}

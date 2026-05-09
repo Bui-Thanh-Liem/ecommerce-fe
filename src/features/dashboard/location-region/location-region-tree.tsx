@@ -334,7 +334,11 @@ export function LocationRegionTree({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Name</FieldLabel>
-                    <Input {...field} placeholder="Enter name..." />
+                    <Input
+                      {...field}
+                      placeholder="Enter name..."
+                      autoComplete="name"
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

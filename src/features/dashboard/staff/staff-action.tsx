@@ -33,7 +33,9 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectItemStaff,
   SelectTrigger,
+  SelectTriggerStaff,
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
@@ -44,6 +46,7 @@ import {
   useUpdateStaff,
 } from "@/hooks/use-staff"
 import { useFindAllStores } from "@/hooks/use-store"
+import { MAX_ROLES_IN_STAFF } from "@/shared/constants/staff.constant"
 import {
   CreateStaffSchema,
   UpdateStaffSchema,
@@ -62,7 +65,8 @@ const initFormValue: z.infer<typeof CreateStaffSchema> = {
   fullName: "",
   password: "",
   isActive: true,
-  store: "",
+  isSubAdmin: false,
+  store: undefined,
   workLocationID: "",
   confirmPassword: "",
   directManager: "",
@@ -73,11 +77,13 @@ export function StaffAction({
   open,
   onClose,
   dataEdit,
+  initialData,
   onOpenChange: setOpen,
 }: {
   open?: boolean
   onClose?: () => void
   dataEdit: IStaff | null
+  initialData?: IStaff | null
   onOpenChange?: (open: boolean) => void
 }) {
   const anchor = useComboboxAnchor()
@@ -89,7 +95,7 @@ export function StaffAction({
   const { data: rolesData } = useFindAllRoles()
   const roles = rolesData?.metadata || []
   const { data: directManagersData } = useFindAllStaffs()
-  const directManagers = directManagersData?.metadata || []
+  const directManagers = directManagersData?.metadata?.data || []
 
   //
   const formSchema = !!dataEdit ? UpdateStaffSchema : CreateStaffSchema
@@ -109,6 +115,7 @@ export function StaffAction({
         store: dataEdit.store?.id || "",
         fullName: dataEdit.fullName || "",
         isActive: dataEdit.isActive ?? true,
+        isSubAdmin: dataEdit.isSubAdmin ?? false,
         avatarUrl: dataEdit.avatarUrl || "",
         roles: dataEdit.roles.map((r) => r.id) || [],
         workLocationID: dataEdit.workLocationID || "",
@@ -118,6 +125,16 @@ export function StaffAction({
       form.reset(initFormValue)
     }
   }, [dataEdit])
+
+  //
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        ...initFormValue,
+        directManager: initialData.directManager?.id || "",
+      })
+    }
+  }, [initialData])
 
   //
   const handleOpenChange = (open: boolean) => {
@@ -157,7 +174,7 @@ export function StaffAction({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{!!dataEdit ? "Edit" : "Add"} Item</DialogTitle>
           <DialogDescription>
@@ -170,28 +187,27 @@ export function StaffAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
         >
-          <FieldGroup className="flex items-center justify-center">
+          <FieldGroup className="mb-12 flex items-center justify-center">
             <AvatarUpload form={form} name="avatarUrl" />
           </FieldGroup>
 
-          <div className="grid grid-cols-4 gap-x-6">
-            <FieldGroup className="col-span-3">
+          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
+            <FieldGroup>
               <Controller
-                name="fullName"
+                name="isActive"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-fullName">
-                      Full Name
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Full Name"
-                      autoComplete="fullName"
-                      id="form-rhf-input-fullName"
-                    />
+                    <div className="flex items-center justify-between">
+                      <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
+                      <Switch
+                        id="form-isActive"
+                        checked={field.value} // RHF lưu giá trị boolean
+                        onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
+                        aria-invalid={fieldState.invalid}
+                      />
+                    </div>
+
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -200,19 +216,23 @@ export function StaffAction({
               />
             </FieldGroup>
 
-            <FieldGroup className="col-span-1">
+            <FieldGroup>
               <Controller
-                name="isActive"
+                name="isSubAdmin"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
-                    <Switch
-                      id="form-isActive"
-                      checked={field.value} // RHF lưu giá trị boolean
-                      onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
-                      aria-invalid={fieldState.invalid}
-                    />
+                    <div className="flex items-center justify-between">
+                      <FieldLabel htmlFor="form-isSubAdmin">
+                        Sub Admin
+                      </FieldLabel>
+                      <Switch
+                        id="form-isSubAdmin"
+                        checked={field.value} // RHF lưu giá trị boolean
+                        onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
+                        aria-invalid={fieldState.invalid}
+                      />
+                    </div>
 
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -223,7 +243,32 @@ export function StaffAction({
             </FieldGroup>
           </div>
 
-          <div className="flex justify-between gap-x-6">
+          <FieldGroup>
+            <Controller
+              name="fullName"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-fullName">
+                    Full Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    type="text"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Full Name"
+                    autoComplete="name"
+                    id="form-rhf-input-fullName"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
             <FieldGroup>
               <Controller
                 name="phone"
@@ -275,7 +320,7 @@ export function StaffAction({
             </FieldGroup>
           </div>
 
-          <div className="flex justify-between gap-x-6">
+          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
             <FieldGroup>
               <Controller
                 name="store"
@@ -291,7 +336,6 @@ export function StaffAction({
                       >
                         <SelectTrigger
                           className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          size="sm"
                           id="form-store"
                         >
                           <SelectValue placeholder="Select a store" />
@@ -333,7 +377,6 @@ export function StaffAction({
                       >
                         <SelectTrigger
                           className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          size="sm"
                           id="form-workLocationID"
                         >
                           <SelectValue placeholder="Select a work location" />
@@ -364,108 +407,119 @@ export function StaffAction({
             </FieldGroup>
           </div>
 
-          <FieldGroup>
-            <Controller
-              name="directManager"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-directManager">
-                      Direct Manager
-                    </FieldLabel>
+          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
+            <FieldGroup>
+              <Controller
+                name="directManager"
+                control={form.control}
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-directManager">
+                        Direct Manager
+                      </FieldLabel>
 
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-directManager"
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
                       >
-                        <SelectValue placeholder="Select a direct manager" />
-                      </SelectTrigger>
-                      <SelectContent align="end">
-                        <SelectGroup>
-                          {directManagers.map((manager) => (
-                            <SelectItem key={manager.id} value={manager.id}>
-                              {manager.fullName}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                        <SelectTriggerStaff
+                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                          id="form-directManager"
+                        >
+                          <SelectValue placeholder="Select a direct manager" />
+                        </SelectTriggerStaff>
+                        <SelectContent align="end">
+                          <SelectGroup>
+                            {directManagers.map((manager) => (
+                              <SelectItemStaff
+                                key={manager.id}
+                                value={manager.id}
+                                avatarUrl={manager.avatarUrl}
+                                fullName={manager.fullName}
+                              />
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )
+                }}
+              />
+            </FieldGroup>
+
+            <FieldGroup>
+              <Controller
+                name="roles"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-roles">Roles</FieldLabel>
+
+                    <Combobox
+                      multiple
+                      autoHighlight
+                      items={roles}
+                      id="form-roles"
+                      value={field.value || []}
+                      onValueChange={(values) => {
+                        if (values.length <= MAX_ROLES_IN_STAFF) {
+                          field.onChange(values)
+                        }
+                      }}
+                    >
+                      <ComboboxChips ref={anchor} className="w-full">
+                        <ComboboxValue>
+                          {(values: string[]) => (
+                            <>
+                              {values.map((value) => {
+                                const roleName = roles.find(
+                                  (r) => r.id === value
+                                )?.name
+                                return (
+                                  <ComboboxChip key={value}>
+                                    {roleName || value}
+                                  </ComboboxChip>
+                                )
+                              })}
+                              <ComboboxChipsInput placeholder="Select roles..." />
+                            </>
+                          )}
+                        </ComboboxValue>
+                      </ComboboxChips>
+
+                      <ComboboxContent
+                        anchor={anchor}
+                        className="pointer-events-auto"
+                      >
+                        <ComboboxEmpty>No roles found.</ComboboxEmpty>
+                        <ComboboxList>
+                          {(
+                            role // ← dùng render prop
+                          ) => (
+                            <ComboboxItem key={role.id} value={role.id}>
+                              {role.name}
+                            </ComboboxItem>
+                          )}
+                        </ComboboxList>
+                      </ComboboxContent>
+                    </Combobox>
 
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Controller
-              name="roles"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-roles">Roles</FieldLabel>
-
-                  <Combobox
-                    multiple
-                    autoHighlight
-                    items={roles}
-                    id="form-roles"
-                    value={field.value || []}
-                    onValueChange={field.onChange}
-                  >
-                    <ComboboxChips ref={anchor} className="w-full">
-                      <ComboboxValue>
-                        {(values: string[]) => (
-                          <>
-                            {values.map((value) => {
-                              const roleName = roles.find(
-                                (r) => r.id === value
-                              )?.name
-                              return (
-                                <ComboboxChip key={value}>
-                                  {roleName || value}
-                                </ComboboxChip>
-                              )
-                            })}
-                            <ComboboxChipsInput placeholder="Select roles..." />
-                          </>
-                        )}
-                      </ComboboxValue>
-                    </ComboboxChips>
-
-                    <ComboboxContent
-                      anchor={anchor}
-                      className="pointer-events-auto"
-                    >
-                      <ComboboxEmpty>No roles found.</ComboboxEmpty>
-                      <ComboboxList>
-                        {(
-                          role // ← dùng render prop
-                        ) => (
-                          <ComboboxItem key={role.id} value={role.id}>
-                            {role.name}
-                          </ComboboxItem>
-                        )}
-                      </ComboboxList>
-                    </ComboboxContent>
-                  </Combobox>
-
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
+                )}
+              />
+            </FieldGroup>
+          </div>
 
           {!Boolean(dataEdit) && (
-            <>
+            <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
               <FieldGroup>
                 <Controller
                   name="password"
@@ -515,7 +569,7 @@ export function StaffAction({
                   )}
                 />
               </FieldGroup>
-            </>
+            </div>
           )}
           <DialogFooter>
             <DialogClose asChild>

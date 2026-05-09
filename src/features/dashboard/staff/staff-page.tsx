@@ -2,18 +2,20 @@
 
 import { DataTable } from "@/components/data-table"
 import { useDeleteStaff, useFindAllStaffs } from "@/hooks/use-staff"
-import { columns } from "./staff.column"
+import { staffColumns } from "./staff-column"
 import { StaffAction } from "./staff-action"
 import { useState } from "react"
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { StaffHierarchy } from "./staff-hierarchy"
 
 export function StaffPage() {
   const { mutateAsync } = useDeleteStaff()
   const { data } = useFindAllStaffs()
-  const staffs = data?.metadata || []
+  const meteDataStaffs = data?.metadata
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)
+  const [initialData, setInitialData] = useState<IStaff | null>(null)
   const [dataEdit, setDataEdit] = useState<IStaff | null>(null)
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
@@ -33,11 +35,13 @@ export function StaffPage() {
     }
   }
 
+  if (!meteDataStaffs) return null
+
   return (
     <>
       <DataTable
-        data={staffs}
-        columns={columns}
+        dataSource={meteDataStaffs}
+        columns={staffColumns}
         //
         onAddRow={() => setOpen(true)}
         onEditRow={(row) => {
@@ -48,11 +52,29 @@ export function StaffPage() {
           handleDeleteRow(row.original)
         }}
         //
-        tabHeader="Sơ đồ"
-        tabContent={<div>Sơ đồ nhân viên</div>}
+        tabHeader="Hierarchy"
+        tabContent={
+          <StaffHierarchy
+            dataSource={meteDataStaffs}
+            onCreate={(staff) => {
+              setOpen(true)
+              setInitialData(staff)
+            }}
+            onEdit={(staff) => {
+              setOpen(true)
+              setDataEdit(staff)
+            }}
+            onDelete={(staff) => handleDeleteRow(staff)}
+          />
+        }
       />
 
-      <StaffAction open={open} dataEdit={dataEdit} onClose={handleClose} />
+      <StaffAction
+        open={open}
+        dataEdit={dataEdit}
+        onClose={handleClose}
+        initialData={initialData}
+      />
     </>
   )
 }

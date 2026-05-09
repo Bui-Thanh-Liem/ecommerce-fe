@@ -1,11 +1,11 @@
-import { IStaff } from "@/shared/interfaces/models/staff.interface";
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
 
 interface State {
-  staff: IStaff| null;
-  setStaff: (staff: IStaff) => void;
-  clearStaff: () => void;
+  staff: IStaff | null
+  setStaff: (staff: IStaff) => void
+  clearStaff: () => void
 }
 
 export const useStaffStore = create<State>()(
@@ -18,6 +18,6 @@ export const useStaffStore = create<State>()(
     {
       name: "staff_storage",
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
-);
+    }
+  )
+)

@@ -1,4 +1,5 @@
 import { CreateStaffDto, UpdateStaffDto } from "@/shared/dtos/req/staff.dto"
+import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
@@ -14,11 +15,11 @@ export const staffServices = {
   },
 
   findAll: async () => {
-    const res = await apiCall<IStaff[]>("/staffs", {
+    const res = await apiCall<ResMetadataDto<IStaff>>("/staffs", {
       method: "GET",
     })
 
-    return handleResponse<IStaff[]>(res)
+    return handleResponse<ResMetadataDto<IStaff>>(res)
   },
 
   update: async (id: string, payload: UpdateStaffDto) => {

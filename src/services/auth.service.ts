@@ -12,4 +12,12 @@ export const authServices = {
 
     return handleResponse<ResSignInDto>(res)
   },
+
+  whoami: async () => {
+    const res = await apiCall("/auth/whoami", {
+      method: "GET",
+    })
+
+    return handleResponse(res)
+  },
 }

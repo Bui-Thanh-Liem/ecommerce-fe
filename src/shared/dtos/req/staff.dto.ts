@@ -1,4 +1,5 @@
-import { REGEX_PASSWORD, REGEX_PHONE } from "@/shared/constants/regex.contstant"
+import { REGEX_PASSWORD, REGEX_PHONE } from "@/shared/constants/regex.constant"
+import { MAX_ROLES_IN_STAFF } from "@/shared/constants/staff.constant"
 import z from "zod"
 
 export const StaffBaseSchema = z.object({
@@ -35,11 +36,19 @@ export const StaffBaseSchema = z.object({
 
   directManager: z.uuidv4("Direct manager must be a valid UUID."),
 
-  roles: z.array(z.uuidv4()),
+  roles: z
+    .array(z.uuidv4())
+    .max(
+      MAX_ROLES_IN_STAFF,
+      `You can select at most ${MAX_ROLES_IN_STAFF} roles.`
+    )
+    .optional(),
 
   store: z.uuidv4().optional(),
 
   isActive: z.boolean().optional(),
+
+  isSubAdmin: z.boolean().optional(),
 })
 
 export const CreateStaffSchema = StaffBaseSchema.refine(

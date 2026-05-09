@@ -19,50 +19,14 @@ import {
   Building2,
   Layers,
   ShieldCheck,
-  User,
   Users,
   UserPlus,
 } from "lucide-react"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { TeamAdd } from "./team-add"
-// Giả sử bạn có component này để quản lý thành viên
-// import { MemberAdd } from "./member-add"
-
-// --- UTILS: Tự động sắp xếp vị trí node ---
-const nodeWidth = 240
-const nodeHeight = 80
-
-const getLayoutedElements = (nodes: any[], edges: any[]) => {
-  const dagreGraph = new dagre.graphlib.Graph()
-  dagreGraph.setDefaultEdgeLabel(() => ({}))
-  dagreGraph.setGraph({ rankdir: "TB", nodesep: 100, ranksep: 120 })
-
-  nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
-  })
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target)
-  })
-
-  dagre.layout(dagreGraph)
-
-  return {
-    nodes: nodes.map((node) => {
-      const nodeWithPosition = dagreGraph.node(node.id)
-      return {
-        ...node,
-        position: {
-          x: nodeWithPosition.x - nodeWidth / 2,
-          y: nodeWithPosition.y - nodeHeight / 2,
-        },
-      }
-    }),
-    edges,
-  }
-}
+import { getLayoutElements } from "@/utils/diagram.util"
 
 // --- CUSTOM NODES ---
-
 const RootNode = ({ data }: NodeProps) => (
   <div className="min-w-[260px] rounded-2xl border-2 border-blue-600 bg-blue-600 p-4 shadow-xl">
     <div className="flex items-center gap-3 text-white">
@@ -276,7 +240,7 @@ export function TeamTree({
       }
     })
 
-    return getLayoutedElements(rawNodes, rawEdges)
+    return getLayoutElements(rawNodes, rawEdges)
   }, [treeData, rootName, storeId])
 
   const onNodeContextMenu = useCallback(
