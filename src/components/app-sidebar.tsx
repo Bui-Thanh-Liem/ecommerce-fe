@@ -68,6 +68,11 @@ const data = {
       icon: <UsersIcon />,
     },
     {
+      title: "Team Categories",
+      url: "team-categories",
+      icon: <UsersIcon />,
+    },
+    {
       title: "Locations & Regions",
       url: "location-regions",
       icon: <MapPinned />,

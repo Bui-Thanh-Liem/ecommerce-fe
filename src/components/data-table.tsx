@@ -77,6 +77,7 @@ import * as React from "react"
 import { Badge } from "./ui/badge"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { Checkbox } from "./ui/checkbox"
+import { cn } from "@/lib/utils"
 
 // Create a separate component for the drag handle
 export function DragHandle({ id }: { id: string }) {
@@ -99,7 +100,13 @@ export function DragHandle({ id }: { id: string }) {
 }
 
 // Create a separate component for the table row to handle dragging
-function DraggableRow<T extends IBase>({ row }: { row: Row<T> }) {
+function DraggableRow<T extends IBase>({
+  row,
+  className,
+}: {
+  row: Row<T>
+  className?: string
+}) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   })
@@ -109,7 +116,10 @@ function DraggableRow<T extends IBase>({ row }: { row: Row<T> }) {
       data-state={row.getIsSelected() && "selected"}
       data-dragging={isDragging}
       ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      className={cn(
+        "relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80",
+        className
+      )}
       style={{
         transform: CSS.Transform.toString(transform),
         transition: transition,
@@ -125,21 +135,25 @@ function DraggableRow<T extends IBase>({ row }: { row: Row<T> }) {
 }
 
 export function DataTable<T extends IBase>({
+  filters,
   columns,
-  onEditRow,
   onAddRow,
+  onEditRow,
   tabHeader,
   tabContent,
-  onDeleteRow,
   dataSource,
+  onDeleteRow,
+  getRowClassName,
 }: {
-  dataSource: ResMetadataDto<T>
   tabHeader?: string
-  columns: ColumnDef<T>[]
-  tabContent?: React.ReactNode
   onAddRow?: () => void
+  columns: ColumnDef<T>[]
+  filters?: React.ReactNode
+  tabContent?: React.ReactNode
+  dataSource: ResMetadataDto<T>
   onEditRow?: (row: Row<T>) => void
   onDeleteRow?: (row: Row<T>) => void
+  getRowClassName?: (row: T) => string
 }) {
   const { data: tableData, totalData, page, totalPage } = dataSource
 
@@ -287,10 +301,7 @@ export function DataTable<T extends IBase>({
     <Tabs defaultValue="table" className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between">
         {/* Mobile */}
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-        <Select defaultValue="outline">
+        <Select defaultValue="table">
           <SelectTrigger
             size="sm"
             id="view-selector"
@@ -321,7 +332,10 @@ export function DataTable<T extends IBase>({
             </TabsTrigger>
           )}
         </TabsList>
+
+        {/* Action Buttons & Filters */}
         <div className="flex items-center gap-2">
+          {filters}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -399,7 +413,11 @@ export function DataTable<T extends IBase>({
                     strategy={verticalListSortingStrategy}
                   >
                     {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
+                      <DraggableRow
+                        key={row.id}
+                        row={row}
+                        className={getRowClassName?.(row.original)}
+                      />
                     ))}
                   </SortableContext>
                 ) : (

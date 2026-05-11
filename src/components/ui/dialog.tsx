@@ -150,6 +150,40 @@ function DialogDescription({
   )
 }
 
+function DialogHeaderAction({
+  desc,
+  title,
+}: {
+  title: React.ReactNode
+  desc: React.ReactNode
+}) {
+  return (
+    <DialogHeader>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogDescription>{desc}</DialogDescription>
+    </DialogHeader>
+  )
+}
+
+function DialogFooterAction({
+  onClose,
+  isPending,
+}: {
+  onClose?: () => void
+  isPending?: boolean
+}) {
+  return (
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+      </DialogClose>
+      <Button type="submit">{isPending ? "Saving..." : "Save changes"}</Button>
+    </DialogFooter>
+  )
+}
+
 export {
   Dialog,
   DialogClose,
@@ -161,4 +195,6 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogHeaderAction,
+  DialogFooterAction,
 }

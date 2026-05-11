@@ -67,6 +67,12 @@ export function StaffPage() {
             onDelete={(staff) => handleDeleteRow(staff)}
           />
         }
+        getRowClassName={(item) => {
+          if (item.isSuperAdmin) return "bg-orange-100 hover:bg-orange-50"
+          if (item.isSubAdmin) return "bg-yellow-100 hover:bg-yellow-50"
+          if (item.isStoreAdmin) return "bg-emerald-100 hover:bg-emerald-50"
+          return ""
+        }}
       />
 
       <StaffAction

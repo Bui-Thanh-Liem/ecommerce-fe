@@ -1,4 +1,4 @@
-import { type ColumnDef } from "@tanstack/react-table"
+import { Row, type ColumnDef } from "@tanstack/react-table"
 import { Active } from "@/components/active"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,7 +13,7 @@ import {
 import { useUpdateTeam } from "@/hooks/use-team"
 
 //
-const StatusCell = ({ row }: { row: any }) => {
+const StatusCell = ({ row }: { row: Row<ITeam> }) => {
   const { mutate } = useUpdateTeam()
 
   function toggleActiveStatus() {

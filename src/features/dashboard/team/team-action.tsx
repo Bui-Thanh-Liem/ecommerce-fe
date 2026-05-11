@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Combobox,
   ComboboxChip,
@@ -14,10 +13,8 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  DialogFooterAction,
+  DialogHeaderAction,
 } from "@/components/ui/dialog"
 import {
   Field,
@@ -38,23 +35,37 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useFindAllStaffs } from "@/hooks/use-staff"
 import { useCreateTeam } from "@/hooks/use-team"
+import { useFindAllTeamCategories } from "@/hooks/use-team-category"
 import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
 import { CreateTeamDto, CreateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { Plus } from "lucide-react"
-import React from "react"
+import React, { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 
-export function TeamAdd({
+const initFormValue: z.infer<typeof CreateTeamSchema> = {
+  name: "",
+  desc: "",
+  leader: "",
+  category: "",
+  members: [],
+  isActive: true,
+  store: undefined,
+}
+
+export function TeamAction({
   open,
-  storeId,
+  onClose,
+  dataEdit,
+  initialData,
   onOpenChange,
   selectedParent,
 }: {
   open: boolean
-  storeId: string
-  onOpenChange: (open: boolean) => void
+  onClose?: () => void
+  dataEdit: ITeam | null
+  initialData: ITeam | null
+  onOpenChange?: (open: boolean) => void
   selectedParent: Pick<ITeam, "id" | "name"> | null
 }) {
   //
@@ -62,14 +73,7 @@ export function TeamAdd({
 
   //
   const form = useForm<z.infer<typeof CreateTeamSchema>>({
-    defaultValues: {
-      name: "",
-      desc: "",
-      members: [],
-      isActive: true,
-      leader: undefined,
-      store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
-    },
+    defaultValues: initFormValue,
   })
 
   //
@@ -78,27 +82,72 @@ export function TeamAdd({
   const staffs = staffData?.metadata?.data || []
 
   //
+  const { data: teamCategoriesData } = useFindAllTeamCategories({
+    page: 1,
+    limit: 100,
+    filters: {},
+  })
+  const teamCategories = teamCategoriesData?.metadata?.data || []
+
+  //
+  useEffect(() => {
+    if (dataEdit) {
+      form.reset({
+        name: dataEdit.name || "",
+        desc: dataEdit.desc || "",
+        store: dataEdit.store.id || "",
+        leader: dataEdit.leader.id || "",
+        category: dataEdit.category.id || "",
+        isActive: dataEdit.isActive ?? true,
+        members: dataEdit.members.map((m) => m.id) || [],
+      })
+    } else {
+      form.reset(initFormValue)
+    }
+  }, [dataEdit])
+
+  //
+  useEffect(() => {
+    if (initialData) {
+      const storeId = initialData.store.id || VALUE_COMPANY_ROOT
+
+      form.reset({
+        ...initFormValue,
+        store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
+      })
+    }
+  }, [initialData])
+
+  //
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange?.(open)
+    if (!open) {
+      onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+    }
+  }
+
+  //
   const onSubmit = async (values: CreateTeamDto) => {
     await createApi.mutateAsync({
       ...values,
-      store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
     })
     form.reset()
-    onOpenChange(false)
+    onClose?.()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Plus className="text-blue-500" size={20} />
-            Thêm nhóm vào [{selectedParent?.name}]
-          </DialogTitle>
-          <DialogDescription>
-            Vui lòng nhập tên cho bộ phận mới của bạn.
-          </DialogDescription>
-        </DialogHeader>
+        <DialogHeaderAction
+          title={
+            !!dataEdit
+              ? "Edit Team"
+              : "Add New Team" +
+                (selectedParent ? ` in [${selectedParent.name}]` : "")
+          }
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new team.`}
+        />
+
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
           <FieldGroup>
             <Controller
@@ -211,6 +260,43 @@ export function TeamAdd({
 
           <FieldGroup>
             <Controller
+              name="category"
+              control={form.control}
+              render={({ field, fieldState }) => {
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-category">Category</FieldLabel>
+
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                        size="sm"
+                        id="form-category"
+                      >
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent align="end" className="z-3000">
+                        <SelectGroup>
+                          {teamCategories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
               name="members" // Tên field trong Zod schema (nên là z.array(z.string()))
               control={form.control}
               render={({ field, fieldState }) => {
@@ -275,22 +361,10 @@ export function TeamAdd({
             />
           </FieldGroup>
 
-          <DialogFooter>
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={() => onOpenChange(false)}
-            >
-              Hủy
-            </Button>
-            <Button
-              type="submit"
-              disabled={createApi.isPending}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              {createApi.isPending ? "Đang lưu..." : "Xác nhận tạo"}
-            </Button>
-          </DialogFooter>
+          <DialogFooterAction
+            onClose={onClose}
+            isPending={createApi.isPending}
+          />
         </form>
       </DialogContent>
     </Dialog>

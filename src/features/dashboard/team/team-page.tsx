@@ -2,14 +2,20 @@
 
 import { useState } from "react"
 import { useDeleteTeam, useFindAllTeams } from "@/hooks/use-team"
-import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
+import {
+  LABEL_COMPANY_ROOT,
+  VALUE_COMPANY_ROOT,
+} from "@/shared/constants/team.constant"
 import { DataTable } from "@/components/data-table"
 import { teamColumns } from "./team-column"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { TeamTree } from "./team-tree"
+import { TeamAction } from "./team-action"
+import { StoreSelect } from "./filters/store-select"
 
 export function TeamPage() {
   const [selectedStore, setSelectedStore] = useState(VALUE_COMPANY_ROOT)
-  const [storeLabel, setStoreLabel] = useState("Tổng công ty")
+  const [storeLabel, setStoreLabel] = useState(LABEL_COMPANY_ROOT)
 
   const { mutateAsync } = useDeleteTeam()
   const { data, isLoading } = useFindAllTeams({
@@ -48,6 +54,7 @@ export function TeamPage() {
       <DataTable
         dataSource={metaDataTeams}
         columns={teamColumns}
+        filters={<StoreSelect />}
         //
         onAddRow={() => setOpen(true)}
         onEditRow={(row) => {
@@ -59,40 +66,21 @@ export function TeamPage() {
         }}
         //
         tabHeader="Hierarchy"
-        tabContent={<div></div>}
+        tabContent={
+          <TeamTree
+            treeData={metaDataTeams.data}
+            rootName={storeLabel}
+            storeId={selectedStore}
+          />
+        }
+      />
+
+      <TeamAction
+        open={open}
+        dataEdit={dataEdit}
+        onClose={handleClose}
+        initialData={initialData}
       />
     </>
   )
-
-  // return (
-  //   <div className="space-y-6">
-  //     <div className="flex items-center justify-between">
-  //       <div>
-  //         <h1 className="text-2xl font-bold tracking-tight">Sơ đồ tổ chức</h1>
-  //         <p className="text-muted-foreground text-sm">
-  //           Quản lý cấu trúc nhân sự và đội ngũ
-  //         </p>
-  //       </div>
-  //       <div className="w-75">
-  //         <StoreSelect
-  //           value={selectedStore}
-  //           onValueChange={setSelectedStore}
-  //           onLabelChange={setStoreLabel}
-  //         />
-  //       </div>
-  //     </div>
-
-  //     {isLoading ? (
-  //       <div className="flex h-100 items-center justify-center">
-  //         Đang tải dữ liệu...
-  //       </div>
-  //     ) : (
-  //       <TeamTree
-  //         treeData={teams}
-  //         rootName={storeLabel}
-  //         storeId={selectedStore}
-  //       />
-  //     )}
-  //   </div>
-  // )
 }

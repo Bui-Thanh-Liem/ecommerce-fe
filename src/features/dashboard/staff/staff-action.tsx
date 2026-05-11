@@ -1,5 +1,4 @@
 import { AvatarUpload } from "@/components/avatar-upload"
-import { Button } from "@/components/ui/button"
 import {
   Combobox,
   ComboboxChip,
@@ -14,12 +13,9 @@ import {
 } from "@/components/ui/combobox"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  DialogFooterAction,
+  DialogHeaderAction,
 } from "@/components/ui/dialog"
 import {
   Field,
@@ -87,8 +83,8 @@ export function StaffAction({
   onOpenChange?: (open: boolean) => void
 }) {
   const anchor = useComboboxAnchor()
-  const createStaffApi = useCreateStaff()
-  const updateStaffApi = useUpdateStaff()
+  const createApi = useCreateStaff()
+  const updateApi = useUpdateStaff()
 
   const { data: storesData } = useFindAllStores()
   const stores = storesData?.metadata || []
@@ -153,12 +149,12 @@ export function StaffAction({
       let res = null
       if (dataEdit) {
         delete data.password
-        res = await updateStaffApi.mutateAsync({
+        res = await updateApi.mutateAsync({
           id: dataEdit.id,
           payload: data,
         })
       } else {
-        res = await createStaffApi.mutateAsync(
+        res = await createApi.mutateAsync(
           data as z.infer<typeof CreateStaffSchema>
         )
       }
@@ -175,13 +171,10 @@ export function StaffAction({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{!!dataEdit ? "Edit" : "Add"} Item</DialogTitle>
-          <DialogDescription>
-            Fill in the details to {!!dataEdit ? "update" : "create"} a new
-            item.
-          </DialogDescription>
-        </DialogHeader>
+        <DialogHeaderAction
+          title={!!dataEdit ? "Edit Staff" : "Add New Staff"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new staff member.`}
+        />
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -571,16 +564,10 @@ export function StaffAction({
               </FieldGroup>
             </div>
           )}
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">
-              {createStaffApi.isPending ? "Saving..." : "Save changes"}
-            </Button>
-          </DialogFooter>
+          <DialogFooterAction
+            onClose={onClose}
+            isPending={createApi.isPending || updateApi.isPending}
+          />
         </form>
       </DialogContent>
     </Dialog>

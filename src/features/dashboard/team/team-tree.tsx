@@ -23,7 +23,7 @@ import {
   UserPlus,
 } from "lucide-react"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { TeamAdd } from "./team-add"
+import { TeamAction } from "./team-action"
 import { getLayoutElements } from "@/utils/diagram.util"
 
 // --- CUSTOM NODES ---
@@ -291,7 +291,7 @@ export function TeamTree({
         </ReactFlow>
       </div>
 
-      <TeamAdd
+      <TeamAction
         open={isTeamOpen}
         onOpenChange={setIsTeamOpen}
         storeId={storeId}

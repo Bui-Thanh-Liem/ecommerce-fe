@@ -10,6 +10,7 @@ export const CreateTeamSchema = z.object({
     .max(255, "Description must be at most 255 characters.")
     .optional(),
   leader: z.uuidv4(),
+  category: z.uuidv4(),
   members: z.array(z.uuidv4()).nonempty("At least one member is required."),
   store: z.uuidv4().optional(),
   isActive: z.boolean().optional(),
