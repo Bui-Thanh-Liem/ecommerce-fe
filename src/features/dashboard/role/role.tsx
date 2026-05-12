@@ -48,6 +48,7 @@ import { toast } from "sonner"
 import z from "zod"
 import { groupByKeyGroup } from "../permission/permission"
 import { RoleAdd } from "./role-add"
+import { Nothing } from "@/components/no-thing"
 
 function PermissionItem({
   permission,
@@ -401,11 +402,17 @@ export function RolePage() {
   return (
     <div className="space-y-6">
       <RoleAdd />
-      <div className="max-h-[calc(100vh-180px)] overflow-y-auto p-1 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-        {roles.map((role) => (
-          <RoleCard role={role} key={role.id} />
-        ))}
-      </div>
+      {roles.length === 0 ? (
+        <div className="flex min-h-[calc(100vh-300px)] items-center justify-center">
+          <Nothing />
+        </div>
+      ) : (
+        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid max-h-[calc(100vh-180px)] grid-cols-1 gap-4 overflow-y-auto p-1 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+          {roles.map((role) => (
+            <RoleCard role={role} key={role.id} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

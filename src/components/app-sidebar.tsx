@@ -21,15 +21,10 @@ import {
   FileIcon,
   FileTextIcon,
   LayoutDashboardIcon,
-  MapPinned,
   SearchIcon,
   Settings2Icon,
   ShoppingBag,
-  Store,
   Target,
-  User,
-  UserRoundKey,
-  UsersIcon,
 } from "lucide-react"
 import { NavManagement } from "./nav-management"
 
@@ -44,43 +39,6 @@ const data = {
       title: "campaigns",
       url: "campaigns",
       icon: <Target />,
-    },
-  ],
-  navManager: [
-    {
-      title: "Permissions",
-      url: "permissions",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Roles",
-      url: "roles",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Staffs",
-      url: "staffs",
-      icon: <User />,
-    },
-    {
-      title: "Teams",
-      url: "teams",
-      icon: <UsersIcon />,
-    },
-    {
-      title: "Team Categories",
-      url: "team-categories",
-      icon: <UsersIcon />,
-    },
-    {
-      title: "Locations & Regions",
-      url: "location-regions",
-      icon: <MapPinned />,
-    },
-    {
-      title: "Stores",
-      url: "stores",
-      icon: <Store />,
     },
   ],
   navClouds: [
@@ -187,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavManagement items={data.navManager} />
+        <NavManagement />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

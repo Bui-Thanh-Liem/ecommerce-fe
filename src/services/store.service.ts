@@ -1,4 +1,5 @@
-import { CreateStoreDto } from "@/shared/dtos/req/store.dto"
+import { CreateStoreDto, UpdateStoreDto } from "@/shared/dtos/req/store.dto"
+import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
@@ -13,11 +14,28 @@ export const storeServices = {
     return handleResponse<IStore>(res)
   },
 
+  update: async (id: string, payload: UpdateStoreDto) => {
+    const res = await apiCall<IStore>(`/stores/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+
+    return handleResponse<IStore>(res)
+  },
+
   findAll: async () => {
-    const res = await apiCall<IStore[]>("/stores", {
+    const res = await apiCall<ResMetadataDto<IStore>>("/stores", {
       method: "GET",
     })
 
-    return handleResponse<IStore[]>(res)
+    return handleResponse<ResMetadataDto<IStore>>(res)
+  },
+
+  delete: async (id: string) => {
+    const res = await apiCall(`/stores/${id}`, {
+      method: "DELETE",
+    })
+
+    return handleResponse(res)
   },
 }

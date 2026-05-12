@@ -1,7 +1,5 @@
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { type ColumnDef } from "@tanstack/react-table"
-import { DragHandle } from "@/components/data-table"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {

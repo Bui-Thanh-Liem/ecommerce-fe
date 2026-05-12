@@ -9,7 +9,7 @@ import {
 import { DataTable } from "@/components/data-table"
 import { teamColumns } from "./team-column"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { TeamTree } from "./team-tree"
+import { TeamTree } from "./team-hierarchy"
 import { TeamAction } from "./team-action"
 import { StoreSelect } from "./filters/store-select"
 

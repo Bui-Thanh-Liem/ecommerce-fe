@@ -1,8 +1,8 @@
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import qs from "qs"
 
-export function generateQueryParams(params: QueryDto): string {
-  const { filters, ...rest } = params
+export function generateQueryParams(params?: QueryDto): string {
+  const { filters, ...rest } = params || { page: 1, limit: 10 }
 
   // Tạo một object mới để gửi đi
   const payload: any = { ...rest }

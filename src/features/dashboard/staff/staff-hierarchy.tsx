@@ -7,7 +7,6 @@ import {
   Controls,
   Handle,
   Position,
-  NodeProps,
   BackgroundVariant,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
@@ -27,7 +26,6 @@ import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { getLayoutElements } from "@/utils/diagram.util"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 
-// --- MAIN COMPONENT ---
 interface StaffHierarchyProps {
   dataSource: ResMetadataDto<IStaff>
   onCreate?: (staff: IStaff) => void
@@ -69,7 +67,7 @@ const ContextMenu = ({ top, left, data, onClick, onClose }: any) => {
 }
 
 // --- CUSTOM STAFF NODE ---
-const StaffNode = ({ data }: NodeProps) => {
+const StaffNode = ({ data }: { data: IStaff }) => {
   const getRoleConfig = () => {
     if (data.isSuperAdmin)
       return {
@@ -99,15 +97,13 @@ const StaffNode = ({ data }: NodeProps) => {
       text: "text-slate-700",
     }
   }
-  const staff = data as unknown as IStaff
-
   const config = getRoleConfig()
 
   return (
     <div
       className={`min-w-65 rounded-2xl border-2 bg-white p-4 shadow-sm ${config.color}`}
     >
-      {!staff.isSuperAdmin && (
+      {!data.isSuperAdmin && (
         <Handle
           type="target"
           position={Position.Top}
@@ -124,25 +120,25 @@ const StaffNode = ({ data }: NodeProps) => {
 
       <div className="flex items-center gap-x-4">
         <Avatar className="h-10 w-10 rounded-lg">
-          <AvatarImage src={staff?.avatarUrl} alt={staff?.fullName} />
+          <AvatarImage src={data?.avatarUrl} alt={data?.fullName} />
           <AvatarFallback className="bg-slate-100 font-bold">
-            {staff?.fullName?.substring(0, 2).toUpperCase()}
+            {data?.fullName?.substring(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="overflow-hidden">
           <p className="truncate text-sm font-bold text-slate-800">
-            {staff?.fullName}
+            {data?.fullName}
           </p>
           <div className="flex items-center gap-1 text-[11px] text-slate-500">
             <Mail size={10} className="shrink-0" />
-            <span className="truncate">{staff?.email}</span>
+            <span className="truncate">{data?.email}</span>
           </div>
         </div>
       </div>
 
       <div className="mt-3 flex items-center gap-1 text-[10px] font-medium text-slate-400">
         <Phone size={10} />
-        {staff?.phone || "N/A"}
+        {data?.phone || "N/A"}
       </div>
 
       <Handle
@@ -154,10 +150,9 @@ const StaffNode = ({ data }: NodeProps) => {
   )
 }
 
-const nodeTypes = {
-  staffNode: StaffNode,
-}
+const nodeTypes = { staffNode: StaffNode }
 
+// --- MAIN COMPONENT ---
 export function StaffHierarchy({
   dataSource,
   onEdit,

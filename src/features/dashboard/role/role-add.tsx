@@ -52,7 +52,7 @@ export function RoleAdd() {
 
   //
   const { data: rolesData } = useFindAllStores()
-  const stores = rolesData?.metadata || []
+  const stores = rolesData?.metadata?.data || []
 
   //
   const createRoleApi = useCreateRole()

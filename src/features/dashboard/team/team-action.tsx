@@ -34,11 +34,13 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useFindAllStaffs } from "@/hooks/use-staff"
-import { useCreateTeam } from "@/hooks/use-team"
+import { useFindAllStores } from "@/hooks/use-store"
+import { useCreateTeam, useUpdateTeam } from "@/hooks/use-team"
 import { useFindAllTeamCategories } from "@/hooks/use-team-category"
 import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
-import { CreateTeamDto, CreateTeamSchema } from "@/shared/dtos/req/team.dto"
+import { CreateTeamSchema, UpdateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import React, { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
@@ -50,7 +52,7 @@ const initFormValue: z.infer<typeof CreateTeamSchema> = {
   category: "",
   members: [],
   isActive: true,
-  store: undefined,
+  store: "",
 }
 
 export function TeamAction({
@@ -70,24 +72,27 @@ export function TeamAction({
 }) {
   //
   const anchor = useComboboxAnchor()
-
-  //
-  const form = useForm<z.infer<typeof CreateTeamSchema>>({
-    defaultValues: initFormValue,
-  })
-
-  //
   const createApi = useCreateTeam()
+  const updateApi = useUpdateTeam()
+
+  //
   const { data: staffData } = useFindAllStaffs()
   const staffs = staffData?.metadata?.data || []
 
   //
-  const { data: teamCategoriesData } = useFindAllTeamCategories({
-    page: 1,
-    limit: 100,
-    filters: {},
-  })
+  const { data: storeData } = useFindAllStores()
+  const stores = storeData?.metadata?.data || []
+
+  //
+  const { data: teamCategoriesData } = useFindAllTeamCategories()
   const teamCategories = teamCategoriesData?.metadata?.data || []
+
+  //
+  const formSchema = !!dataEdit ? UpdateTeamSchema : CreateTeamSchema
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initFormValue,
+  })
 
   //
   useEffect(() => {
@@ -127,12 +132,27 @@ export function TeamAction({
   }
 
   //
-  const onSubmit = async (values: CreateTeamDto) => {
-    await createApi.mutateAsync({
-      ...values,
-    })
-    form.reset()
-    onClose?.()
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      let res = null
+      if (dataEdit) {
+        res = await updateApi.mutateAsync({
+          id: dataEdit.id,
+          payload: data,
+        })
+      } else {
+        res = await createApi.mutateAsync(
+          data as z.infer<typeof CreateTeamSchema>
+        )
+      }
+
+      if (res && [200, 201].includes(res?.statusCode)) {
+        form.reset()
+        onClose?.()
+      }
+    } catch (error) {
+      console.error("Failed to create team:", error)
+    }
   }
 
   return (
@@ -218,6 +238,43 @@ export function TeamAction({
                   )}
                 </Field>
               )}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="store"
+              control={form.control}
+              render={({ field, fieldState }) => {
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-store">Store</FieldLabel>
+
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                        size="sm"
+                        id="form-leader"
+                      >
+                        <SelectValue placeholder="Select a leader" />
+                      </SelectTrigger>
+                      <SelectContent align="end" className="z-3000">
+                        <SelectGroup>
+                          {stores.map((store) => (
+                            <SelectItem key={store.id} value={store.id}>
+                              {store.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )
+              }}
             />
           </FieldGroup>
 

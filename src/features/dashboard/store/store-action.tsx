@@ -2,13 +2,9 @@
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogFooterAction,
+  DialogHeaderAction,
 } from "@/components/ui/dialog"
 import {
   Field,
@@ -19,10 +15,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useCreateStore } from "@/hooks/use-store"
-import { CreateStoreSchema } from "@/shared/dtos/req/store.dto"
+import { useCreateStore, useUpdateStore } from "@/hooks/use-store"
+import {
+  CreateStoreSchema,
+  UpdateStoreSchema,
+} from "@/shared/dtos/req/store.dto"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import z from "zod"
 import { GenerateLocation } from "./genegate-location"
@@ -37,51 +36,64 @@ import {
 import { useFindAllStaffs } from "@/hooks/use-staff"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
+import { IStore } from "@/shared/interfaces/models/store.interface"
 
-interface StoreAddProps {
-  address: string
-  lat: number
-  lng: number
+const initFormValue: z.infer<typeof CreateStoreSchema> = {
+  country: "",
+  provinceCity: "",
+  districtTown: "",
+  wardCommune: "",
+  address: "",
+  lat: 0,
+  lng: 0,
+  isActive: true,
+  name: "",
+  imageUrl: "",
+  openingHours: "08:00:00",
+  closingHours: "20:00:00",
+  phone: [
+    {
+      name: "",
+      phone: "",
+    },
+  ],
+  manager: "",
 }
 
-export function StoreAdd({ address, lat, lng }: StoreAddProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>("")
-  const [open, setOpen] = useState(false)
-  const createStoreApi = useCreateStore()
+export function StoreAction({
+  open,
+  onClose,
+  dataEdit,
+  initialData,
+  onOpenChange: setOpen,
+}: {
+  open?: boolean
+  onClose?: () => void
+  dataEdit: IStore | null
+  initialData?: IStore | null
+  onOpenChange?: (open: boolean) => void
+}) {
+  const createApi = useCreateStore()
+  const updateApi = useUpdateStore()
 
   const { data: s } = useFindAllStaffs()
-  const staffs = s?.metadata || []
+  const staffs = s?.metadata?.data || []
 
-  const form = useForm<z.infer<typeof CreateStoreSchema>>({
-    resolver: zodResolver(CreateStoreSchema),
-    defaultValues: {
-      provinceCity: undefined,
-      districtTown: undefined,
-      wardCommune: undefined,
-      address: address || "",
-      lat: lat || 0,
-      lng: lng || 0,
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>("")
 
-      isActive: true,
-      name: "",
-      imageUrl: "",
-      openingHours: "08:00:00",
-      closingHours: "20:00:00",
-      phone: [
-        {
-          name: "",
-          phone: "",
-        },
-      ],
-      manager: undefined,
-    },
+  //
+  const formSchema = !!dataEdit ? UpdateStoreSchema : CreateStoreSchema
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initFormValue,
   })
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "phone", // Tên field trong schema
   })
+
   // Hàm xử lý khi chọn file
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -93,7 +105,54 @@ export function StoreAdd({ address, lat, lng }: StoreAddProps) {
   }
 
   //
-  async function onSubmit(data: z.infer<typeof CreateStoreSchema>) {
+  useEffect(() => {
+    if (dataEdit) {
+      form.reset({
+        country: dataEdit.country.id,
+        name: dataEdit.name,
+        provinceCity: dataEdit.provinceCity.id,
+        districtTown: dataEdit.districtTown.id,
+        wardCommune: dataEdit.wardCommune.id,
+        address: dataEdit.address,
+        lat: dataEdit.lat,
+        lng: dataEdit.lng,
+        isActive: dataEdit.isActive,
+        openingHours: dataEdit.openingHours,
+        closingHours: dataEdit.closingHours,
+        phone: dataEdit.phone,
+        manager: dataEdit.manager.id,
+      })
+    } else {
+      form.reset(initFormValue)
+    }
+  }, [dataEdit])
+
+  //
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        ...initialData,
+        openingHours: initFormValue.openingHours,
+        closingHours: initFormValue.closingHours,
+        country: initialData.country?.id,
+        provinceCity: initialData.provinceCity?.id,
+        districtTown: initialData.districtTown?.id,
+        wardCommune: initialData.wardCommune?.id,
+        manager: initialData.manager?.id,
+      })
+    }
+  }, [initialData])
+
+  //
+  const handleOpenChange = (open: boolean) => {
+    setOpen?.(open)
+    if (!open) {
+      onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+    }
+  }
+
+  //
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       let finalImageUrl = ""
 
@@ -104,14 +163,24 @@ export function StoreAdd({ address, lat, lng }: StoreAddProps) {
       }
 
       // 2. Gán link S3 vào data trước khi gửi cho backend
-      const payload = {
-        ...data,
-        imageUrl: finalImageUrl,
+      let res = null
+      if (dataEdit) {
+        res = await updateApi.mutateAsync({
+          id: dataEdit.id,
+          payload: {
+            ...data,
+            imageUrl: finalImageUrl || dataEdit.imageUrl, // Nếu không chọn file mới, giữ nguyên link cũ
+          },
+        })
+      } else {
+        res = await createApi.mutateAsync({
+          ...data,
+          imageUrl: finalImageUrl, // Gán link ảnh vào payload
+        } as z.infer<typeof CreateStoreSchema>)
       }
 
-      const res = await createStoreApi.mutateAsync(payload)
-
-      if (res?.statusCode === 201) {
+      if (res && [200, 201].includes(res?.statusCode)) {
+        onClose?.()
         form.reset()
         setSelectedFile(null)
         setPreviewUrl("")
@@ -122,17 +191,13 @@ export function StoreAdd({ address, lat, lng }: StoreAddProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Add store with this address</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="z-2000 sm:max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>Add Store</DialogTitle>
-          <DialogDescription>
-            Fill in the details to create a new store.
-          </DialogDescription>
-        </DialogHeader>
+        <DialogHeaderAction
+          title={!!dataEdit ? "Edit Store" : "Add New Store"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new store.`}
+        />
+
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-340px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
@@ -477,14 +542,10 @@ export function StoreAdd({ address, lat, lng }: StoreAddProps) {
             </div>
           </div>
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">
-              {createStoreApi.isPending ? "Saving..." : "Save changes"}
-            </Button>
-          </DialogFooter>
+          <DialogFooterAction
+            onClose={onClose}
+            isPending={createApi.isPending || updateApi.isPending}
+          />
         </form>
       </DialogContent>
     </Dialog>

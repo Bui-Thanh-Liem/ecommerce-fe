@@ -11,7 +11,6 @@ import {
   BackgroundVariant,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
-import dagre from "dagre"
 import {
   Plus,
   Pencil,
@@ -269,7 +268,7 @@ export function TeamTree({
     <>
       <div
         ref={containerRef}
-        className="relative h-[calc(100vh-220px)] w-full overflow-hidden rounded-3xl border bg-slate-50/50 shadow-inner"
+        className="relative h-[calc(100vh-180px)] w-full overflow-hidden rounded-3xl border bg-slate-50/50 shadow-inner"
       >
         <ReactFlow
           nodes={nodes}

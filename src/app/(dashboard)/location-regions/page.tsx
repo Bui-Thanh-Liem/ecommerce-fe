@@ -1,5 +1,13 @@
-import { LocationRegionPage } from "@/features/dashboard/location-region/location-region"
+import { LocationRegionPage } from "@/features/dashboard/location-region/location-region-page"
 
 export default function Page() {
-  return <LocationRegionPage />
+  return (
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 md:gap-6">
+          <LocationRegionPage />
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -8,6 +8,8 @@ import {
 } from "@/hooks/use-team-category"
 import { teamCategoryColumns } from "./team-category-column"
 import { ITeamCategory } from "@/shared/interfaces/models/team-category.interface"
+import { TeamCategoryAction } from "./team-category-action"
+import { NotFound } from "@/components/not-found"
 
 export function TeamCategoryPage() {
   const { mutateAsync } = useDeleteTeamCategory()
@@ -57,8 +59,23 @@ export function TeamCategoryPage() {
           handleDeleteRow(row.original)
         }}
         //
-        tabHeader="Hierarchy"
-        tabContent={<></>}
+        tabHeader="Not hierarchy"
+        tabContent={
+          <div className="min-h-[calc(100vh-200px)]">
+            <NotFound
+              title="Not hierarchy for team category"
+              description="Currently, there is no hierarchy structure defined for team categories. Please check back later or contact support for more information."
+            />
+          </div>
+        }
+      />
+
+      <TeamCategoryAction
+        open={open}
+        onOpenChange={(open) => setOpen(open)}
+        onClose={handleClose}
+        initialData={initialData}
+        dataEdit={dataEdit}
       />
     </>
   )

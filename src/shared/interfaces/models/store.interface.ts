@@ -7,6 +7,7 @@ import { IVoucher } from "./voucher.interface"
 
 // (1 store / 1 warehouse)
 export interface IStore extends IBase {
+  country: ILocationRegion
   provinceCity: ILocationRegion
   districtTown: ILocationRegion
   wardCommune: ILocationRegion

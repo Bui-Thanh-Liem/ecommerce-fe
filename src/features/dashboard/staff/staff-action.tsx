@@ -87,7 +87,7 @@ export function StaffAction({
   const updateApi = useUpdateStaff()
 
   const { data: storesData } = useFindAllStores()
-  const stores = storesData?.metadata || []
+  const stores = storesData?.metadata?.data || []
   const { data: rolesData } = useFindAllRoles()
   const roles = rolesData?.metadata || []
   const { data: directManagersData } = useFindAllStaffs()
@@ -564,6 +564,7 @@ export function StaffAction({
               </FieldGroup>
             </div>
           )}
+
           <DialogFooterAction
             onClose={onClose}
             isPending={createApi.isPending || updateApi.isPending}

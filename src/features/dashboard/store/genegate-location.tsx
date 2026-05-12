@@ -12,13 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFindRegions } from "@/hooks/use-location-region"
-import { CreateStoreSchema } from "@/shared/dtos/req/store.dto"
+import { useFindAllLocationRegions } from "@/hooks/use-location-region"
+import {
+  CreateStoreSchema,
+  UpdateStoreSchema,
+} from "@/shared/dtos/req/store.dto"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
 import { Controller, UseFormReturn } from "react-hook-form"
 import z from "zod"
 
-type FormValues = z.infer<typeof CreateStoreSchema>
+type FormValues =
+  | z.infer<typeof CreateStoreSchema>
+  | z.infer<typeof UpdateStoreSchema>
+
 export function GenerateLocation({
   form,
 }: {
@@ -29,26 +35,37 @@ export function GenerateLocation({
   const provinceCityId = form.watch("provinceCity")
   const districtId = form.watch("districtTown")
 
-  const { data: c } = useFindRegions(LocationRegionType.COUNTRY)
-  const countries = c?.metadata || []
+  const { data: c } = useFindAllLocationRegions({
+    filters: {
+      type: LocationRegionType.COUNTRY,
+    },
+  })
+  const countries = c?.metadata?.data || []
 
-  const { data: p } = useFindRegions(
-    LocationRegionType.PROVINCE_CITY,
-    countryId
-  )
-  const provincesCities = p?.metadata || []
+  const { data: p } = useFindAllLocationRegions({
+    filters: {
+      type: LocationRegionType.PROVINCE_CITY,
+      parent: countryId as any,
+    },
+  })
+  const provincesCities = p?.metadata?.data || []
+  console.log("Provinces/Cities:", provincesCities)
 
-  const { data: d } = useFindRegions(
-    LocationRegionType.DISTRICT_TOWN,
-    provinceCityId
-  )
-  const districtsTowns = d?.metadata || []
+  const { data: d } = useFindAllLocationRegions({
+    filters: {
+      type: LocationRegionType.DISTRICT_TOWN,
+      parent: provinceCityId as any,
+    },
+  })
+  const districtsTowns = d?.metadata?.data || []
 
-  const { data: w } = useFindRegions(
-    LocationRegionType.WARD_COMMUNE,
-    districtId
-  )
-  const wardsCommunes = w?.metadata || []
+  const { data: w } = useFindAllLocationRegions({
+    filters: {
+      type: LocationRegionType.WARD_COMMUNE,
+      parent: districtId as any,
+    },
+  })
+  const wardsCommunes = w?.metadata?.data || []
 
   return (
     <>

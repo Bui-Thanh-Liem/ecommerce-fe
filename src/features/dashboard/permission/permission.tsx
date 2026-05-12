@@ -1,5 +1,6 @@
 "use client"
 import { Active } from "@/components/active"
+import { Nothing } from "@/components/no-thing"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -186,14 +187,27 @@ function PermissionCard({
 
 export function PermissionPage() {
   const { data } = useFindAllPermissions()
-  const permissions = data?.metadata || []
-  const groupedPermissions = groupByKeyGroup(permissions)
+  const metadataPermissions = data?.metadata || []
+  const groupedPermissions = groupByKeyGroup(metadataPermissions)
+  const permissions = Object.entries(groupedPermissions)
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (
-        <PermissionCard keyGroup={keyGroup} permission={perms} key={keyGroup} />
-      ))}
+    <div>
+      {permissions.length === 0 ? (
+        <div className="flex min-h-[calc(100vh-300px)] items-center justify-center">
+          <Nothing />
+        </div>
+      ) : (
+        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+          {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (
+            <PermissionCard
+              keyGroup={keyGroup}
+              permission={perms}
+              key={keyGroup}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

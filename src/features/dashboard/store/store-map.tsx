@@ -5,9 +5,9 @@ import { IStore } from "@/shared/interfaces/models/store.interface"
 import Image from "next/image"
 import { useMapEvents } from "react-leaflet"
 import React from "react"
-import { StoreAdd } from "./store-add"
-import { Clock, Phone, User, X } from "lucide-react"
+import { Clock, PencilIcon, Phone, Trash2, User, X } from "lucide-react"
 import { Active } from "@/components/active"
+import { Button } from "@/components/ui/button"
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -134,8 +134,20 @@ const storeIcon = L.icon({
   className: "rounded-full border-2 border-white", // Thêm lớp CSS để làm tròn và viền trắng
 })
 
+interface StoreMapProps {
+  stores: IStore[]
+  onCreate?: (store: IStore) => void
+  onEdit?: (store: IStore) => void
+  onDelete?: (store: IStore) => void
+}
+
 //
-export function StoreMap({ stores }: { stores: IStore[] }) {
+export function StoreMap({
+  stores,
+  onCreate,
+  onEdit,
+  onDelete,
+}: StoreMapProps) {
   const [map, setMap] = React.useState<L.Map | null>(null)
   const [selectedInfo, setSelectedInfo] = React.useState<{
     address: string
@@ -156,11 +168,11 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
             Coordinates: {selectedInfo.lat.toFixed(5)},{" "}
             {selectedInfo.lng.toFixed(5)}
           </p>
-          <StoreAdd
-            address={selectedInfo.address}
-            lat={selectedInfo.lat}
-            lng={selectedInfo.lng}
-          />
+          <Button
+            onClick={() => onCreate && onCreate({ ...selectedInfo } as IStore)}
+          >
+            Add Store
+          </Button>
         </div>
       )}
 
@@ -176,7 +188,7 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
         zoom={13}
         center={center}
         ref={setMap} // Lấy instance của map ở đây
-        style={{ height: "calc(100vh - 120px)", width: "100%" }}
+        style={{ height: "calc(100vh - 180px)", width: "100%" }}
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
@@ -212,13 +224,19 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
           const opening = store.openingHours?.slice(0, 5) || "08:00"
           const closing = store.closingHours?.slice(0, 5) || "20:00"
 
+          const country = store.country?.name || "N/A"
           const province = store.provinceCity?.name || "N/A"
           const district = store.districtTown?.name || "N/A"
           const ward = store.wardCommune?.name || "N/A"
 
           return (
             <Marker key={store.id} position={position} icon={storeIcon}>
-              <Popup className="custom-popup" minWidth={320} maxWidth={420}>
+              <Popup
+                className="custom-popup"
+                minWidth={320}
+                maxWidth={420}
+                closeButton={false}
+              >
                 <div className="space-y-3">
                   {/* Image */}
                   {store.imageUrl && (
@@ -236,6 +254,22 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
                     <h3 className="flex items-center gap-x-2 text-lg leading-tight font-semibold">
                       {store.name}
                       <Active isActive={store.isActive} />
+                      <div className="ml-auto flex items-center gap-x-3">
+                        <Button
+                          variant="outline"
+                          className="h-7 w-7 rounded-full"
+                          onClick={() => onEdit && onEdit(store)}
+                        >
+                          <PencilIcon className="size-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="h-7 w-7 rounded-full text-red-400 hover:text-red-300"
+                          onClick={() => onDelete && onDelete(store)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
                     </h3>
                     <p className="text-muted-foreground mt-1 text-sm">
                       {store.address}
@@ -254,7 +288,7 @@ export function StoreMap({ stores }: { stores: IStore[] }) {
 
                   {/* Địa chỉ hành chính */}
                   <div className="text-muted-foreground text-sm">
-                    {ward}, {district}, {province}
+                    {country}, {ward}, {district}, {province}
                   </div>
 
                   {/* Số điện thoại */}

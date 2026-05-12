@@ -7,7 +7,10 @@ export const CreateLocationRegionSchema = z.object({
     .min(1, "Name is required.")
     .max(255, "Name must be at most 255 characters."),
   type: z.enum(LocationRegionType),
-  parent: z.uuidv4().optional(),
+  parent: z.uuidv4(),
 })
 
+export const UpdateLocationRegionSchema = CreateLocationRegionSchema.partial()
+
 export type CreateLocationRegionDto = z.infer<typeof CreateLocationRegionSchema>
+export type UpdateLocationRegionDto = z.infer<typeof UpdateLocationRegionSchema>

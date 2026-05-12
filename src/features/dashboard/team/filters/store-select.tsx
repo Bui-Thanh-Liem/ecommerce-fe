@@ -19,7 +19,7 @@ export function StoreSelect() {
   }>()
 
   const { data } = useFindAllStores()
-  const stores = data?.metadata || []
+  const stores = data?.metadata?.data || []
 
   const dataOptions = [
     { label: LABEL_COMPANY_ROOT, value: VALUE_COMPANY_ROOT },

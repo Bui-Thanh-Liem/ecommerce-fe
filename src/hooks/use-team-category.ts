@@ -6,7 +6,7 @@ import {
 } from "@/shared/dtos/req/team-category.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllTeamCategories = (query: QueryDto) => {
+export const useFindAllTeamCategories = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["team-categories", JSON.stringify(query)],
     queryFn: () => teamCategoryServices.findAll(query),
