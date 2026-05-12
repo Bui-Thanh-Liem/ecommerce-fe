@@ -37,10 +37,10 @@ import { useFindAllStaffs } from "@/hooks/use-staff"
 import { useFindAllStores } from "@/hooks/use-store"
 import { useCreateTeam, useUpdateTeam } from "@/hooks/use-team"
 import { useFindAllTeamCategories } from "@/hooks/use-team-category"
-import { VALUE_COMPANY_ROOT } from "@/shared/constants/team.constant"
+import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
 import { CreateTeamSchema, UpdateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
+import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
@@ -52,7 +52,7 @@ const initFormValue: z.infer<typeof CreateTeamSchema> = {
   category: "",
   members: [],
   isActive: true,
-  store: "",
+  store: undefined,
 }
 
 export function TeamAction({
@@ -100,9 +100,9 @@ export function TeamAction({
       form.reset({
         name: dataEdit.name || "",
         desc: dataEdit.desc || "",
-        store: dataEdit.store.id || "",
-        leader: dataEdit.leader.id || "",
-        category: dataEdit.category.id || "",
+        store: dataEdit.store?.id || undefined,
+        leader: dataEdit.leader.id || undefined,
+        category: dataEdit.category?.id || undefined,
         isActive: dataEdit.isActive ?? true,
         members: dataEdit.members.map((m) => m.id) || [],
       })
@@ -114,11 +114,11 @@ export function TeamAction({
   //
   useEffect(() => {
     if (initialData) {
-      const storeId = initialData.store.id || VALUE_COMPANY_ROOT
+      const storeId = initialData.store.id || VALUE_HEADQUARTER
 
       form.reset({
         ...initFormValue,
-        store: storeId === VALUE_COMPANY_ROOT ? undefined : storeId,
+        store: storeId === VALUE_HEADQUARTER ? undefined : storeId,
       })
     }
   }, [initialData])

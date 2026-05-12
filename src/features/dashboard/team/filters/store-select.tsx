@@ -9,20 +9,22 @@ import {
 import { useFilters } from "@/hooks/use-filters"
 import { useFindAllStores } from "@/hooks/use-store"
 import {
-  LABEL_COMPANY_ROOT,
-  VALUE_COMPANY_ROOT,
+  LABEL_HEADQUARTER,
+  VALUE_HEADQUARTER,
 } from "@/shared/constants/team.constant"
 
 export function StoreSelect() {
-  const { setFilters } = useFilters<{
+  const { setFilters, filters } = useFilters<{
     store: string
   }>()
+  const safeFilters = filters as { store: string }
+  const storeId = safeFilters.store || VALUE_HEADQUARTER
 
   const { data } = useFindAllStores()
   const stores = data?.metadata?.data || []
 
   const dataOptions = [
-    { label: LABEL_COMPANY_ROOT, value: VALUE_COMPANY_ROOT },
+    { label: LABEL_HEADQUARTER, value: VALUE_HEADQUARTER },
     ...stores.map((s) => ({ label: s.name, value: s.id })),
   ]
 
@@ -31,7 +33,7 @@ export function StoreSelect() {
   }
 
   return (
-    <Select onValueChange={onValueChange}>
+    <Select onValueChange={onValueChange} value={storeId}>
       <SelectTrigger className="w-70">
         <SelectValue placeholder="Select a store" />
       </SelectTrigger>

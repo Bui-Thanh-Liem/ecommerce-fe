@@ -1,9 +1,6 @@
-import { Row, type ColumnDef } from "@tanstack/react-table"
 import { Active } from "@/components/active"
-import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
@@ -11,6 +8,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useUpdateTeam } from "@/hooks/use-team"
+import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { Row, type ColumnDef } from "@tanstack/react-table"
 
 //
 const StatusCell = ({ row }: { row: Row<ITeam> }) => {
@@ -48,6 +48,13 @@ export const teamColumns: ColumnDef<ITeam>[] = [
     },
   },
   {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      return <p>{row.original.category?.name || "-"}</p>
+    },
+  },
+  {
     accessorKey: "store",
     header: "Store",
     cell: ({ row }) => {
@@ -59,7 +66,18 @@ export const teamColumns: ColumnDef<ITeam>[] = [
     accessorKey: "leader",
     header: "Leader",
     cell: ({ row }) => {
-      return <p>{row.original.leader?.fullName || "-"}</p>
+      const leader = row.original.leader
+      return (
+        <div className="flex items-center space-x-2">
+          <Avatar className="border-2 border-white shadow-sm">
+            <AvatarImage src={leader.avatarUrl || undefined} alt={leader.fullName} />
+            <AvatarFallback>
+              {leader.fullName[0].toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <p>{leader.fullName}</p>
+        </div>
+      )
     },
   },
   {
@@ -67,6 +85,7 @@ export const teamColumns: ColumnDef<ITeam>[] = [
     header: "Members",
     cell: ({ row }) => {
       const members = row.original.members
+      if (!members?.length) return <p>-</p>
       return <MemberAvatars members={members} />
     },
   },
@@ -82,7 +101,7 @@ export function MemberAvatars({ members }: { members: IStaff[] }) {
   return (
     <TooltipProvider>
       <div className="flex -space-x-2">
-        {members.map((m) => (
+        {members?.map((m) => (
           <Tooltip key={m.id}>
             <TooltipTrigger asChild>
               <div className="cursor-pointer transition-all duration-200 hover:z-10 hover:-translate-y-1">
@@ -92,7 +111,7 @@ export function MemberAvatars({ members }: { members: IStaff[] }) {
                     alt={m.fullName}
                   />
                   <AvatarFallback>
-                    {m.fullName.slice(0, 2).toUpperCase()}
+                    {m.fullName[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </div>

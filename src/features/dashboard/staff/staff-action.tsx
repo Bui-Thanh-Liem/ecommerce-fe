@@ -108,14 +108,14 @@ export function StaffAction({
         confirmPassword: "",
         email: dataEdit.email || "",
         phone: dataEdit.phone || "",
-        store: dataEdit.store?.id || "",
+        store: dataEdit.store?.id || undefined,
         fullName: dataEdit.fullName || "",
         isActive: dataEdit.isActive ?? true,
         isSubAdmin: dataEdit.isSubAdmin ?? false,
         avatarUrl: dataEdit.avatarUrl || "",
         roles: dataEdit.roles.map((r) => r.id) || [],
         workLocationID: dataEdit.workLocationID || "",
-        directManager: dataEdit.directManager?.id || "",
+        directManager: dataEdit.directManager?.id || undefined,
       })
     } else {
       form.reset(initFormValue)
@@ -127,7 +127,7 @@ export function StaffAction({
     if (initialData) {
       form.reset({
         ...initFormValue,
-        directManager: initialData.directManager?.id || "",
+        directManager: initialData.directManager?.id || undefined,
       })
     }
   }, [initialData])

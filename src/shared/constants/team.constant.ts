@@ -1,2 +1,2 @@
-export const LABEL_COMPANY_ROOT = "Headquarters" as const
-export const VALUE_COMPANY_ROOT = "headquarters" as const
+export const LABEL_HEADQUARTER = "Headquarters" as const
+export const VALUE_HEADQUARTER = "headquarters" as const

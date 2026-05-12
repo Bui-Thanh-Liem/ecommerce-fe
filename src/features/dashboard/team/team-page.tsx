@@ -1,26 +1,25 @@
 "use client"
 
-import { useState } from "react"
-import { useDeleteTeam, useFindAllTeams } from "@/hooks/use-team"
-import {
-  LABEL_COMPANY_ROOT,
-  VALUE_COMPANY_ROOT,
-} from "@/shared/constants/team.constant"
 import { DataTable } from "@/components/data-table"
-import { teamColumns } from "./team-column"
+import { useFilters } from "@/hooks/use-filters"
+import { useDeleteTeam, useFindAllTeams } from "@/hooks/use-team"
+import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
-import { TeamTree } from "./team-hierarchy"
-import { TeamAction } from "./team-action"
+import { useState } from "react"
 import { StoreSelect } from "./filters/store-select"
+import { TeamAction } from "./team-action"
+import { teamColumns } from "./team-column"
+import { TeamHierarchy } from "./team-hierarchy"
 
 export function TeamPage() {
-  const [selectedStore, setSelectedStore] = useState(VALUE_COMPANY_ROOT)
-  const [storeLabel, setStoreLabel] = useState(LABEL_COMPANY_ROOT)
+  const { filters } = useFilters()
+  const safeFilters = filters as { store: string }
+  const storeId = safeFilters.store || VALUE_HEADQUARTER
 
   const { mutateAsync } = useDeleteTeam()
-  const { data, isLoading } = useFindAllTeams({
+  const { data } = useFindAllTeams({
     filters: {
-      store: selectedStore === VALUE_COMPANY_ROOT ? "" : selectedStore,
+      store: storeId === VALUE_HEADQUARTER ? "" : storeId,
     },
   })
   const metaDataTeams = data?.metadata
@@ -67,17 +66,14 @@ export function TeamPage() {
         //
         tabHeader="Hierarchy"
         tabContent={
-          <TeamTree
-            treeData={metaDataTeams.data}
-            rootName={storeLabel}
-            storeId={selectedStore}
-          />
+          <TeamHierarchy treeData={metaDataTeams.data} storeId={storeId} />
         }
       />
 
       <TeamAction
         open={open}
         dataEdit={dataEdit}
+        selectedParent={null}
         onClose={handleClose}
         initialData={initialData}
       />
