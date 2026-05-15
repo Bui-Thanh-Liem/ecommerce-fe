@@ -35,13 +35,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindAllRoles } from "@/hooks/use-role"
+import { useFindAllRoles } from "@/hooks/apis/use-role"
 import {
   useCreateStaff,
   useFindAllStaffs,
   useUpdateStaff,
-} from "@/hooks/use-staff"
-import { useFindAllStores } from "@/hooks/use-store"
+} from "@/hooks/apis/use-staff"
+import { useFindAllStores } from "@/hooks/apis/use-store"
 import { MAX_ROLES_IN_STAFF } from "@/shared/constants/staff.constant"
 import {
   CreateStaffSchema,
@@ -89,7 +89,7 @@ export function StaffAction({
   const { data: storesData } = useFindAllStores()
   const stores = storesData?.metadata?.data || []
   const { data: rolesData } = useFindAllRoles()
-  const roles = rolesData?.metadata || []
+  const roles = rolesData?.metadata?.data || []
   const { data: directManagersData } = useFindAllStaffs()
   const directManagers = directManagersData?.metadata?.data || []
 

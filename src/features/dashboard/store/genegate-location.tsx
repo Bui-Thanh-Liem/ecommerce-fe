@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFindAllLocationRegions } from "@/hooks/use-location-region"
+import { useFindAllLocationRegions } from "@/hooks/apis/use-location-region"
 import {
   CreateStoreSchema,
   UpdateStoreSchema,

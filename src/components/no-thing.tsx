@@ -10,7 +10,7 @@ export function Nothing() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center overflow-hidden p-5 font-sans text-[#999]">
+    <div className="flex h-full min-h-[calc(100vh-300px)] items-center justify-center overflow-hidden p-5 font-sans text-[#999]">
       <div className="max-w-150 text-center">
         {/* Logo Section */}
         <div className="mb-12 flex items-center justify-center">

@@ -22,7 +22,7 @@ import {
 import {
   useCreateTeamCategory,
   useUpdateTeamCategory,
-} from "@/hooks/use-team-category"
+} from "@/hooks/apis/use-team-category"
 import {
   CreateTeamCategorySchema,
   UpdateTeamCategorySchema,

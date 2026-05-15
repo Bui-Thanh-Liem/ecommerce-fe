@@ -9,20 +9,31 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { CirclePlusIcon, MailIcon } from "lucide-react"
+import {
+  CirclePlusIcon,
+  LayoutDashboardIcon,
+  MailIcon,
+  Target,
+} from "lucide-react"
 import Link from "next/link"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: React.ReactNode
-  }[]
-}) {
+export function NavMain() {
+  const mainItems = [
+    {
+      title: "Dashboard",
+      url: "dashboard",
+      icon: <LayoutDashboardIcon />,
+    },
+    {
+      title: "campaigns",
+      url: "campaigns",
+      icon: <Target />,
+    },
+  ]
+
   const classNameActive =
     "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -46,7 +57,7 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
+          {mainItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <Link href={item.url}>

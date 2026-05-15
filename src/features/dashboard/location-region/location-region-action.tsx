@@ -23,7 +23,7 @@ import {
   useCreateLocationRegion,
   useFindAllLocationRegions,
   useUpdateLocationRegion,
-} from "@/hooks/use-location-region"
+} from "@/hooks/apis/use-location-region"
 import {
   CreateLocationRegionSchema,
   UpdateLocationRegionSchema,

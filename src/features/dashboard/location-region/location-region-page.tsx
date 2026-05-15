@@ -3,7 +3,7 @@
 import {
   useDeleteLocationRegions,
   useFindAllLocationRegions,
-} from "@/hooks/use-location-region"
+} from "@/hooks/apis/use-location-region"
 import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
 import { useState } from "react"
 import { locationRegionColumns } from "./location-region-column"

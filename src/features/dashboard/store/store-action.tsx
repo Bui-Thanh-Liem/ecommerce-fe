@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useCreateStore, useUpdateStore } from "@/hooks/use-store"
+import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
 import {
   CreateStoreSchema,
   UpdateStoreSchema,
@@ -33,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFindAllStaffs } from "@/hooks/use-staff"
+import { useFindAllStaffs } from "@/hooks/apis/use-staff"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
 import { IStore } from "@/shared/interfaces/models/store.interface"
@@ -416,6 +416,7 @@ export function StoreAction({
                 </div>
               </div>
             </div>
+
             <div className="space-y-4">
               <FieldGroup>
                 <FieldLabel htmlFor="form-rhf-input-store-image">

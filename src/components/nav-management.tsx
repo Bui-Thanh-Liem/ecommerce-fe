@@ -25,6 +25,7 @@ import {
   UsersIcon,
 } from "lucide-react"
 import Link from "next/link"
+import { Badge } from "./ui/badge"
 
 export function NavManagement() {
   const { isMobile } = useSidebar()
@@ -39,12 +40,6 @@ export function NavManagement() {
       title: "Teams",
       url: "teams",
       icon: <UsersIcon />,
-    },
-
-    {
-      title: "Stores",
-      url: "stores",
-      icon: <Store />,
     },
   ]
 
@@ -69,11 +64,21 @@ export function NavManagement() {
       url: "location-regions",
       icon: <MapPinned />,
     },
+    {
+      title: "Stores/Warehouses",
+      url: "stores-warehouses",
+      icon: <Store />,
+    },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Management</SidebarGroupLabel>
+      <SidebarGroupLabel className="gap-x-1 uppercase">
+        Management
+        <Badge variant="destructive" className="mb-3">
+          admin
+        </Badge>
+      </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (
           <SidebarMenuItem key={item.title}>

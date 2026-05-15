@@ -1,6 +1,9 @@
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/role.dto"
+import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IRole } from "@/shared/interfaces/models/role.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const roleServices = {
@@ -13,12 +16,14 @@ export const roleServices = {
     return handleResponse<IRole>(res)
   },
 
-  findAll: async () => {
-    const res = await apiCall<IRole[]>("/roles", {
+  findAll: async (query?: QueryDto<IRole>) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IRole>>(`/roles?${queryParams}`, {
       method: "GET",
     })
 
-    return handleResponse<IRole[]>(res)
+    return handleResponse<ResMetadataDto<IRole>>(res)
   },
 
   update: async (id: string, payload: UpdateRoleDto) => {

@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFilters } from "@/hooks/use-filters"
-import { useFindAllStores } from "@/hooks/use-store"
+import { useFilters } from "@/hooks/apis/use-filters"
+import { useFindAllStores } from "@/hooks/apis/use-store"
 import {
   LABEL_HEADQUARTER,
   VALUE_HEADQUARTER,

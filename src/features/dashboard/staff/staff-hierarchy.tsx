@@ -8,6 +8,7 @@ import {
   Handle,
   Position,
   BackgroundVariant,
+  Panel,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 import {
@@ -226,7 +227,31 @@ export function StaffHierarchy({
         nodesConnectable={false}
       >
         <Background variant={BackgroundVariant.Lines} color="#f1f5f9" />
-        <Controls />
+
+        {/* Customized Controls */}
+        <Panel
+          position="bottom-right"
+          className="flex gap-2 rounded-lg border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-sm"
+        >
+          <Controls
+            showInteractive={false}
+            className="static! m-0! border-none! shadow-none!"
+          />
+        </Panel>
+
+        {/* Legend Panel */}
+        <Panel
+          position="top-left"
+          className="m-4 flex flex-col gap-1 rounded-xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm"
+        >
+          <h3 className="text-sm font-bold text-slate-800">
+            Phân cấp nhân viên
+          </h3>
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Chuột phải vào từng thẻ để quản lý
+          </p>
+        </Panel>
+
         {menu && (
           <ContextMenu
             onClick={handleAction}

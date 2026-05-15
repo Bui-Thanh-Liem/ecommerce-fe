@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useUpdateTeam } from "@/hooks/use-team"
+import { useUpdateTeam } from "@/hooks/apis/use-team"
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { Row, type ColumnDef } from "@tanstack/react-table"
@@ -70,10 +70,11 @@ export const teamColumns: ColumnDef<ITeam>[] = [
       return (
         <div className="flex items-center space-x-2">
           <Avatar className="border-2 border-white shadow-sm">
-            <AvatarImage src={leader.avatarUrl || undefined} alt={leader.fullName} />
-            <AvatarFallback>
-              {leader.fullName[0].toUpperCase()}
-            </AvatarFallback>
+            <AvatarImage
+              src={leader.avatarUrl || undefined}
+              alt={leader.fullName}
+            />
+            <AvatarFallback>{leader.fullName[0].toUpperCase()}</AvatarFallback>
           </Avatar>
           <p>{leader.fullName}</p>
         </div>
@@ -110,9 +111,7 @@ export function MemberAvatars({ members }: { members: IStaff[] }) {
                     src={m.avatarUrl || undefined}
                     alt={m.fullName}
                   />
-                  <AvatarFallback>
-                    {m.fullName[0].toUpperCase()}
-                  </AvatarFallback>
+                  <AvatarFallback>{m.fullName[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
               </div>
             </TooltipTrigger>

@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
+import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
@@ -11,12 +12,14 @@ import {
   BackgroundVariant,
   Controls,
   Handle,
+  Panel,
   Position,
   ReactFlow,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 import {
   Building2,
+  ChevronsUp,
   Layers,
   Pencil,
   Plus,
@@ -90,14 +93,19 @@ const LeaderNode = ({ data }: { data: IStaff }) => (
 )
 
 const MemberNode = ({ data }: { data: IStaff }) => (
-  <div className="flex min-w-40 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
+  <div className="flex min-w-40 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
     <Avatar>
       <AvatarImage src={data.avatarUrl} />
       <AvatarFallback>AV</AvatarFallback>
     </Avatar>
-    <span className="truncate text-xs font-medium text-slate-600">
-      {data.fullName}
-    </span>
+    <div className="flex flex-col">
+      <span className="text-[9px] font-bold text-slate-400 uppercase">
+        Team Member
+      </span>
+      <span className="truncate text-xs font-medium text-slate-800">
+        {data.fullName}
+      </span>
+    </div>
     <Handle type="target" position={Position.Left} className="bg-slate-300!" />
   </div>
 )
@@ -111,7 +119,38 @@ const nodeTypes = {
 
 // --- CONTEXT MENU ---
 const ContextMenu = ({ data, top, left, onClick, onClose }: any) => {
-  if (["leaderNode", "memberNode"].includes(data.type)) return null
+  if (data.type === "leaderNode") return null
+
+  if (data.type === "memberNode") {
+    return (
+      <div
+        style={{ top, left }}
+        className="absolute z-100 min-w-56 rounded-xl border border-slate-200 bg-white/95 py-2 shadow-2xl backdrop-blur-md transition-all"
+        onMouseLeave={onClose}
+      >
+        <div className="mb-1 border-b border-slate-100 px-4 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+          {data?.fullName}
+        </div>
+        <button
+          onClick={() =>
+            onClick("promote-to-leader", { staffId: data.id, team: data.team })
+          }
+          className="flex w-full items-center px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-600"
+        >
+          <ChevronsUp size={20} className="mr-3 text-emerald-500" />
+          Promoted to Team Leader
+        </button>
+        <button
+          onClick={() =>
+            onClick("delete-member", { staffId: data.id, team: data.team })
+          }
+          className="mt-1 flex w-full items-center border-t border-slate-50 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+        >
+          <Trash2 size={16} className="mr-3" /> Delete Member
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -162,14 +201,29 @@ const ContextMenu = ({ data, top, left, onClick, onClose }: any) => {
   )
 }
 
+interface ITeamHierarchyProps {
+  storeId: string
+  onEdit?: (team: ITeam) => void
+  onCreate?: (team: ITeam) => void
+  dataSource: ResMetadataDto<ITeam>
+  onDelete?: (team: ITeam) => void
+  addMember?: (team: ITeam) => void
+  deleteMember?: (team: ITeam, staffId: string) => void
+  promoteToLeader?: (team: ITeam, staffId: string) => void
+}
 // --- MAIN COMPONENT ---
 export function TeamHierarchy({
-  treeData,
+  dataSource,
   storeId,
-}: {
-  treeData: ITeam[]
-  storeId: string
-}) {
+  onEdit,
+  onCreate,
+  onDelete,
+  addMember,
+  deleteMember,
+  promoteToLeader,
+}: ITeamHierarchyProps) {
+  const { data } = dataSource
+
   const [menu, setMenu] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -189,7 +243,7 @@ export function TeamHierarchy({
       },
     })
 
-    treeData.forEach((team) => {
+    data.forEach((team) => {
       // Node Team
       rawNodes.push({
         id: team.id,
@@ -211,7 +265,10 @@ export function TeamHierarchy({
         rawNodes.push({
           id: lId,
           type: "leaderNode",
-          data: team.leader,
+          data: {
+            ...team.leader,
+            type: "leaderNode",
+          },
           position: { x: 0, y: 0 },
         })
         rawEdges.push({
@@ -229,7 +286,11 @@ export function TeamHierarchy({
           const mId = `mem-${team.id}-${m.id}`
           rawNodes.push({
             id: mId,
-            data: m,
+            data: {
+              ...m,
+              team,
+              type: "memberNode",
+            },
             type: "memberNode",
             position: { x: 0, y: 0 },
           })
@@ -244,7 +305,7 @@ export function TeamHierarchy({
     })
 
     return getLayoutElements(rawNodes, rawEdges)
-  }, [treeData, storeId])
+  }, [data, storeId])
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
@@ -260,13 +321,23 @@ export function TeamHierarchy({
     []
   )
 
+  /**
+   *
+   * @description data: ITeam khi create/edit/delete team, add member vào team
+   * @description data: {team, staffId} khi delete member khỏi team
+   * @description data: {team, staffId} khi promote member lên làm leader
+   */
   const handleAction = (action: string, data: any) => {
     setMenu(null)
-    if (action === "create") ""
-    if (action === "edit") ""
-    if (action === "delete") ""
-    if (action === "add-member") ""
-    if (action === "delete-member") ""
+    if (action === "create") onCreate?.(data)
+    if (action === "edit") onEdit?.(data)
+    if (action === "delete") onDelete?.(data)
+    if (action === "add-member") addMember?.(data)
+
+    //
+    if (action === "delete-member") deleteMember?.(data.team, data.staffId)
+    if (action === "promote-to-leader")
+      promoteToLeader?.(data.team, data.staffId)
   }
 
   return (
@@ -284,7 +355,31 @@ export function TeamHierarchy({
           fitView
         >
           <Background variant={BackgroundVariant.Lines} color="#f1f5f9" />
-          <Controls />
+
+          {/* Customized Controls */}
+          <Panel
+            position="bottom-right"
+            className="flex gap-2 rounded-lg border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-sm"
+          >
+            <Controls
+              showInteractive={false}
+              className="static! m-0! border-none! shadow-none!"
+            />
+          </Panel>
+
+          {/* Legend Panel */}
+          <Panel
+            position="top-left"
+            className="m-4 flex flex-col gap-1 rounded-xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm"
+          >
+            <h3 className="text-sm font-bold text-slate-800">
+              Phân cấp đội nhóm
+            </h3>
+            <p className="text-[11px] leading-relaxed text-slate-500">
+              Chuột phải vào từng thẻ để quản lý
+            </p>
+          </Panel>
+
           {menu && (
             <ContextMenu
               onClick={handleAction}

@@ -1,7 +1,7 @@
 import { Row, type ColumnDef } from "@tanstack/react-table"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useUpdateStore } from "@/hooks/use-store"
+import { useUpdateStore } from "@/hooks/apis/use-store"
 import { Active } from "@/components/active"
 import { Textarea } from "@/components/ui/textarea"
 

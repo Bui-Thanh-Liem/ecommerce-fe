@@ -5,15 +5,14 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteTeamCategory,
   useFindAllTeamCategories,
-} from "@/hooks/use-team-category"
+} from "@/hooks/apis/use-team-category"
 import { teamCategoryColumns } from "./team-category-column"
 import { ITeamCategory } from "@/shared/interfaces/models/team-category.interface"
 import { TeamCategoryAction } from "./team-category-action"
-import { NotFound } from "@/components/not-found"
 
 export function TeamCategoryPage() {
   const { mutateAsync } = useDeleteTeamCategory()
-  const { data, isLoading } = useFindAllTeamCategories({
+  const { data } = useFindAllTeamCategories({
     page: 1,
     limit: 100,
     filters: {},
@@ -22,7 +21,6 @@ export function TeamCategoryPage() {
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)
-  const [initialData, setInitialData] = useState<ITeamCategory | null>(null)
   const [dataEdit, setDataEdit] = useState<ITeamCategory | null>(null)
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
@@ -58,23 +56,13 @@ export function TeamCategoryPage() {
         onDeleteRow={(row) => {
           handleDeleteRow(row.original)
         }}
-        //
-        tabHeader="Not hierarchy"
-        tabContent={
-          <div className="min-h-[calc(100vh-200px)]">
-            <NotFound
-              title="Not hierarchy for team category"
-              description="Currently, there is no hierarchy structure defined for team categories. Please check back later or contact support for more information."
-            />
-          </div>
-        }
       />
 
       <TeamCategoryAction
         open={open}
         onOpenChange={(open) => setOpen(open)}
         onClose={handleClose}
-        initialData={initialData}
+        initialData={null}
         dataEdit={dataEdit}
       />
     </>

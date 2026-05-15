@@ -33,10 +33,10 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllStaffs } from "@/hooks/use-staff"
-import { useFindAllStores } from "@/hooks/use-store"
-import { useCreateTeam, useUpdateTeam } from "@/hooks/use-team"
-import { useFindAllTeamCategories } from "@/hooks/use-team-category"
+import { useFindAllStaffs } from "@/hooks/apis/use-staff"
+import { useFindAllStores } from "@/hooks/apis/use-store"
+import { useCreateTeam, useUpdateTeam } from "@/hooks/apis/use-team"
+import { useFindAllTeamCategories } from "@/hooks/apis/use-team-category"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
 import { CreateTeamSchema, UpdateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
@@ -101,27 +101,27 @@ export function TeamAction({
         name: dataEdit.name || "",
         desc: dataEdit.desc || "",
         store: dataEdit.store?.id || undefined,
-        leader: dataEdit.leader.id || undefined,
+        leader: dataEdit.leader?.id || undefined,
         category: dataEdit.category?.id || undefined,
         isActive: dataEdit.isActive ?? true,
-        members: dataEdit.members.map((m) => m.id) || [],
+        members: dataEdit.members?.map((m) => m.id) || [],
       })
     } else {
       form.reset(initFormValue)
     }
-  }, [dataEdit])
+  }, [dataEdit, form])
 
   //
   useEffect(() => {
     if (initialData) {
-      const storeId = initialData.store.id || VALUE_HEADQUARTER
+      const storeId = initialData.store?.id || VALUE_HEADQUARTER
 
       form.reset({
         ...initFormValue,
         store: storeId === VALUE_HEADQUARTER ? undefined : storeId,
       })
     }
-  }, [initialData])
+  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {
@@ -280,43 +280,6 @@ export function TeamAction({
 
           <FieldGroup>
             <Controller
-              name="leader"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-leader">Leader</FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {staffs.map((staff) => (
-                            <SelectItem key={staff.id} value={staff.id}>
-                              {staff.fullName}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Controller
               name="category"
               control={form.control}
               render={({ field, fieldState }) => {
@@ -337,6 +300,43 @@ export function TeamAction({
                           {teamCategories.map((category) => (
                             <SelectItem key={category.id} value={category.id}>
                               {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+          </FieldGroup>
+
+          <FieldGroup>
+            <Controller
+              name="leader"
+              control={form.control}
+              render={({ field, fieldState }) => {
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-leader">Leader</FieldLabel>
+
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                        size="sm"
+                        id="form-leader"
+                      >
+                        <SelectValue placeholder="Select a leader" />
+                      </SelectTrigger>
+                      <SelectContent align="end" className="z-3000">
+                        <SelectGroup>
+                          {staffs.map((staff) => (
+                            <SelectItem key={staff.id} value={staff.id}>
+                              {staff.fullName}
                             </SelectItem>
                           ))}
                         </SelectGroup>

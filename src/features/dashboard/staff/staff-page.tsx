@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTable } from "@/components/data-table"
-import { useDeleteStaff, useFindAllStaffs } from "@/hooks/use-staff"
+import { useDeleteStaff, useFindAllStaffs } from "@/hooks/apis/use-staff"
 import { staffColumns } from "./staff-column"
 import { StaffAction } from "./staff-action"
 import { useState } from "react"

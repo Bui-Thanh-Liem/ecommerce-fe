@@ -1,21 +1,23 @@
-import { ProductStatus } from '@/shared/enums/product-status.enum';
-import { IBase } from '../common/base.interface';
-import { ICategory } from './category.interface';
-import { IBrand } from './brand.interface';
-import { IProductVariant } from './product-variant.interface';
-import { ICartItem } from './cart-item.interface';
+import { ProductStatus } from "@/shared/enums/product-status.enum"
+import { IBase } from "../common/base.interface"
+import { ICategory } from "./category.interface"
+import { IBrand } from "./brand.interface"
+import { IProductVariant } from "./product-variant.interface"
+import { ICartItem } from "./cart-item.interface"
+import { IProductImage } from "./product-image.interface"
 
 export interface IProduct extends IBase {
-  name: string;
-  slug: string;
-  desc: string;
-  spu: string;
-  basePrice: number;
-  status: ProductStatus;
-  category: ICategory;
-  brand: IBrand;
+  name: string
+  slug: string
+  desc: string
+  spu: string
+  basePrice: number
+  status: ProductStatus
+  category: ICategory
+  brand: IBrand
+  productImages?: IProductImage[]
 
   //
-  productVariants?: IProductVariant[];
-  cartItems?: ICartItem[];
+  productVariants?: IProductVariant[]
+  cartItems?: ICartItem[]
 }

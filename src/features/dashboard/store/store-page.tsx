@@ -1,5 +1,5 @@
 "use client"
-import { useDeleteStore, useFindAllStores } from "@/hooks/use-store"
+import { useDeleteStore, useFindAllStores } from "@/hooks/apis/use-store"
 import { DataTable } from "@/components/data-table"
 import { storeColumns } from "./store-column"
 import { useState } from "react"

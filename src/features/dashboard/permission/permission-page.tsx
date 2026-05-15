@@ -19,7 +19,7 @@ import {
 import {
   useFindAllPermissions,
   useUpdatePermission,
-} from "@/hooks/use-permission"
+} from "@/hooks/apis/use-permission"
 import { UpdatePermissionSchema } from "@/shared/dtos/req/permission.dto"
 import { IPermission } from "@/shared/interfaces/models/permission.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -194,9 +194,7 @@ export function PermissionPage() {
   return (
     <div>
       {permissions.length === 0 ? (
-        <div className="flex min-h-[calc(100vh-300px)] items-center justify-center">
-          <Nothing />
-        </div>
+        <Nothing />
       ) : (
         <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
           {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (

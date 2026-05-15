@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Combobox,
   ComboboxChip,
@@ -13,13 +12,9 @@ import {
 } from "@/components/ui/combobox"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogFooterAction,
+  DialogHeaderAction,
 } from "@/components/ui/dialog"
 import {
   Field,
@@ -30,19 +25,26 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllPermissions } from "@/hooks/use-permission"
-import { useCreateRole } from "@/hooks/use-role"
-import { useFindAllStores } from "@/hooks/use-store"
+import { useFindAllPermissions } from "@/hooks/apis/use-permission"
+import { useCreateRole } from "@/hooks/apis/use-role"
+import { useFindAllStores } from "@/hooks/apis/use-store"
 import { cn } from "@/lib/utils"
 import { CreateRoleSchema } from "@/shared/dtos/req/role.dto"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Plus } from "lucide-react"
-import React, { useState } from "react"
+import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { groupByKeyGroup } from "../permission/permission"
+import { groupByKeyGroup } from "../permission/permission-page"
 
-export function RoleAdd() {
+export function RoleAdd({
+  open,
+  onClose,
+  onOpenChange,
+}: {
+  open: boolean
+  onClose?: () => void
+  onOpenChange?: (open: boolean) => void
+}) {
   const anchor = useComboboxAnchor()
 
   //
@@ -55,10 +57,7 @@ export function RoleAdd() {
   const stores = rolesData?.metadata?.data || []
 
   //
-  const createRoleApi = useCreateRole()
-
-  //
-  const [open, setOpen] = useState(false)
+  const createApi = useCreateRole()
 
   //
   const form = useForm<z.infer<typeof CreateRoleSchema>>({
@@ -74,12 +73,20 @@ export function RoleAdd() {
   const permissionErrors = form.formState.errors.permissions
 
   //
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange?.(open)
+    if (!open) {
+      onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+    }
+  }
+
+  //
   async function onSubmit(data: z.infer<typeof CreateRoleSchema>) {
     try {
-      const res = await createRoleApi.mutateAsync(data)
+      const res = await createApi.mutateAsync(data)
       if (res?.statusCode === 201) {
-        setOpen(false)
         form.reset()
+        onClose?.()
       }
     } catch (error) {
       console.error("Failed to create role:", error)
@@ -87,21 +94,12 @@ export function RoleAdd() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div className="flex items-center justify-between">
-          <Button size="sm">
-            <Plus /> Add role
-          </Button>
-        </div>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-6xl">
-        <DialogHeader>
-          <DialogTitle>Add Role</DialogTitle>
-          <DialogDescription>
-            Fill in the details to create a new role.
-          </DialogDescription>
-        </DialogHeader>
+        <DialogHeaderAction
+          title="Add Role"
+          desc="Fill in the details to create a new role."
+        />
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4">
             {/*  */}
@@ -307,14 +305,10 @@ export function RoleAdd() {
             </div>
           </div>
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">
-              {createRoleApi.isPending ? "Saving..." : "Save changes"}
-            </Button>
-          </DialogFooter>
+          <DialogFooterAction
+            onClose={onClose}
+            isPending={createApi.isPending}
+          />
         </form>
       </DialogContent>
     </Dialog>

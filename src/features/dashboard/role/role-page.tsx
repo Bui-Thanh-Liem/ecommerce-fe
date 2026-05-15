@@ -34,8 +34,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useFindAllPermissions } from "@/hooks/use-permission"
-import { useFindAllRoles, useUpdateRole } from "@/hooks/use-role"
+import { useFindAllPermissions } from "@/hooks/apis/use-permission"
+import { useFindAllRoles, useUpdateRole } from "@/hooks/apis/use-role"
 import { cn } from "@/lib/utils"
 import { UpdateRoleSchema } from "@/shared/dtos/req/role.dto"
 import { IPermission } from "@/shared/interfaces/models/permission.interface"
@@ -46,9 +46,9 @@ import { useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
-import { groupByKeyGroup } from "../permission/permission"
+import { groupByKeyGroup } from "../permission/permission-page"
+import { DataCard } from "@/components/data-card"
 import { RoleAdd } from "./role-add"
-import { Nothing } from "@/components/no-thing"
 
 function PermissionItem({
   permission,
@@ -397,22 +397,22 @@ function RoleCard({ role }: { role: IRole }) {
 
 export function RolePage() {
   const { data } = useFindAllRoles()
-  const roles = data?.metadata || []
+  const metadataRoles = data?.metadata
+
+  //
+  const [open, setOpen] = useState(false)
+
+  if (!metadataRoles) return null
 
   return (
-    <div className="space-y-6">
-      <RoleAdd />
-      {roles.length === 0 ? (
-        <div className="flex min-h-[calc(100vh-300px)] items-center justify-center">
-          <Nothing />
-        </div>
-      ) : (
-        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid max-h-[calc(100vh-180px)] grid-cols-1 gap-4 overflow-y-auto p-1 *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-          {roles.map((role) => (
-            <RoleCard role={role} key={role.id} />
-          ))}
-        </div>
-      )}
-    </div>
+    <>
+      <DataCard
+        dataSource={metadataRoles}
+        renderCard={(role) => <RoleCard role={role} />}
+        onAddCard={() => setOpen(true)}
+      />
+
+      <RoleAdd open={open} onClose={() => setOpen(false)} />
+    </>
   )
 }

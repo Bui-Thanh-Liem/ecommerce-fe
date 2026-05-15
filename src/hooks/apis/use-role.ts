@@ -1,11 +1,13 @@
 import { roleServices } from "@/services/role.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateRoleDto, UpdateRoleDto } from "@/shared/dtos/req/role.dto"
+import { IRole } from "@/shared/interfaces/models/role.interface"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllRoles = () => {
+export const useFindAllRoles = (query?: QueryDto<IRole>) => {
   return useQuery({
-    queryKey: ["roles"],
-    queryFn: roleServices.findAll,
+    queryKey: ["roles", query ? JSON.stringify(query) : null],
+    queryFn: () => roleServices.findAll(query),
   })
 }
 

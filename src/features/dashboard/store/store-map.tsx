@@ -232,10 +232,10 @@ export function StoreMap({
           return (
             <Marker key={store.id} position={position} icon={storeIcon}>
               <Popup
-                className="custom-popup"
                 minWidth={320}
                 maxWidth={420}
                 closeButton={false}
+                className="custom-popup rounded-2xl"
               >
                 <div className="space-y-3">
                   {/* Image */}

@@ -16,7 +16,7 @@ export const useFindAllLocationRegions = (
   })
 }
 
-export const useFindTreeData = (query?: QueryDto) => {
+export const useFindTreeDataLocationRegions = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["location-regions-tree"],
     queryFn: () => locationRegionServices.getTreeData(query),

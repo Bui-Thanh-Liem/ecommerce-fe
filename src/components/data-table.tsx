@@ -134,6 +134,18 @@ function DraggableRow<T extends IBase>({
   )
 }
 
+interface DataTableProps<T extends IBase> {
+  tabHeader?: string
+  onAddRow?: () => void
+  onEditRow?: (row: Row<T>) => void
+  onDeleteRow?: (row: Row<T>) => void
+  getRowClassName?: (row: T) => string
+  filters?: React.ReactNode
+  tabContent?: React.ReactNode
+  dataSource: ResMetadataDto<T>
+  columns: ColumnDef<T>[]
+}
+
 export function DataTable<T extends IBase>({
   filters,
   columns,
@@ -144,17 +156,7 @@ export function DataTable<T extends IBase>({
   dataSource,
   onDeleteRow,
   getRowClassName,
-}: {
-  tabHeader?: string
-  onAddRow?: () => void
-  columns: ColumnDef<T>[]
-  filters?: React.ReactNode
-  tabContent?: React.ReactNode
-  dataSource: ResMetadataDto<T>
-  onEditRow?: (row: Row<T>) => void
-  onDeleteRow?: (row: Row<T>) => void
-  getRowClassName?: (row: T) => string
-}) {
+}: DataTableProps<T>) {
   const { data: tableData, totalData, page, totalPage } = dataSource
 
   const [data, setData] = React.useState(() => tableData)
@@ -277,7 +279,7 @@ export function DataTable<T extends IBase>({
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => table.getRowModel().rows.map((row) => row.id), // Sử dụng row.id từ table engine
-    [table.getRowModel().rows]
+    [table]
   )
 
   function handleDragEnd(event: DragEndEvent) {
@@ -314,9 +316,12 @@ export function DataTable<T extends IBase>({
               <SelectItem value="table">
                 Table <Badge variant="secondary">{totalData}</Badge>
               </SelectItem>
-              <SelectItem value={tabHeader?.toLowerCase() || ""}>
-                {tabHeader} <Badge variant="secondary">{totalData}</Badge>
-              </SelectItem>
+
+              {tabHeader && (
+                <SelectItem value={tabHeader?.toLowerCase() || ""}>
+                  {tabHeader} <Badge variant="secondary">{totalData}</Badge>
+                </SelectItem>
+              )}
             </SelectGroup>
           </SelectContent>
         </Select>

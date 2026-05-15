@@ -35,16 +35,6 @@ export const teamServices = {
     return handleResponse<ResMetadataDto<ITeam>>(res)
   },
 
-  findAllByStore: async (storeId: string) => {
-    console.log(`Fetching teams for store: ${storeId}`)
-
-    const res = await apiCall<ITeam[]>(`/teams/store/${storeId}`, {
-      method: "GET",
-    })
-
-    return handleResponse<ITeam[]>(res)
-  },
-
   delete: async (id: string) => {
     const res = await apiCall(`/teams/${id}`, {
       method: "DELETE",
