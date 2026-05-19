@@ -1,4 +1,4 @@
-import { IStaff } from "@/shared/interfaces/models/staff.interface";
+import { IStaff } from "@/shared/interfaces/models/staff.interface"
 
 export interface ResSignInDto {
   staff: IStaff

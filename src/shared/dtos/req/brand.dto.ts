@@ -1,11 +1,12 @@
 import z from "zod"
+import { imageDtoSchema } from "../common/image.dto"
 
 export const CreateBrandSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required.")
     .max(100, "Name must be at most 100 characters."),
-  logoUrl: z.string(),
+  logo: imageDtoSchema,
   country: z
     .string()
     .min(1, "Country is required.")
