@@ -13,18 +13,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
-import {
-  CreateStoreSchema,
-  UpdateStoreSchema,
-} from "@/shared/dtos/req/store.dto"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect, useState } from "react"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
-import z from "zod"
-import { GenerateLocation } from "./genegate-location"
 import {
   Select,
   SelectContent,
@@ -33,10 +21,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import { useFindAllStaffs } from "@/hooks/apis/use-staff"
+import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
+import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
+import {
+  CreateStoreSchema,
+  UpdateStoreSchema,
+} from "@/shared/dtos/req/store.dto"
+import { Provider } from "@/shared/enums/provider.enum"
+import { IImage } from "@/shared/interfaces/common/image.interface"
+import { IStore } from "@/shared/interfaces/models/store.interface"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
-import { IStore } from "@/shared/interfaces/models/store.interface"
+import { useEffect, useState } from "react"
+import { Controller, useFieldArray, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import z from "zod"
+import { GenerateLocation } from "./generate-location"
 
 const initFormValue: z.infer<typeof CreateStoreSchema> = {
   country: "",
@@ -48,7 +52,11 @@ const initFormValue: z.infer<typeof CreateStoreSchema> = {
   lng: 0,
   isActive: true,
   name: "",
-  imageUrl: "",
+  image: {
+    url: "",
+    key: "",
+    provider: Provider.LOCAL,
+  },
   openingHours: "08:00:00",
   closingHours: "20:00:00",
   phone: [
@@ -75,12 +83,15 @@ export function StoreAction({
 }) {
   const createApi = useCreateStore()
   const updateApi = useUpdateStore()
+  const uploadApi = useUploadCloudinary()
 
   const { data: s } = useFindAllStaffs()
   const staffs = s?.metadata?.data || []
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [previewUrl, setPreviewUrl] = useState<string>(
+    dataEdit ? dataEdit.image?.url || "" : ""
+  )
 
   //
   const formSchema = !!dataEdit ? UpdateStoreSchema : CreateStoreSchema
@@ -121,11 +132,12 @@ export function StoreAction({
         closingHours: dataEdit.closingHours,
         phone: dataEdit.phone,
         manager: dataEdit.manager.id,
+        image: dataEdit.image,
       })
     } else {
       form.reset(initFormValue)
     }
-  }, [dataEdit])
+  }, [dataEdit, form])
 
   //
   useEffect(() => {
@@ -141,25 +153,42 @@ export function StoreAction({
         manager: initialData.manager?.id,
       })
     }
-  }, [initialData])
+  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {
     setOpen?.(open)
     if (!open) {
       onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+      setPreviewUrl("")
+      setSelectedFile(null)
+      form.reset(initFormValue)
     }
   }
 
   //
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
-      let finalImageUrl = ""
+      let image: IImage | null = null
 
-      // 1. Nếu có file được chọn, tiến hành upload lên S3
+      // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
-        // Giả sử bạn có hàm uploadToS3 đã viết ở câu trước
-        finalImageUrl = await uploadToS3(selectedFile)
+        const res = await uploadApi.mutateAsync({
+          payload: { folder: "stores" },
+          file: selectedFile,
+        })
+        if (res.url && res.public_id) {
+          image = {
+            url: res.url,
+            key: res.public_id,
+            provider: Provider.CLOUDINARY,
+          }
+        }
+      }
+
+      if (!image) {
+        toast.error("Image is required. Please select an image to upload.")
+        return
       }
 
       // 2. Gán link S3 vào data trước khi gửi cho backend
@@ -169,13 +198,13 @@ export function StoreAction({
           id: dataEdit.id,
           payload: {
             ...data,
-            imageUrl: finalImageUrl || dataEdit.imageUrl, // Nếu không chọn file mới, giữ nguyên link cũ
+            image: image,
           },
         })
       } else {
         res = await createApi.mutateAsync({
           ...data,
-          imageUrl: finalImageUrl, // Gán link ảnh vào payload
+          image: image,
         } as z.infer<typeof CreateStoreSchema>)
       }
 
@@ -189,6 +218,9 @@ export function StoreAction({
       console.error("Lỗi khi tạo cửa hàng:", error)
     }
   }
+
+  console.log("dataEdit dataEdit:", dataEdit)
+  console.log("previewUrl state:", previewUrl)
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -551,19 +583,4 @@ export function StoreAction({
       </DialogContent>
     </Dialog>
   )
-}
-
-// Hàm giả định để upload file lên server/S3 của bạn
-async function uploadToS3(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("file", file)
-
-  const response = await fetch("/api/upload", {
-    // Thay bằng endpoint thật của bạn
-    method: "POST",
-    body: formData,
-  })
-
-  const data = await response.json()
-  return data.url // Trả về link S3
 }

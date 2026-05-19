@@ -35,6 +35,7 @@ export function GenerateLocation({
   const provinceCityId = form.watch("provinceCity")
   const districtId = form.watch("districtTown")
 
+  //
   const { data: c } = useFindAllLocationRegions({
     filters: {
       type: LocationRegionType.COUNTRY,
@@ -42,6 +43,7 @@ export function GenerateLocation({
   })
   const countries = c?.metadata?.data || []
 
+  //
   const { data: p } = useFindAllLocationRegions({
     filters: {
       type: LocationRegionType.PROVINCE_CITY,
@@ -49,8 +51,8 @@ export function GenerateLocation({
     },
   })
   const provincesCities = p?.metadata?.data || []
-  console.log("Provinces/Cities:", provincesCities)
 
+  //
   const { data: d } = useFindAllLocationRegions({
     filters: {
       type: LocationRegionType.DISTRICT_TOWN,

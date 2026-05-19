@@ -34,7 +34,7 @@ export const storeColumns: ColumnDef<IStore>[] = [
       return (
         <div className="flex items-center justify-center gap-x-2">
           <Avatar className="size-14">
-            <AvatarImage src={store.imageUrl} />
+            <AvatarImage src={store.image?.url} />
             <AvatarFallback>ST</AvatarFallback>
           </Avatar>
           <div className="space-y-1">

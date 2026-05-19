@@ -1,54 +1,33 @@
 "use client"
-import dynamic from "next/dynamic"
-import L, { LatLngExpression } from "leaflet"
-import { IStore } from "@/shared/interfaces/models/store.interface"
-import Image from "next/image"
-import { useMapEvents } from "react-leaflet"
-import React from "react"
-import { Clock, PencilIcon, Phone, Trash2, User, X } from "lucide-react"
 import { Active } from "@/components/active"
 import { Button } from "@/components/ui/button"
+import { IStore } from "@/shared/interfaces/models/store.interface"
+import L, { LatLngExpression } from "leaflet"
+import { Clock, MapPin, PencilIcon, Phone, Trash2, User, X } from "lucide-react"
+import Image from "next/image"
+import React from "react"
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMapEvents,
+} from "react-leaflet"
 
-delete (L.Icon.Default.prototype as any)._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-})
+// Chỉ cấu hình icon lỗi của Leaflet khi đang ở môi trường Client (Browser)
+if (typeof window !== "undefined") {
+  delete (L.Icon.Default.prototype as any)._getIconUrl
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+    iconUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  })
+}
 
-// Dynamic import để tránh lỗi SSR
-const MapContainer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
-)
-const TileLayer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
-)
-const Marker = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
-)
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
-  ssr: false,
-})
-
-// Tạo icon màu đỏ bằng cách sử dụng CSS filter lên icon mặc định của Leaflet
-const redIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-})
-
-// Component để lắng nghe sự kiện click trên bản đồ
+// Component lắng nghe sự kiện click trên bản đồ
 function ClickHandler({
   setAddressInfo,
 }: {
@@ -57,9 +36,7 @@ function ClickHandler({
   useMapEvents({
     click: async (e) => {
       const { lat, lng } = e.latlng
-
       try {
-        // Gọi API của Nominatim (OpenStreetMap)
         const response = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=vi`
         )
@@ -77,24 +54,22 @@ function ClickHandler({
   return null
 }
 
-// Component để hiển thị vị trí hiện tại của người dùng
+// Component hiển thị vị trí hiện tại của người dùng
 function LocationMarker() {
   const [position, setPosition] = React.useState<L.LatLng | null>(null)
 
   const map = useMapEvents({
-    // Khi bản đồ đã tìm thấy vị trí
     locationfound(e) {
       setPosition(e.latlng)
-      map.flyTo(e.latlng, map.getZoom()) // Bay tới vị trí đó với hiệu ứng mượt
+      map.flyTo(e.latlng, map.getZoom())
     },
-    // Nếu người từ chối cho phép lấy vị trí
     locationerror() {
       alert("Không thể truy cập vị trí của bạn. Vui lòng cấp quyền.")
     },
   })
 
-  // Chạy lệnh tìm kiếm ngay khi component mount
   React.useEffect(() => {
+    // Bây giờ map đã là một Leaflet Map instance xịn nên gọi .locate() thoải mái
     map.locate()
   }, [map])
 
@@ -105,34 +80,21 @@ function LocationMarker() {
   )
 }
 
-// Hàm để lấy vị trí hiện tại của người dùng khi bấm nút
 const handleGetLocation = (map: L.Map) => {
   if (!navigator.geolocation) {
     alert("Trình duyệt của bạn không hỗ trợ định vị.")
     return
   }
-
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords
-      map.flyTo([latitude, longitude], 15) // Nhảy tới vị trí với zoom 15
+      map.flyTo([latitude, longitude], 15)
     },
     () => {
       alert("Không thể lấy vị trí. Hãy kiểm tra cài đặt quyền truy cập.")
     }
   )
 }
-
-// Tạo icon cho marker của cửa hàng
-const storeIcon = L.icon({
-  iconUrl: "/images/dmx.jpg", // Đường dẫn đến file ảnh trong thư mục public
-  // shadowUrl:
-  //   "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  iconSize: [35, 35], // Kích thước icon [rộng, cao]
-  iconAnchor: [17, 35], // Điểm của icon sẽ đặt chính xác vào tọa độ (thường là dưới cùng giữa)
-  popupAnchor: [0, -35], // Điểm mà popup sẽ hiện ra so với iconAnchor
-  className: "rounded-full border-2 border-white", // Thêm lớp CSS để làm tròn và viền trắng
-})
 
 interface StoreMapProps {
   stores: IStore[]
@@ -141,7 +103,6 @@ interface StoreMapProps {
   onDelete?: (store: IStore) => void
 }
 
-//
 export function StoreMap({
   stores,
   onCreate,
@@ -154,14 +115,29 @@ export function StoreMap({
     lat: number
     lng: number
   } | null>(null)
+
   const center: LatLngExpression = [10.8231, 106.6297] // TP.HCM mặc định
+
+  // Tạo icon đỏ tĩnh cho marker click chọn vị trí
+  const redIcon = L.icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  })
 
   return (
     <div className="relative overflow-hidden rounded-2xl">
-      {/* Hiển thị địa chỉ vừa chọn ở một góc bản đồ */}
       {selectedInfo && (
         <div className="absolute top-4 left-12 z-1000 max-w-sm space-y-2 rounded-xl bg-white p-4 shadow-md">
-          <X className="ml-auto" onClick={() => setSelectedInfo(null)} />
+          <X
+            className="ml-auto cursor-pointer"
+            onClick={() => setSelectedInfo(null)}
+          />
           <p className="text-sm font-bold">Selected address:</p>
           <p className="text-sm">{selectedInfo.address}</p>
           <p className="text-xs text-gray-500">
@@ -176,7 +152,6 @@ export function StoreMap({
         </div>
       )}
 
-      {/* Nút bấm lấy vị trí */}
       <button
         onClick={() => map && handleGetLocation(map)}
         className="absolute right-10 bottom-10 z-1000 rounded-full bg-blue-500 p-3 text-white shadow-lg hover:bg-blue-600"
@@ -187,7 +162,7 @@ export function StoreMap({
       <MapContainer
         zoom={13}
         center={center}
-        ref={setMap} // Lấy instance của map ở đây
+        ref={setMap}
         style={{ height: "calc(100vh - 180px)", width: "100%" }}
       >
         <TileLayer
@@ -195,42 +170,39 @@ export function StoreMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Hiển thị vị trí hiện tại của người dùng */}
         <LocationMarker />
-
-        {/* Component lắng nghe sự kiện click */}
         <ClickHandler setAddressInfo={setSelectedInfo} />
 
-        {/* Hiển thị Marker tại vị trí vừa click */}
         {selectedInfo && (
           <Marker
             position={[selectedInfo.lat, selectedInfo.lng]}
-            icon={redIcon} // Đổi thành màu đỏ ở đây
+            icon={redIcon}
           >
             <Popup>
-              <span style={{ color: "red", fontWeight: "bold" }}>
-                Vị trí đã chọn:
-              </span>{" "}
+              <span className="font-bold text-red-500">Vị trí đã chọn:</span>
               <br />
               {selectedInfo.address}
             </Popup>
           </Marker>
         )}
 
-        {/* Hiển thị các điểm cửa hàng */}
         {stores.map((store) => {
           const position: LatLngExpression = [store.lat, store.lng]
-
           const opening = store.openingHours?.slice(0, 5) || "08:00"
           const closing = store.closingHours?.slice(0, 5) || "20:00"
 
-          const country = store.country?.name || "N/A"
-          const province = store.provinceCity?.name || "N/A"
-          const district = store.districtTown?.name || "N/A"
-          const ward = store.wardCommune?.name || "N/A"
+          // Khởi tạo icon động từ store image vô cùng mượt mà
+          const dynamicStoreIcon = L.icon({
+            iconUrl: store.image?.url || "/images/dmx.jpg",
+            iconSize: [35, 35],
+            iconAnchor: [17, 35],
+            popupAnchor: [0, -35],
+            className:
+              "rounded-full border-2 border-white object-cover bg-white shadow-md",
+          })
 
           return (
-            <Marker key={store.id} position={position} icon={storeIcon}>
+            <Marker key={store.id} position={position} icon={dynamicStoreIcon}>
               <Popup
                 minWidth={320}
                 maxWidth={420}
@@ -238,18 +210,16 @@ export function StoreMap({
                 className="custom-popup rounded-2xl"
               >
                 <div className="space-y-3">
-                  {/* Image */}
-                  {store.imageUrl && (
+                  {store.image?.url && (
                     <Image
-                      // width={400}
-                      // height={300}
-                      src={store.imageUrl}
+                      width={400}
+                      height={200}
                       alt={store.name}
+                      src={store.image.url}
                       className="h-auto w-full rounded-lg object-cover"
                     />
                   )}
 
-                  {/* Thông tin chính */}
                   <div>
                     <h3 className="flex items-center gap-x-2 text-lg leading-tight font-semibold">
                       {store.name}
@@ -271,14 +241,17 @@ export function StoreMap({
                         </Button>
                       </div>
                     </h3>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      {store.address}
-                    </p>
                   </div>
 
-                  {/* Giờ mở cửa */}
+                  <div className="text-muted-foreground text-sm">
+                    {store.country?.name || "N/A"},{" "}
+                    {store.wardCommune?.name || "N/A"},{" "}
+                    {store.districtTown?.name || "N/A"},{" "}
+                    {store.provinceCity?.name || "N/A"}
+                  </div>
+
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-green-600">
+                    <span>
                       <Clock size={20} />
                     </span>
                     <span>
@@ -286,28 +259,21 @@ export function StoreMap({
                     </span>
                   </div>
 
-                  {/* Địa chỉ hành chính */}
-                  <div className="text-muted-foreground text-sm">
-                    {country}, {ward}, {district}, {province}
-                  </div>
-
-                  {/* Số điện thoại */}
                   {store.phone && store.phone.length > 0 && (
                     <div className="space-y-1 text-sm">
-                      {store.phone.map((p: any, index: number) => (
+                      {store.phone.map((p, index: number) => (
                         <a
                           key={index}
                           href={`tel:${p.phone}`}
-                          className="hover:text-primary flex items-center gap-2 transition-colors"
+                          className="flex items-center gap-2"
                         >
-                          <Phone size={20} /> {p.name ? `${p.name}: ` : ""}
+                          <Phone size={18} /> {p.name ? `${p.name}: ` : ""}
                           <span className="font-medium">{p.phone}</span>
                         </a>
                       ))}
                     </div>
                   )}
 
-                  {/* Quản lý */}
                   {store.manager && (
                     <div className="text-muted-foreground flex items-center gap-2 text-sm">
                       <User size={20} /> Quản lý:{" "}
@@ -316,6 +282,13 @@ export function StoreMap({
                       </span>
                     </div>
                   )}
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <span>
+                      <MapPin size={20} />
+                    </span>
+                    {store.address}
+                  </div>
                 </div>
               </Popup>
             </Marker>

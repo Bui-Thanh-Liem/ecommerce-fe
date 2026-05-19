@@ -211,6 +211,7 @@ interface ITeamHierarchyProps {
   deleteMember?: (team: ITeam, staffId: string) => void
   promoteToLeader?: (team: ITeam, staffId: string) => void
 }
+
 // --- MAIN COMPONENT ---
 export function TeamHierarchy({
   dataSource,

@@ -1,4 +1,5 @@
 import { IBase } from "../common/base.interface"
+import { IImage } from "../common/image.interface"
 import { IPhoneStore } from "../common/phone-store.interface"
 import { IInventory } from "./inventory.interface"
 import { ILocationRegion } from "./location-region.interface"
@@ -13,7 +14,7 @@ export interface IStore extends IBase {
   wardCommune: ILocationRegion
   address: string
   name: string
-  imageUrl?: string
+  image?: IImage
   phone: IPhoneStore[]
   openingHours: string // Ví dụ: "8:00 AM - 10:00 PM"
   closingHours: string // Ví dụ: "8:00 AM - 10:00 PM"

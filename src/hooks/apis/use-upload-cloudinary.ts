@@ -1,5 +1,6 @@
 import { cloudinaryServices } from "@/services/upload/cloudinary.service"
 import { SignatureDto } from "@/shared/dtos/req/cloudinary.dto"
+import { ICloudinaryUploadResponse } from "@/shared/interfaces/common/cloudinary-upload-response.interface"
 import { useMutation } from "@tanstack/react-query"
 
 export const useSignatureCloudinary = () => {
@@ -53,7 +54,7 @@ export const useUploadCloudinary = () => {
         throw new Error("Upload to Cloudinary failed")
       }
 
-      return res.json()
+      return res.json() as Promise<ICloudinaryUploadResponse>
     },
 
     //

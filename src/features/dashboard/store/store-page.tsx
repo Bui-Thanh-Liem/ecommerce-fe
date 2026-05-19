@@ -1,16 +1,25 @@
 "use client"
-import { useDeleteStore, useFindAllStores } from "@/hooks/apis/use-store"
 import { DataTable } from "@/components/data-table"
-import { storeColumns } from "./store-column"
-import { useState } from "react"
+import { useDeleteStore, useFindAllStores } from "@/hooks/apis/use-store"
 import { IStore } from "@/shared/interfaces/models/store.interface"
+import dynamic from "next/dynamic"
+import { useState } from "react"
 import { StoreAction } from "./store-action"
-import { StoreMap } from "./store-map"
+import { storeColumns } from "./store-column"
+const StoreMap = dynamic(
+  () =>
+    import("@/features/dashboard/store/store-map").then((mod) => mod.StoreMap),
+  {
+    ssr: false,
+    loading: () => <span>Đang tải bản đồ...</span>,
+  }
+)
 
 export function StorePage() {
   const { mutateAsync } = useDeleteStore()
   const { data } = useFindAllStores()
   const metadataStores = data?.metadata
+  console.log("metadataStores:", metadataStores)
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)

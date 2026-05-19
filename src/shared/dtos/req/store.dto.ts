@@ -1,4 +1,5 @@
 import z from "zod"
+import { imageDtoSchema } from "../common/image.dto"
 
 const PhoneStoreSchema = z.object({
   name: z
@@ -30,7 +31,7 @@ export const CreateStoreSchema = z.object({
     .string()
     .min(1, "Name is required.")
     .max(100, "Name must be at most 100 characters."),
-  imageUrl: z.string().optional(),
+  image: imageDtoSchema.optional(),
   openingHours: z
     .string()
     .min(1, "Opening hours is required.")
