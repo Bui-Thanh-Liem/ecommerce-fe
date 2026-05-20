@@ -1,11 +1,12 @@
 import { IBase } from "../common/base.interface"
+import { IImage } from "../common/image.interface"
 import { ICategoryPromotion } from "./category-promotion.interface"
 import { IProduct } from "./product.interface"
 
 export interface ICategory extends IBase {
   name: string
   slug: string
-  imageUrl: string
+  image: IImage
   code: string
   desc?: string | null
   parent?: ICategory | null

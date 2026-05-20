@@ -20,12 +20,15 @@ import { ICategory } from "@/shared/interfaces/models/category.interface"
 import { Badge } from "@/components/ui/badge"
 import { DataCard } from "@/components/data-card"
 import { CategoryHierarchy } from "./category-hierarchy"
+import { cn } from "@/lib/utils"
 
 function CategoryCard({
   onEdit,
   category,
   onDelete,
+  isPending,
 }: {
+  isPending?: boolean
   category: ICategory
   onEdit?: (category: ICategory) => void
   onDelete?: (category: ICategory) => void
@@ -36,9 +39,7 @@ function CategoryCard({
         <Image
           fill // có abs sẵn
           alt={category.name}
-          src={
-            "https://upload.wikimedia.org/wikipedia/commons/e/ee/Toyota_logo_%28Red%29.svg"
-          }
+          src={category.image?.url || "/placeholder-image.png"}
           className="object-cover"
         />
       </div>
@@ -75,13 +76,19 @@ function CategoryCard({
           </Badge>
         )}
       </div>
+
+      <div className={cn("absolute inset-0 hidden", isPending && "flex")}>
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 backdrop-blur-sm">
+          <span className="font-medium text-amber-700">Processing...</span>
+        </div>
+      </div>
     </Card>
   )
 }
 
 export function CategoryPage() {
   //
-  const { mutateAsync } = useDeleteCategory()
+  const { mutateAsync, isPending } = useDeleteCategory()
   const { data } = useFindAllCategories()
   const metadataCategories = data?.metadata
 
@@ -127,6 +134,7 @@ export function CategoryPage() {
             onDelete={(category) => {
               handleDelete(category)
             }}
+            isPending={isPending}
           />
         )}
         onAddCard={() => {

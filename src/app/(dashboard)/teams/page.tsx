@@ -1,4 +1,4 @@
-import { TeamPage } from "@/features/dashboard/team/team-page"
+import { TeamPage } from "@/features/manager/team/team-page"
 
 export default function Page() {
   return (

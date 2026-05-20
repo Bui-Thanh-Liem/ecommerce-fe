@@ -6,7 +6,7 @@ export const CreateBrandSchema = z.object({
     .string()
     .min(1, "Name is required.")
     .max(100, "Name must be at most 100 characters."),
-  logo: imageDtoSchema,
+  image: imageDtoSchema.optional(),
   country: z
     .string()
     .min(1, "Country is required.")

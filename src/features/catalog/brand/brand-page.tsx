@@ -16,13 +16,16 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DataCard } from "@/components/data-card"
+import { cn } from "@/lib/utils"
 
 function BrandCard({
   brand,
   onEdit,
   onDelete,
+  isPending,
 }: {
   brand: IBrand
+  isPending?: boolean
   onEdit?: (brand: IBrand) => void
   onDelete?: (brand: IBrand) => void
 }) {
@@ -32,9 +35,7 @@ function BrandCard({
         <Image
           fill // có abs sẵn
           alt={brand.name}
-          src={
-            "https://upload.wikimedia.org/wikipedia/commons/e/ee/Toyota_logo_%28Red%29.svg"
-          }
+          src={brand.image?.url || "/placeholder-image.png"}
           className="object-cover"
         />
       </div>
@@ -63,13 +64,19 @@ function BrandCard({
           <strong>Country</strong>: {brand.country}
         </CardDescription>
       </CardHeader>
+
+      <div className={cn("absolute inset-0 hidden", isPending && "flex")}>
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 backdrop-blur-sm">
+          <span className="font-medium text-amber-700">Processing...</span>
+        </div>
+      </div>
     </Card>
   )
 }
 
 export function BrandPage() {
   //
-  const { mutateAsync } = useDeleteBrand()
+  const { mutateAsync, isPending } = useDeleteBrand()
   const { data } = useFindAllBrands()
   const metadataBrands = data?.metadata
 
@@ -114,6 +121,7 @@ export function BrandPage() {
             onDelete={(brand) => {
               handleDelete(brand)
             }}
+            isPending={isPending}
           />
         )}
         onAddCard={() => {

@@ -1,11 +1,12 @@
 import z from "zod"
+import { imageDtoSchema } from "../common/image.dto"
 
 export const CreateCategorySchema = z.object({
   name: z
     .string()
     .min(1, "Name is required.")
     .max(50, "Name must be at most 50 characters."),
-  imageUrl: z.string(),
+  image: imageDtoSchema.optional(),
   desc: z
     .string()
     .min(1, "Description is required.")

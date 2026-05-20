@@ -1,4 +1,4 @@
-import { BrandPage } from "@/features/dashboard/brand/brand-page"
+import { BrandPage } from "@/features/catalog/brand/brand-page"
 
 export default function Page() {
   return (

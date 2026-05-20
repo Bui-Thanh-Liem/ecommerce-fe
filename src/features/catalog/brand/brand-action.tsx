@@ -12,66 +12,52 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useCreateBrand, useUpdateBrand } from "@/hooks/apis/use-brand"
+import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  useCreateCategory,
-  useFindAllCategories,
-  useUpdateCategory,
-} from "@/hooks/apis/use-category"
-import {
-  CreateCategorySchema,
-  UpdateCategorySchema,
-} from "@/shared/dtos/req/category.dto"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+  CreateBrandSchema,
+  UpdateBrandSchema,
+} from "@/shared/dtos/req/brand.dto"
+import { Provider } from "@/shared/enums/provider.enum"
+import { IImage } from "@/shared/interfaces/common/image.interface"
+import { IBrand } from "@/shared/interfaces/models/brand.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateCategorySchema> = {
+const initFormValue: z.infer<typeof CreateBrandSchema> = {
   name: "",
-  desc: "",
-  imageUrl: "",
-  parent: undefined,
+  country: "",
+  image: undefined,
 }
 
-export function CategoryAction({
+export function BrandAction({
   open,
   onClose,
   dataEdit,
-  initialData,
   onOpenChange,
 }: {
   open: boolean
   onClose?: () => void
-  initialData?: ICategory | null
-  dataEdit: ICategory | null
+  dataEdit: IBrand | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
-  const createApi = useCreateCategory()
-  const updateApi = useUpdateCategory()
-
-  //
-  const { data: categoryData } = useFindAllCategories()
-  const categories = categoryData?.metadata?.data || []
+  const createApi = useCreateBrand()
+  const updateApi = useUpdateBrand()
+  const uploadApi = useUploadCloudinary()
 
   //
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [isPending, setIsPending] = useState(false)
 
   //
-  const formSchema = !!dataEdit ? UpdateCategorySchema : CreateCategorySchema
+  const formSchema = !!dataEdit ? UpdateBrandSchema : CreateBrandSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -91,58 +77,71 @@ export function CategoryAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        name: dataEdit.name || "",
-        desc: dataEdit.desc || "",
-        imageUrl: dataEdit.imageUrl || "",
-        parent: dataEdit.parent?.id || undefined,
+        name: dataEdit.name,
+        image: dataEdit.image,
+        country: dataEdit.country,
       })
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPreviewUrl(dataEdit.image?.url || "")
     } else {
       form.reset(initFormValue)
+      setPreviewUrl("")
     }
   }, [dataEdit, form])
-
-  //
-  useEffect(() => {
-    if (initialData) {
-      const parent = initialData.parent
-      if (!parent) return
-
-      form.reset({
-        ...initFormValue,
-        parent: initialData?.id,
-      })
-    }
-  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {
     onOpenChange?.(open)
     if (!open) {
       onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+      setPreviewUrl("")
+      setSelectedFile(null)
+      form.reset(initFormValue)
     }
   }
 
   //
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsPending(true)
     try {
-      let imageUrl = ""
+      let image: IImage | undefined = dataEdit?.image
 
-      // 1. Nếu có file được chọn, tiến hành upload lên S3
+      // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
-        // Giả sử bạn có hàm uploadToS3 đã viết ở câu trước
-        imageUrl = await uploadToS3(selectedFile)
+        const res = await uploadApi.mutateAsync({
+          payload: { folder: "brand" },
+          file: selectedFile,
+        })
+
+        if (res.url && res.public_id) {
+          image = {
+            url: res.url,
+            key: res.public_id,
+            provider: Provider.CLOUDINARY,
+          }
+        }
       }
 
+      if (!image) {
+        toast.error("Image is required. Please select an image to upload.")
+        return
+      }
+
+      // 2. Gọi API tạo mới hoặc cập nhật brand
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
           id: dataEdit.id,
-          payload: { ...data, imageUrl },
+          payload: {
+            ...data,
+            image: image,
+          },
         })
       } else {
-        res = await createApi.mutateAsync({ ...data, imageUrl } as z.infer<
-          typeof CreateCategorySchema
-        >)
+        res = await createApi.mutateAsync({
+          ...data,
+          image: image,
+        } as z.infer<typeof CreateBrandSchema>)
       }
 
       if (res && [200, 201].includes(res?.statusCode)) {
@@ -150,21 +149,26 @@ export function CategoryAction({
         onClose?.()
       }
     } catch (error) {
-      console.error("Failed to create category:", error)
+      toast.error(
+        "Error saving brand. Please try again. " +
+          (error instanceof Error ? error.message : "")
+      )
+    } finally {
+      setIsPending(false)
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-md">
         <DialogHeaderAction
-          title={!!dataEdit ? "Edit Category" : "Add New Category"}
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new category.`}
+          title={!!dataEdit ? "Edit Brand" : "Add New Brand"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new brand.`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
           <FieldGroup>
-            <FieldLabel htmlFor="form-rhf-input-store-image">Image</FieldLabel>
+            <FieldLabel htmlFor="form-rhf-input-store-image">Logo</FieldLabel>
             <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed p-4">
               {previewUrl ? (
                 <div className="relative h-40 w-full overflow-hidden rounded-md border">
@@ -231,20 +235,20 @@ export function CategoryAction({
 
           <FieldGroup>
             <Controller
-              name="desc"
+              name="country"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-desc">
-                    Description
+                  <FieldLabel htmlFor="form-rhf-input-country">
+                    Country
                   </FieldLabel>
-                  <Textarea
+                  <Input
                     {...field}
-                    rows={2}
+                    type="text"
                     aria-invalid={fieldState.invalid}
-                    placeholder="Enter description here..."
-                    id="form-rhf-textarea-desc"
-                    className="resize-none"
+                    placeholder="country"
+                    autoComplete="country"
+                    id="form-rhf-input-country"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -254,66 +258,9 @@ export function CategoryAction({
             />
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="parent"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-parent">
-                      Parent Category
-                    </FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
-          <DialogFooterAction
-            onClose={onClose}
-            isPending={createApi.isPending}
-          />
+          <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>
       </DialogContent>
     </Dialog>
   )
-}
-
-// Hàm giả định để upload file lên server/S3 của bạn
-async function uploadToS3(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("file", file)
-
-  const response = await fetch("/api/upload", {
-    // Thay bằng endpoint thật của bạn
-    method: "POST",
-    body: formData,
-  })
-
-  const data = await response.json()
-  return data.url || "url-default" // Trả về link S3
 }

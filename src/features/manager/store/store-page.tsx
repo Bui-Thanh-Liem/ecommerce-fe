@@ -6,12 +6,16 @@ import dynamic from "next/dynamic"
 import { useState } from "react"
 import { StoreAction } from "./store-action"
 import { storeColumns } from "./store-column"
+
 const StoreMap = dynamic(
-  () =>
-    import("@/features/dashboard/store/store-map").then((mod) => mod.StoreMap),
+  () => import("@/features/manager/store/store-map").then((mod) => mod.StoreMap),
   {
     ssr: false,
-    loading: () => <span>Đang tải bản đồ...</span>,
+    loading: () => (
+      <div className="flex items-center justify-center">
+        <p>Đang tải bản đồ...</p>
+      </div>
+    ),
   }
 )
 
@@ -19,7 +23,6 @@ export function StorePage() {
   const { mutateAsync } = useDeleteStore()
   const { data } = useFindAllStores()
   const metadataStores = data?.metadata
-  console.log("metadataStores:", metadataStores)
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)

@@ -12,46 +12,72 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useCreateBrand, useUpdateBrand } from "@/hooks/apis/use-brand"
 import {
-  CreateBrandSchema,
-  UpdateBrandSchema,
-} from "@/shared/dtos/req/brand.dto"
-import { IBrand } from "@/shared/interfaces/models/brand.interface"
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  useCreateCategory,
+  useFindAllCategories,
+  useUpdateCategory,
+} from "@/hooks/apis/use-category"
+import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
+import {
+  CreateCategorySchema,
+  UpdateCategorySchema,
+} from "@/shared/dtos/req/category.dto"
+import { Provider } from "@/shared/enums/provider.enum"
+import { IImage } from "@/shared/interfaces/common/image.interface"
+import { ICategory } from "@/shared/interfaces/models/category.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateBrandSchema> = {
+const initFormValue: z.infer<typeof CreateCategorySchema> = {
   name: "",
-  logoUrl: "",
-  country: "",
+  desc: "",
+  image: undefined,
+  parent: undefined,
 }
 
-export function BrandAction({
+export function CategoryAction({
   open,
   onClose,
   dataEdit,
+  initialData,
   onOpenChange,
 }: {
   open: boolean
   onClose?: () => void
-  dataEdit: IBrand | null
+  initialData?: ICategory | null
+  dataEdit: ICategory | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
-  const createApi = useCreateBrand()
-  const updateApi = useUpdateBrand()
+  const createApi = useCreateCategory()
+  const updateApi = useUpdateCategory()
+  const uploadApi = useUploadCloudinary()
+
+  //
+  const { data: categoryData } = useFindAllCategories()
+  const categories = categoryData?.metadata?.data || []
 
   //
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [isPending, setIsPending] = useState(false)
 
   //
-  const formSchema = !!dataEdit ? UpdateBrandSchema : CreateBrandSchema
+  const formSchema = !!dataEdit ? UpdateCategorySchema : CreateCategorySchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -71,14 +97,31 @@ export function BrandAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        name: dataEdit.name || "",
-        logoUrl: dataEdit.logoUrl || "",
-        country: dataEdit.country || "",
+        name: dataEdit.name,
+        image: dataEdit.image,
+        desc: dataEdit.desc || "",
+        parent: dataEdit.parent?.id,
       })
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPreviewUrl(dataEdit.image?.url || "")
     } else {
       form.reset(initFormValue)
+      setPreviewUrl("")
     }
   }, [dataEdit, form])
+
+  //
+  useEffect(() => {
+    if (initialData) {
+      const parent = initialData.parent
+      if (!parent) return
+
+      form.reset({
+        ...initFormValue,
+        parent: initialData?.id,
+      })
+    }
+  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {
@@ -90,25 +133,40 @@ export function BrandAction({
 
   //
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsPending(true)
     try {
-      let logoUrl = ""
+      let image: IImage | undefined = dataEdit?.image
 
-      // 1. Nếu có file được chọn, tiến hành upload lên S3
+      // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
-        // Giả sử bạn có hàm uploadToS3 đã viết ở câu trước
-        logoUrl = await uploadToS3(selectedFile)
+        const res = await uploadApi.mutateAsync({
+          payload: { folder: "category" },
+          file: selectedFile,
+        })
+
+        if (res.url && res.public_id) {
+          image = {
+            url: res.url,
+            key: res.public_id,
+            provider: Provider.CLOUDINARY,
+          }
+        }
       }
-      console.log("logoUrl after upload :::", logoUrl)
+
+      if (!image) {
+        toast.error("Image is required. Please select an image to upload.")
+        return
+      }
 
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
           id: dataEdit.id,
-          payload: { ...data, logoUrl },
+          payload: { ...data, image },
         })
       } else {
-        res = await createApi.mutateAsync({ ...data, logoUrl } as z.infer<
-          typeof CreateBrandSchema
+        res = await createApi.mutateAsync({ ...data, image } as z.infer<
+          typeof CreateCategorySchema
         >)
       }
 
@@ -117,21 +175,23 @@ export function BrandAction({
         onClose?.()
       }
     } catch (error) {
-      console.error("Failed to create brand:", error)
+      console.error("Failed to create category:", error)
+    } finally {
+      setIsPending(false)
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeaderAction
-          title={!!dataEdit ? "Edit Brand" : "Add New Brand"}
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new brand.`}
+          title={!!dataEdit ? "Edit Category" : "Add New Category"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new category.`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
           <FieldGroup>
-            <FieldLabel htmlFor="form-rhf-input-store-image">Logo</FieldLabel>
+            <FieldLabel htmlFor="form-rhf-input-store-image">Image</FieldLabel>
             <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed p-4">
               {previewUrl ? (
                 <div className="relative h-40 w-full overflow-hidden rounded-md border">
@@ -198,20 +258,20 @@ export function BrandAction({
 
           <FieldGroup>
             <Controller
-              name="country"
+              name="desc"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-country">
-                    Country
+                  <FieldLabel htmlFor="form-rhf-input-desc">
+                    Description
                   </FieldLabel>
-                  <Input
+                  <Textarea
                     {...field}
-                    type="text"
+                    rows={2}
                     aria-invalid={fieldState.invalid}
-                    placeholder="country"
-                    autoComplete="country"
-                    id="form-rhf-input-country"
+                    placeholder="Enter description here..."
+                    id="form-rhf-textarea-desc"
+                    className="resize-none"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -221,27 +281,48 @@ export function BrandAction({
             />
           </FieldGroup>
 
-          <DialogFooterAction
-            onClose={onClose}
-            isPending={createApi.isPending}
-          />
+          <FieldGroup>
+            <Controller
+              name="parent"
+              control={form.control}
+              render={({ field, fieldState }) => {
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-parent">
+                      Parent Category
+                    </FieldLabel>
+
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                        size="sm"
+                        id="form-leader"
+                      >
+                        <SelectValue placeholder="Select a leader" />
+                      </SelectTrigger>
+                      <SelectContent align="end" className="z-3000">
+                        <SelectGroup>
+                          {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+          </FieldGroup>
+
+          <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>
       </DialogContent>
     </Dialog>
   )
-}
-
-// Hàm giả định để upload file lên server/S3 của bạn
-async function uploadToS3(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("file", file)
-
-  const response = await fetch("/api/upload", {
-    // Thay bằng endpoint thật của bạn
-    method: "POST",
-    body: formData,
-  })
-
-  const data = await response.json()
-  return data.url || "url-default" // Trả về link S3
 }

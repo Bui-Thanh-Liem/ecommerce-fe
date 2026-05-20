@@ -89,9 +89,8 @@ export function StoreAction({
   const staffs = s?.metadata?.data || []
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>(
-    dataEdit ? dataEdit.image?.url || "" : ""
-  )
+  const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [isPending, setIsPending] = useState(false)
 
   //
   const formSchema = !!dataEdit ? UpdateStoreSchema : CreateStoreSchema
@@ -134,8 +133,11 @@ export function StoreAction({
         manager: dataEdit.manager.id,
         image: dataEdit.image,
       })
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPreviewUrl(dataEdit.image?.url || "")
     } else {
       form.reset(initFormValue)
+      setPreviewUrl("")
     }
   }, [dataEdit, form])
 
@@ -168,8 +170,9 @@ export function StoreAction({
 
   //
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsPending(true)
     try {
-      let image: IImage | null = null
+      let image: IImage | undefined = dataEdit?.image
 
       // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
@@ -177,6 +180,7 @@ export function StoreAction({
           payload: { folder: "stores" },
           file: selectedFile,
         })
+
         if (res.url && res.public_id) {
           image = {
             url: res.url,
@@ -191,7 +195,7 @@ export function StoreAction({
         return
       }
 
-      // 2. Gán link S3 vào data trước khi gửi cho backend
+      // 2. Gán link cloudinary mới vào data để gửi lên API
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
@@ -215,12 +219,14 @@ export function StoreAction({
         setPreviewUrl("")
       }
     } catch (error) {
-      console.error("Lỗi khi tạo cửa hàng:", error)
+      toast.error(
+        "Error saving store. Please try again. " +
+          (error instanceof Error ? error.message : "")
+      )
+    } finally {
+      setIsPending(false)
     }
   }
-
-  console.log("dataEdit dataEdit:", dataEdit)
-  console.log("previewUrl state:", previewUrl)
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -575,10 +581,7 @@ export function StoreAction({
             </div>
           </div>
 
-          <DialogFooterAction
-            onClose={onClose}
-            isPending={createApi.isPending || updateApi.isPending}
-          />
+          <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>
       </DialogContent>
     </Dialog>

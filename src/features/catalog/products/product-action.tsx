@@ -30,12 +30,15 @@ import {
   UpdateProductSchema,
 } from "@/shared/dtos/req/product.dto"
 import { ProductStatus } from "@/shared/enums/product-status.enum"
+import { Provider } from "@/shared/enums/provider.enum"
+import { IImage } from "@/shared/interfaces/common/image.interface"
 import { IProduct } from "@/shared/interfaces/models/product.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
 
 const initFormValue: z.infer<typeof CreateProductSchema> = {
@@ -78,6 +81,8 @@ export function ProductAction({
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previews, setPreviews] = useState<PreviewImage[]>([])
+  const [selectedFiles, setSelectedFiles] = useState<File[] | null>(null)
+  const [isPending, setIsPending] = useState(false)
 
   const formSchema = !!dataEdit ? UpdateProductSchema : CreateProductSchema
   const form = useForm<z.infer<typeof formSchema>>({
@@ -95,14 +100,16 @@ export function ProductAction({
         brand: dataEdit.brand.id,
         basePrice: dataEdit.basePrice,
         category: dataEdit.category.id,
-        productImages: dataEdit.productImages || [],
+        productImages:
+          dataEdit.productImages?.map((img) => ({ url: img.image.url })) || [],
       })
 
       // Nếu có ảnh cũ từ API, map vào danh sách preview
       if (dataEdit.productImages) {
         const existingImages = dataEdit.productImages.map((img) => ({
-          url: img.url,
+          url: img.image.url,
         })) as PreviewImage[]
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreviews(existingImages)
       }
     } else {
@@ -127,6 +134,7 @@ export function ProductAction({
     const files = e.target.files
     if (files && files.length > 0) {
       const newFilesArray = Array.from(files)
+      setSelectedFiles(newFilesArray)
 
       // Tạo object preview cho các file mới
       const newPreviews: PreviewImage[] = newFilesArray.map((file) => ({
@@ -137,13 +145,6 @@ export function ProductAction({
       // Cập nhật danh sách preview trên UI
       const updatedPreviews = [...previews, ...newPreviews]
       setPreviews(updatedPreviews)
-
-      //
-      const res = await uploadApi.mutateAsync({
-        payload: { folder: "products" },
-        file: newFilesArray[0] as File,
-      })
-      console.log("handleFileChange :::", res)
     }
   }
 
@@ -159,6 +160,11 @@ export function ProductAction({
     // Cập nhật lại UI previews
     const updatedPreviews = previews.filter((_, idx) => idx !== indexToRemove)
     setPreviews(updatedPreviews)
+    setSelectedFiles((prev) => {
+      if (!prev) return null
+      const newFiles = prev.filter((_, idx) => idx !== indexToRemove)
+      return newFiles.length > 0 ? newFiles : null
+    })
 
     // Cập nhật lại dữ liệu trong React Hook Form
     const currentImagesInForm = form.getValues("productImages") || []
@@ -173,24 +179,62 @@ export function ProductAction({
   const handleOpenChange = (open: boolean) => {
     setOpen?.(open)
     if (!open) {
-      // Dọn dẹp các blob URL khi đóng dialog để tránh tràn bộ nhớ
-      previews.forEach((p) => p.file && URL.revokeObjectURL(p.url))
-      onClose?.()
+      onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+      setPreviews([])
+      setSelectedFiles(null)
+      form.reset(initFormValue)
     }
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsPending(true)
     try {
+      const images: IImage[] =
+        dataEdit?.productImages?.map((img) => img.image) || []
+
+      // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
+      if (selectedFiles && selectedFiles?.length > 0) {
+        const uploadedImages = await Promise.all(
+          selectedFiles.map((file) =>
+            uploadApi.mutateAsync({
+              file: file,
+              payload: { folder: "product" },
+            })
+          )
+        )
+        console.log("uploadedImages:", uploadedImages)
+
+        if (uploadedImages && uploadedImages.length > 0) {
+          const newImages: IImage[] = uploadedImages.map((res) => ({
+            url: res.url,
+            key: res.public_id,
+            provider: Provider.CLOUDINARY,
+          }))
+
+          images.push(...newImages)
+        }
+      }
+      if (images && images.length <= 0) {
+        toast.error("Images is required. Please select an image to upload.")
+        return
+      }
+
+      console.log("images after upload:", images)
+
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
           id: dataEdit.id,
-          payload: data,
+          payload: {
+            ...data,
+            productImages: images,
+          },
         })
       } else {
-        res = await createApi.mutateAsync(
-          data as z.infer<typeof CreateProductSchema>
-        )
+        res = await createApi.mutateAsync({
+          ...data,
+          productImages: images,
+        } as z.infer<typeof CreateProductSchema>)
       }
 
       if (res && [200, 201].includes(res?.statusCode)) {
@@ -200,6 +244,8 @@ export function ProductAction({
       }
     } catch (error) {
       console.error("Failed to process product:", error)
+    } finally {
+      setIsPending(false)
     }
   }
 
@@ -440,10 +486,7 @@ export function ProductAction({
             </FieldGroup>
           </div>
 
-          <DialogFooterAction
-            onClose={onClose}
-            isPending={createApi.isPending || updateApi.isPending}
-          />
+          <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>
       </DialogContent>
     </Dialog>

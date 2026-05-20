@@ -32,7 +32,7 @@ export const useUploadCloudinary = () => {
         throw new Error("Failed to get signature from server")
       }
 
-      const { api_key, timestamp, signature, folder, cloud_name } =
+      const { folder, api_key, timestamp, signature, cloud_name } =
         resSignatureApi.metadata
 
       const formData = new FormData()
@@ -51,6 +51,8 @@ export const useUploadCloudinary = () => {
       )
 
       if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        console.error("Cloudinary error details:", errData)
         throw new Error("Upload to Cloudinary failed")
       }
 

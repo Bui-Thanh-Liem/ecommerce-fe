@@ -28,12 +28,12 @@ export function NavCatalog() {
 
   const mainItems = [
     {
-      title: "Products",
+      title: "Products (SPU)",
       url: "products",
       icon: <Package />,
     },
     {
-      title: "Product Categories",
+      title: "Categories (product)",
       url: "categories",
       icon: <LayoutGrid />,
     },

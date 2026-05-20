@@ -65,13 +65,9 @@ export const storeColumns: ColumnDef<IStore>[] = [
     accessorKey: "address",
     header: "Address",
     cell: ({ row }) => {
-      const store = row.original
-
-      return (
-        <div>
-          <Textarea readOnly>{store.address}</Textarea>
-        </div>
-      )
+      const address = row.original.address
+      if (!address) return <span>-</span>
+      return <Textarea maxRows={4} readOnly value={address} />
     },
   },
   {

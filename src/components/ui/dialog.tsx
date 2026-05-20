@@ -175,11 +175,13 @@ function DialogFooterAction({
   return (
     <DialogFooter>
       <DialogClose asChild>
-        <Button variant="outline" onClick={onClose}>
+        <Button variant="outline" onClick={onClose} disabled={isPending}>
           Cancel
         </Button>
       </DialogClose>
-      <Button type="submit">{isPending ? "Saving..." : "Save changes"}</Button>
+      <Button disabled={isPending} type="submit">
+        {isPending ? "Saving..." : "Save changes"}
+      </Button>
     </DialogFooter>
   )
 }

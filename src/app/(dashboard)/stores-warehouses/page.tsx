@@ -1,4 +1,4 @@
-import { StorePage } from "@/features/dashboard/store/store-page"
+import { StorePage } from "@/features/manager/store/store-page"
 
 export default function Page() {
   return (

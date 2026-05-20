@@ -1,4 +1,4 @@
-import { RolePage } from "@/features/dashboard/role/role-page"
+import { RolePage } from "@/features/role/role-page"
 
 export default function Page() {
   return (
