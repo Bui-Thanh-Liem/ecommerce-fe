@@ -16,7 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useStaffStore } from "@/storages/staff.storage"
+import { useStaffContext } from "@/context/staff.context"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
@@ -27,7 +27,7 @@ import {
 
 export function NavStaff() {
   const { isMobile } = useSidebar()
-  const { staff } = useStaffStore()
+  const { staff } = useStaffContext()
 
   return (
     <SidebarMenu>

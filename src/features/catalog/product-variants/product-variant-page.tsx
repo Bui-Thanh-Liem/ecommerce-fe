@@ -4,9 +4,9 @@ import { useDeleteProduct, useFindAllProducts } from "@/hooks/apis/use-product"
 import { IProduct } from "@/shared/interfaces/models/product.interface"
 import { useState } from "react"
 import { productColumns } from "./product-column"
-import { ProductAction } from "./product-action"
+import { ProductVariantAction } from "./product-variant-action"
 
-export function ProductPage() {
+export function ProductVariantPage() {
   const { mutateAsync, isPending } = useDeleteProduct()
   const { data } = useFindAllProducts()
   const metadataProducts = data?.metadata
@@ -53,7 +53,11 @@ export function ProductPage() {
         isPending={isPending}
       />
 
-      <ProductAction open={open} onClose={handleClose} dataEdit={dataEdit} />
+      <ProductVariantAction
+        open={open}
+        onClose={handleClose}
+        dataEdit={dataEdit}
+      />
     </>
   )
 }

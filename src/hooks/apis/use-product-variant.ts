@@ -1,53 +1,59 @@
-import { productServices } from "@/services/product.service"
+import { productVariantServices } from "@/services/product-variant.service"
 import {
-  CreateProductDto,
-  UpdateProductDto,
-} from "@/shared/dtos/req/product.dto"
+  CreateProductVariantDto,
+  UpdateProductVariantDto,
+} from "@/shared/dtos/req/product-variant.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-export const useFindAllProducts = () => {
+export const useFindAllProductVariants = () => {
   return useQuery({
-    queryKey: ["products"],
-    queryFn: productServices.findAll,
+    queryKey: ["product-variants"],
+    queryFn: productVariantServices.findAll,
   })
 }
 
-export const useCreateProduct = () => {
+export const useCreateProductVariant = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     //
-    mutationFn: (payload: CreateProductDto) => productServices.create(payload),
+    mutationFn: (payload: CreateProductVariantDto) =>
+      productVariantServices.create(payload),
 
     //
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] })
+      queryClient.invalidateQueries({ queryKey: ["product-variants"] })
     },
   })
 }
 
-export const useUpdateProduct = () => {
+export const useUpdateProductVariant = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     //
-    mutationFn: ({ id, payload }: { payload: UpdateProductDto; id: string }) =>
-      productServices.update(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      payload: UpdateProductVariantDto
+      id: string
+    }) => productVariantServices.update(id, payload),
 
     //
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] })
+      queryClient.invalidateQueries({ queryKey: ["product-variants"] })
     },
   })
 }
 
-export const useDeleteProduct = () => {
+export const useDeleteProductVariant = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     //
-    mutationFn: (id: string) => productServices.delete(id),
+    mutationFn: (id: string) => productVariantServices.delete(id),
 
     // 1. onMutate chạy trước, tạo toast loading và RETURN về id của toast đó
     onMutate: async () => {
@@ -62,7 +68,7 @@ export const useDeleteProduct = () => {
       if (context?.currentToastId) {
         toast.success("Xóa thành công!", { id: context.currentToastId })
       }
-      queryClient.invalidateQueries({ queryKey: ["products"] })
+      queryClient.invalidateQueries({ queryKey: ["product-variants"] })
     },
 
     // 3. onError cũng nhận context tương tự nếu xảy ra lỗi

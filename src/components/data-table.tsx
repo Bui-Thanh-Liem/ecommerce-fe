@@ -144,12 +144,14 @@ interface DataTableProps<T extends IBase> {
   tabContent?: React.ReactNode
   dataSource: ResMetadataDto<T>
   columns: ColumnDef<T>[]
+  isPending?: boolean
 }
 
 export function DataTable<T extends IBase>({
   filters,
   columns,
   onAddRow,
+  isPending,
   onEditRow,
   tabHeader,
   tabContent,
@@ -238,6 +240,7 @@ export function DataTable<T extends IBase>({
                 onClick={() => {
                   onEditRow?.(row)
                 }}
+                disabled={isPending}
               >
                 Edit
               </DropdownMenuItem>
@@ -247,12 +250,14 @@ export function DataTable<T extends IBase>({
                 onClick={() => {
                   onDeleteRow?.(row)
                 }}
+                disabled={isPending}
               >
-                Delete
+                {isPending ? "Deleting..." : "Delete"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ),
+        enableSorting: false,
       },
     ],
     state: {

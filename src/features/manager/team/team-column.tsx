@@ -44,7 +44,7 @@ export const teamColumns: ColumnDef<ITeam>[] = [
     accessorKey: "desc",
     header: "Description",
     cell: ({ row }) => {
-      return <Textarea readOnly>{row.original.desc}</Textarea>
+      return <Textarea readOnly value={row.original.desc} />
     },
   },
   {

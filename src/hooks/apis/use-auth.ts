@@ -1,10 +1,10 @@
 import { authServices } from "@/services/auth.service"
 import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
-import { useStaffStore } from "@/storages/staff.storage"
+import { useStaffContext } from "@/context/staff.context"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 export const useSignIn = () => {
-  const { setStaff } = useStaffStore()
+  const { setStaff } = useStaffContext()
 
   return useMutation({
     //

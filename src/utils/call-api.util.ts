@@ -39,7 +39,7 @@ export const apiCall = async <T>(
     // Tại đây kiểm tra xem có hết hạn access_token không, có thì refresh lại access_token
     if (
       result.statusCode === 401 &&
-      result.message === "TokenExpiredError: jwt expired"
+      result.message === ("TokenExpiredError: jwt expired" as const)
     ) {
       console.log("Access token đã hết hạn tiến hành refresh")
 

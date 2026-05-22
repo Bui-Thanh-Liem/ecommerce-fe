@@ -12,6 +12,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useFindAllBrands } from "@/hooks/apis/use-brand"
 import { useFindAllCategories } from "@/hooks/apis/use-category"
@@ -34,10 +36,15 @@ import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { IProduct } from "@/shared/interfaces/models/product.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ImageIcon, X } from "lucide-react"
+import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import {
+  Controller,
+  useFieldArray,
+  useForm,
+  UseFormReturn,
+} from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 
@@ -48,6 +55,8 @@ const initFormValue: z.infer<typeof CreateProductSchema> = {
   category: "",
   basePrice: 0,
   productImages: [],
+  discountPercent: 0,
+  specifications: [],
   status: ProductStatus.DRAFT,
 }
 
@@ -90,6 +99,16 @@ export function ProductAction({
     defaultValues: initFormValue,
   })
 
+  // Quản lý mảng specifications (Cấp cha)
+  const {
+    fields: specFields,
+    append: appendSpec,
+    remove: removeSpec,
+  } = useFieldArray({
+    control: form.control,
+    name: "specifications",
+  })
+
   // Theo dõi dữ liệu edit
   useEffect(() => {
     if (dataEdit) {
@@ -100,8 +119,9 @@ export function ProductAction({
         brand: dataEdit.brand.id,
         basePrice: dataEdit.basePrice,
         category: dataEdit.category.id,
+        discountPercent: dataEdit.discountPercent,
         productImages:
-          dataEdit.productImages?.map((img) => ({ url: img.image.url })) || [],
+          dataEdit.productImages?.map((img) => ({ image: img.image })) || [], // Map lại format để đưa vào form
       })
 
       // Nếu có ảnh cũ từ API, map vào danh sách preview
@@ -116,6 +136,11 @@ export function ProductAction({
       form.reset(initFormValue)
       setPreviews([])
     }
+
+    return () => {
+      form.reset(initFormValue)
+      setPreviews([])
+    }
   }, [dataEdit, form])
 
   // Theo dõi initialData
@@ -127,13 +152,22 @@ export function ProductAction({
         category: initialData.category.id,
       })
     }
+
+    return () => {
+      form.reset(initFormValue)
+      setPreviews([])
+    }
   }, [form, initialData])
 
   // Hàm xử lý khi chọn nhiều file
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      const newFilesArray = Array.from(files)
+      // Giới hạn số lượng file được chọn (ví dụ: tối đa 6 ảnh)
+      if (files.length > 6) toast.error("You can only select up to 6 images.")
+
+      //
+      const newFilesArray = Array.from(files).slice(0, 6) // Lấy tối đa 6 file
       setSelectedFiles(newFilesArray)
 
       // Tạo object preview cho các file mới
@@ -187,6 +221,8 @@ export function ProductAction({
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log("Submitted data:", data)
+
     setIsPending(true)
     try {
       const images: IImage[] =
@@ -202,7 +238,6 @@ export function ProductAction({
             })
           )
         )
-        console.log("uploadedImages:", uploadedImages)
 
         if (uploadedImages && uploadedImages.length > 0) {
           const newImages: IImage[] = uploadedImages.map((res) => ({
@@ -219,21 +254,19 @@ export function ProductAction({
         return
       }
 
-      console.log("images after upload:", images)
-
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
           id: dataEdit.id,
           payload: {
             ...data,
-            productImages: images,
+            productImages: images.map((img) => ({ image: img })), // Chuyển đổi sang đúng format của API
           },
         })
       } else {
         res = await createApi.mutateAsync({
           ...data,
-          productImages: images,
+          productImages: images.map((img) => ({ image: img })), // Chuyển đổi sang đúng format của API
         } as z.infer<typeof CreateProductSchema>)
       }
 
@@ -261,7 +294,7 @@ export function ProductAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
         >
-          {/* Khu vực Upload nhiều ảnh */}
+          {/*  */}
           <FieldGroup>
             <FieldLabel htmlFor="form-rhf-input-store-image">
               Product Images
@@ -319,7 +352,7 @@ export function ProductAction({
             )}
           </FieldGroup>
 
-          {/* Các trường thông tin khác giữ nguyên */}
+          {/*  */}
           <FieldGroup>
             <Controller
               name="name"
@@ -345,6 +378,7 @@ export function ProductAction({
             />
           </FieldGroup>
 
+          {/*  */}
           <FieldGroup>
             <Controller
               name="desc"
@@ -370,42 +404,128 @@ export function ProductAction({
             />
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="status"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-status">Status</FieldLabel>
+          {/*  */}
+          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
+            <FieldGroup>
+              <Controller
+                name="status"
+                control={form.control}
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-status">Status</FieldLabel>
 
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        id="form-status"
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
                       >
-                        <SelectValue placeholder="Select a status" />
-                      </SelectTrigger>
-                      <SelectContent align="end">
-                        <SelectGroup>
-                          {Object.values(ProductStatus).map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                        <SelectTrigger
+                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                          id="form-status"
+                        >
+                          <SelectValue placeholder="Select a status" />
+                        </SelectTrigger>
+                        <SelectContent align="end">
+                          <SelectGroup>
+                            {Object.values(ProductStatus).map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {status}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
 
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )
+                }}
+              />
+            </FieldGroup>
 
+            <div className="flex gap-4">
+              <FieldGroup>
+                <Controller
+                  name="basePrice"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-basePrice">
+                        Base Price
+                      </FieldLabel>
+                      <InputGroup>
+                        <Input
+                          {...field}
+                          type="number"
+                          aria-invalid={fieldState.invalid}
+                          autoComplete="name"
+                          placeholder="Base Price"
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber
+                            if (isNaN(value)) {
+                              field.onChange(0) // Nếu không phải số, đặt về 0
+                            } else if (value < 0) {
+                              field.onChange(0) // Không cho nhập số âm
+                            } else {
+                              field.onChange(value)
+                            }
+                          }}
+                          id="form-rhf-input-basePrice"
+                        />
+                        <InputGroupAddon align="inline-end">
+                          USD
+                        </InputGroupAddon>
+                      </InputGroup>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+              <FieldGroup>
+                <Controller
+                  name="discountPercent"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-discountPercent">
+                        Discount Percent
+                      </FieldLabel>
+                      <InputGroup>
+                        <Input
+                          {...field}
+                          type="number"
+                          aria-invalid={fieldState.invalid}
+                          autoComplete="name"
+                          placeholder="Discount Percent"
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber
+                            if (isNaN(value)) {
+                              field.onChange(0) // Nếu không phải số, đặt về 0
+                            } else if (value < 0) {
+                              field.onChange(0) // Không cho nhập số âm
+                            } else {
+                              field.onChange(value)
+                            }
+                          }}
+                          id="form-rhf-input-discountPercent"
+                        />
+                        <InputGroupAddon align="inline-end">%</InputGroupAddon>
+                      </InputGroup>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+          </div>
+
+          {/*  */}
           <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
             <FieldGroup>
               <Controller
@@ -486,9 +606,213 @@ export function ProductAction({
             </FieldGroup>
           </div>
 
+          {/* Cột phải: Khối Dynamic Specifications (Nested Field Array) */}
+          <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-foreground text-sm font-semibold">
+                Specifications
+              </h3>
+              <Button
+                size="sm"
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  appendSpec({
+                    title: "",
+                    items: [
+                      {
+                        key: "",
+                        value: "",
+                        order: 0,
+                      },
+                    ],
+                  })
+                }
+              >
+                <Plus className="mr-1 h-4 w-4" /> Add Group
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {specFields.map((spec, specIdx) => (
+                <div
+                  key={spec.id}
+                  className="bg-background relative space-y-3 rounded-md border p-3 shadow-sm"
+                >
+                  <div className="flex items-center gap-x-2">
+                    <FieldGroup>
+                      <Controller
+                        name={`specifications.${specIdx}.title`}
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <Input
+                              {...field}
+                              placeholder="Group Title (e.g., Screen, Memory)"
+                              className="font-medium"
+                            />
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        )}
+                      />
+                    </FieldGroup>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive shrink-0"
+                      onClick={() => removeSpec(specIdx)}
+                      disabled={specFields.length === 1}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Component xử lý mảng con Items */}
+                  <SpecificationItems form={form as any} specIdx={specIdx} />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>
       </DialogContent>
     </Dialog>
+  )
+}
+
+// Component con xử lý danh sách Items cho từng Nhóm thông số
+function SpecificationItems({
+  form,
+  specIdx,
+}: {
+  form: UseFormReturn<z.infer<typeof CreateProductSchema>>
+  specIdx: number
+}) {
+  const {
+    fields: itemFields,
+    append: appendItem,
+    remove: removeItem,
+  } = useFieldArray({
+    control: form.control,
+    name: `specifications.${specIdx}.items`,
+  })
+
+  return (
+    <div className="space-y-2 pl-4">
+      {itemFields.map((item, itemIdx) => (
+        <div
+          key={item.id}
+          className="bg-muted/10 space-y-2 rounded p-2 text-xs"
+        >
+          <div className="flex items-center gap-2">
+            <FieldGroup>
+              <Controller
+                name={`specifications.${specIdx}.items.${itemIdx}.key`}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <Input
+                      {...field}
+                      placeholder="Key (e.g. RAM)"
+                      className="h-8"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+
+            <FieldGroup>
+              <Controller
+                name={`specifications.${specIdx}.items.${itemIdx}.value`}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <Input
+                      {...field}
+                      placeholder="Value (e.g. 16GB)"
+                      className="h-8"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+
+            <Button
+              size="icon"
+              type="button"
+              variant="ghost"
+              className="text-destructive h-8 w-8 shrink-0"
+              onClick={() => removeItem(itemIdx)}
+              disabled={itemFields.length === 1}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-between gap-x-4 px-1">
+            <div className="flex items-center gap-x-2">
+              <Controller
+                name={`specifications.${specIdx}.items.${itemIdx}.isHighlight`}
+                control={form.control}
+                render={({ field }) => (
+                  <Switch
+                    className="scale-75"
+                    checked={field.value}
+                    id={`sku-${specIdx}-${itemIdx}`}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+              <label
+                htmlFor={`sku-${specIdx}-${itemIdx}`}
+                className="text-muted-foreground select-none"
+              >
+                Is highlight?
+              </label>
+            </div>
+
+            <div className="flex w-24 items-center gap-x-1">
+              <span className="text-muted-foreground shrink-0">order:</span>
+              <Controller
+                name={`specifications.${specIdx}.items.${itemIdx}.order`}
+                control={form.control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    className="h-7 px-1 text-center"
+                    onChange={(e) =>
+                      field.onChange(e.target.valueAsNumber || 0)
+                    }
+                  />
+                )}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="text-primary hover:text-primary/80 h-7 text-xs"
+        onClick={() =>
+          appendItem({ key: "", value: "", order: 0, isHighlight: false })
+        }
+      >
+        <Plus className="mr-1 h-3.5 w-3.5" /> Add Detail Row
+      </Button>
+    </div>
   )
 }

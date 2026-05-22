@@ -8,7 +8,7 @@ interface State {
   clearStaff: () => void
 }
 
-export const useStaffStore = create<State>()(
+export const useStaffContext = create<State>()(
   persist(
     (set) => ({
       staff: null,
