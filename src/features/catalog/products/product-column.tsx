@@ -1,4 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ProductImages } from "@/components/cell-in-table/product-images"
+import { RenderBlog } from "@/components/cell-in-table/render-blog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -6,9 +7,18 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Textarea } from "@/components/ui/textarea"
-import { IProductImage } from "@/shared/interfaces/models/product-image.interface"
-import { IProduct } from "@/shared/interfaces/models/product.interface"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  IProduct,
+  ISpecification,
+} from "@/shared/interfaces/models/product.interface"
+import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 import { ChevronDownIcon } from "lucide-react"
 
@@ -34,10 +44,21 @@ export const productColumns: ColumnDef<IProduct>[] = [
         </p>
         <p>
           Category:{" "}
-          <Badge variant="secondary">{row.original.category.name}</Badge>
+          <Badge
+            variant="secondary"
+            className={randomColorByString(row.original.category.name)}
+          >
+            {row.original.category.name}
+          </Badge>
         </p>
         <p>
-          Brand: <Badge variant="secondary">{row.original.brand.name}</Badge>
+          Brand:{" "}
+          <Badge
+            variant="secondary"
+            className={randomColorByString(row.original.brand.name)}
+          >
+            {row.original.brand.name}
+          </Badge>
         </p>
       </div>
     ),
@@ -48,34 +69,14 @@ export const productColumns: ColumnDef<IProduct>[] = [
     cell: ({ row }) => {
       const specifications = row.original.specifications || []
       if (specifications.length <= 0) return <span>-</span>
-      return (
-        <div className="min-w-64 space-y-1">
-          {specifications.map((spec, idx) => (
-            <Collapsible
-              key={`${spec.items}-${idx}`}
-              className="data-[state=open]:bg-muted rounded-md"
-            >
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="group w-full">
-                  {spec.title}
-                  <ChevronDownIcon className="ml-auto group-data-[state=open]:rotate-180" />
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="flex flex-col items-start gap-2 p-2.5 pt-0 text-sm">
-                {spec.items.map((item, itemIdx) => (
-                  <div
-                    key={`${item.key}-${itemIdx}`}
-                    className="flex items-center gap-2 pl-1"
-                  >
-                    <span className="font-medium">{item.key}:</span>
-                    <span>{item.value}</span>
-                  </div>
-                ))}
-              </CollapsibleContent>
-            </Collapsible>
-          ))}
-        </div>
-      )
+      return <SpecificationsCell specifications={specifications} />
+    },
+  },
+  {
+    accessorKey: "desc",
+    header: "Description",
+    cell: ({ row }) => {
+      return <RenderBlog content={row.original.desc} />
     },
   },
   {
@@ -93,35 +94,69 @@ export const productColumns: ColumnDef<IProduct>[] = [
     header: "Status",
     cell: ({ row }) => <Badge>{row.original.status}</Badge>,
   },
-  {
-    accessorKey: "desc",
-    header: "Description",
-    cell: ({ row }) => {
-      return <Textarea value={row.original.desc} readOnly />
-    },
-  },
 ]
 
-export function ProductImages({ images }: { images: IProductImage[] }) {
+function SpecificationsCell({
+  specifications,
+}: {
+  specifications: ISpecification[]
+}) {
   return (
-    <div className="flex -space-x-8">
-      {images?.map((img) => (
-        <div
-          key={img.id}
-          className="cursor-pointer transition-all duration-200 hover:z-10 hover:-translate-y-1"
-        >
-          <Avatar className="size-14">
-            <AvatarImage
-              src={img.image.url}
-              alt={`Product Image ${img.id}`}
-              className="rounded"
-            />
-            <AvatarFallback className="rounded">
-              {img.image.url ? img.image.url[0].toUpperCase() : "-"}
-            </AvatarFallback>
-          </Avatar>
+    <Dialog>
+      <DialogTrigger asChild>
+        {/* Sửa lại Trigger thành asChild để tránh lỗi lồng thẻ button bừa bãi */}
+        <Button variant="outline">View Specifications</Button>
+      </DialogTrigger>
+
+      <DialogContent className="w-full rounded-2xl p-6 sm:max-w-xl">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-base font-semibold">
+            Specifications
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* Đặt chiều cao cố định và thanh cuộn mượt nếu danh sách quá dài */}
+        <div className="scrollbar-thin max-h-[60vh] space-y-3 overflow-y-auto pr-1">
+          {specifications.map((spec, idx) => (
+            <Collapsible
+              key={`${spec.title}-${idx}`}
+              className="border-muted-foreground/10 bg-card/50 open:bg-muted/30 rounded-xl border shadow-sm transition-all duration-200"
+              defaultOpen={idx === 0} // Tự động mở nhóm đầu tiên cho thân thiện
+            >
+              <CollapsibleTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="group hover:bg-muted/50 text-foreground flex w-full items-center justify-between rounded-xl px-4 py-5 text-sm font-semibold"
+                >
+                  <span>{spec.title}</span>
+                  <ChevronDownIcon className="text-muted-foreground h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                </Button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="px-4 pt-1 pb-4 transition-all">
+                {/* Đổi thành layout dạng bảng sọc (zebra striping) để cực kỳ dễ tra cứu */}
+                <div className="border-muted-foreground/5 bg-background overflow-hidden rounded-lg border">
+                  {spec.items.map((item, itemIdx) => (
+                    <div
+                      key={`${item.key}-${itemIdx}`}
+                      className="border-muted-foreground/5 odd:bg-muted/20 grid grid-cols-3 gap-4 border-b p-3 text-xs last:border-0"
+                    >
+                      {/* Cột Key chiếm 1 phần, chữ xám đậm */}
+                      <span className="text-muted-foreground font-medium">
+                        {item.key}
+                      </span>
+                      {/* Cột Value chiếm 2 phần, chữ đen rõ ràng hơn */}
+                      <span className="text-foreground col-span-2 font-medium break-words">
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
         </div>
-      ))}
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

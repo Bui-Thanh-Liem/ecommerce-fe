@@ -1,3 +1,4 @@
+import { Editor } from "@/components/ui/editor"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,7 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import { useFindAllBrands } from "@/hooks/apis/use-brand"
 import { useFindAllCategories } from "@/hooks/apis/use-category"
 import { useCreateProduct, useUpdateProduct } from "@/hooks/apis/use-product"
@@ -47,6 +47,7 @@ import {
 } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
+import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
 
 const initFormValue: z.infer<typeof CreateProductSchema> = {
   name: "",
@@ -60,12 +61,7 @@ const initFormValue: z.infer<typeof CreateProductSchema> = {
   status: ProductStatus.DRAFT,
 }
 
-// Interface để quản lý các file mới được chọn kèm link preview của chúng
-interface PreviewImage {
-  file?: File
-  url: string
-}
-
+//
 export function ProductAction({
   open,
   onClose,
@@ -120,6 +116,7 @@ export function ProductAction({
         basePrice: dataEdit.basePrice,
         category: dataEdit.category.id,
         discountPercent: dataEdit.discountPercent,
+        specifications: dataEdit.specifications || [],
         productImages:
           dataEdit.productImages?.map((img) => ({ image: img.image })) || [], // Map lại format để đưa vào form
       })
@@ -128,7 +125,10 @@ export function ProductAction({
       if (dataEdit.productImages) {
         const existingImages = dataEdit.productImages.map((img) => ({
           url: img.image.url,
-        })) as PreviewImage[]
+          key: img.image.key,
+          provider: img.image.provider,
+        }))
+
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreviews(existingImages)
       }
@@ -162,22 +162,27 @@ export function ProductAction({
   // Hàm xử lý khi chọn nhiều file
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
+
     if (files && files.length > 0) {
       // Giới hạn số lượng file được chọn (ví dụ: tối đa 6 ảnh)
       if (files.length > 6) toast.error("You can only select up to 6 images.")
 
       //
       const newFilesArray = Array.from(files).slice(0, 6) // Lấy tối đa 6 file
+
       setSelectedFiles(newFilesArray)
 
       // Tạo object preview cho các file mới
       const newPreviews: PreviewImage[] = newFilesArray.map((file) => ({
         file,
+        key: "",
+        provider: Provider.CLOUDINARY,
         url: URL.createObjectURL(file),
       }))
 
       // Cập nhật danh sách preview trên UI
       const updatedPreviews = [...previews, ...newPreviews]
+
       setPreviews(updatedPreviews)
     }
   }
@@ -205,6 +210,7 @@ export function ProductAction({
     const updatedImagesInForm = currentImagesInForm.filter(
       (_, idx) => idx !== indexToRemove
     )
+
     form.setValue("productImages", updatedImagesInForm, {
       shouldValidate: true,
     })
@@ -212,6 +218,7 @@ export function ProductAction({
 
   const handleOpenChange = (open: boolean) => {
     setOpen?.(open)
+
     if (!open) {
       onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
       setPreviews([])
@@ -221,14 +228,13 @@ export function ProductAction({
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("Submitted data:", data)
-
     setIsPending(true)
-    try {
-      const images: IImage[] =
-        dataEdit?.productImages?.map((img) => img.image) || []
 
-      // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
+    try {
+      // Lọc ra những img không có key (tức là ảnh preview)
+      const images: IImage[] = previews.filter((img) => img.key) || []
+
+      // Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFiles && selectedFiles?.length > 0) {
         const uploadedImages = await Promise.all(
           selectedFiles.map((file) =>
@@ -249,6 +255,7 @@ export function ProductAction({
           images.push(...newImages)
         }
       }
+
       if (images && images.length <= 0) {
         toast.error("Images is required. Please select an image to upload.")
         return
@@ -284,7 +291,7 @@ export function ProductAction({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-6xl">
         <DialogHeaderAction
           title={!!dataEdit ? "Edit Product" : "Add New Product"}
           desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new product.`}
@@ -292,389 +299,429 @@ export function ProductAction({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="max-h-[calc(100vh-200px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
+          className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
-          {/*  */}
-          <FieldGroup>
-            <FieldLabel htmlFor="form-rhf-input-store-image">
-              Product Images
-            </FieldLabel>
-            <div className="flex flex-col gap-4 rounded-lg border-2 border-dashed p-4">
-              {/* Grid hiển thị danh sách ảnh đã chọn */}
-              {previews.length > 0 && (
-                <div className="grid w-full grid-cols-3 gap-3">
-                  {previews.map((item, index) => (
-                    <div
-                      key={index}
-                      className="relative h-28 w-full overflow-hidden rounded-md border"
-                    >
-                      <Image
-                        fill
-                        alt={`Preview ${index + 1}`}
-                        src={item.url}
-                        className="h-full w-full object-cover"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 h-6 w-6 rounded-full"
-                        onClick={() => handleRemoveImage(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+          <div className="mb-2 grid grid-cols-3 gap-x-2">
+            <div className="col-span-1 space-y-6">
+              {/* */}
+              <FieldGroup className="gap-y-3">
+                <FieldLabel htmlFor="form-rhf-input-store-image">
+                  Product Images
+                </FieldLabel>
+
+                <div className="flex flex-col gap-4 rounded-lg border-2 border-dashed p-4">
+                  {/* Grid hiển thị danh sách ảnh đã chọn */}
+                  {previews.length > 0 && (
+                    <div className="grid w-full grid-cols-3 gap-3">
+                      {previews.map((item, index) => (
+                        <div
+                          key={index}
+                          className="relative h-28 w-full overflow-hidden rounded-md border"
+                        >
+                          <Image
+                            fill
+                            alt={`Preview ${index + 1}`}
+                            src={item.url}
+                            className="h-full w-full object-cover"
+                          />
+
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 rounded-full"
+                            onClick={() => handleRemoveImage(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Nút click/drag chọn ảnh */}
-              <div className="flex w-full flex-col items-center py-2 text-center">
-                <ImageIcon className="text-muted-foreground/50 h-8 w-8" />
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Click to select multiple images
-                </p>
-              </div>
-
-              <Input
-                type="file"
-                accept="image/*"
-                multiple // Kích hoạt chọn nhiều file cùng lúc
-                className="cursor-pointer"
-                onChange={handleFileChange}
-                id="form-rhf-input-store-image"
-              />
-            </div>
-            {form.formState.errors.productImages && (
-              <p className="text-destructive mt-1 text-sm">
-                {form.formState.errors.productImages.message as string}
-              </p>
-            )}
-          </FieldGroup>
-
-          {/*  */}
-          <FieldGroup>
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-name">
-                    Product Name
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    type="text"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Product Name"
-                    autoComplete="name"
-                    id="form-rhf-input-name"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
                   )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
 
-          {/*  */}
-          <FieldGroup>
-            <Controller
-              name="desc"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-desc">
-                    Description
-                  </FieldLabel>
-                  <Textarea
-                    {...field}
-                    rows={2}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter description here..."
-                    id="form-rhf-textarea-desc"
-                    className="resize-none"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
+                  {/* Nút click/drag chọn ảnh */}
+                  <div className="flex w-full flex-col items-center py-2 text-center">
+                    <ImageIcon className="text-muted-foreground/50 h-8 w-8" />
 
-          {/*  */}
-          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
-            <FieldGroup>
-              <Controller
-                name="status"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-status">Status</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-status"
-                        >
-                          <SelectValue placeholder="Select a status" />
-                        </SelectTrigger>
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {Object.values(ProductStatus).map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {status}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-
-            <div className="flex gap-4">
-              <FieldGroup>
-                <Controller
-                  name="basePrice"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-rhf-input-basePrice">
-                        Base Price
-                      </FieldLabel>
-                      <InputGroup>
-                        <Input
-                          {...field}
-                          type="number"
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="name"
-                          placeholder="Base Price"
-                          onChange={(e) => {
-                            const value = e.target.valueAsNumber
-                            if (isNaN(value)) {
-                              field.onChange(0) // Nếu không phải số, đặt về 0
-                            } else if (value < 0) {
-                              field.onChange(0) // Không cho nhập số âm
-                            } else {
-                              field.onChange(value)
-                            }
-                          }}
-                          id="form-rhf-input-basePrice"
-                        />
-                        <InputGroupAddon align="inline-end">
-                          USD
-                        </InputGroupAddon>
-                      </InputGroup>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </FieldGroup>
-              <FieldGroup>
-                <Controller
-                  name="discountPercent"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-rhf-input-discountPercent">
-                        Discount Percent
-                      </FieldLabel>
-                      <InputGroup>
-                        <Input
-                          {...field}
-                          type="number"
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="name"
-                          placeholder="Discount Percent"
-                          onChange={(e) => {
-                            const value = e.target.valueAsNumber
-                            if (isNaN(value)) {
-                              field.onChange(0) // Nếu không phải số, đặt về 0
-                            } else if (value < 0) {
-                              field.onChange(0) // Không cho nhập số âm
-                            } else {
-                              field.onChange(value)
-                            }
-                          }}
-                          id="form-rhf-input-discountPercent"
-                        />
-                        <InputGroupAddon align="inline-end">%</InputGroupAddon>
-                      </InputGroup>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </FieldGroup>
-            </div>
-          </div>
-
-          {/*  */}
-          <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
-            <FieldGroup>
-              <Controller
-                name="category"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-category">Category</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-category"
-                        >
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <Controller
-                name="brand"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-brand">Brand</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-brand"
-                        >
-                          <SelectValue placeholder="Select a brand" />
-                        </SelectTrigger>
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {brands.map((brand) => (
-                              <SelectItem key={brand.id} value={brand.id}>
-                                {brand.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-          </div>
-
-          {/* Cột phải: Khối Dynamic Specifications (Nested Field Array) */}
-          <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-foreground text-sm font-semibold">
-                Specifications
-              </h3>
-              <Button
-                size="sm"
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  appendSpec({
-                    title: "",
-                    items: [
-                      {
-                        key: "",
-                        value: "",
-                        order: 0,
-                      },
-                    ],
-                  })
-                }
-              >
-                <Plus className="mr-1 h-4 w-4" /> Add Group
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {specFields.map((spec, specIdx) => (
-                <div
-                  key={spec.id}
-                  className="bg-background relative space-y-3 rounded-md border p-3 shadow-sm"
-                >
-                  <div className="flex items-center gap-x-2">
-                    <FieldGroup>
-                      <Controller
-                        name={`specifications.${specIdx}.title`}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <Input
-                              {...field}
-                              placeholder="Group Title (e.g., Screen, Memory)"
-                              className="font-medium"
-                            />
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                    </FieldGroup>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive shrink-0"
-                      onClick={() => removeSpec(specIdx)}
-                      disabled={specFields.length === 1}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Click to select multiple images
+                    </p>
                   </div>
 
-                  {/* Component xử lý mảng con Items */}
-                  <SpecificationItems form={form as any} specIdx={specIdx} />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    multiple // Kích hoạt chọn nhiều file cùng lúc
+                    className="cursor-pointer"
+                    onChange={handleFileChange}
+                    id="form-rhf-input-store-image"
+                  />
                 </div>
-              ))}
+
+                {form.formState.errors.productImages && (
+                  <p className="text-destructive mt-1 text-sm">
+                    {form.formState.errors.productImages.message as string}
+                  </p>
+                )}
+              </FieldGroup>
+
+              {/* */}
+              <FieldGroup>
+                <Controller
+                  name="name"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-name">
+                        Product Name
+                      </FieldLabel>
+
+                      <Input
+                        {...field}
+                        type="text"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Product Name"
+                        autoComplete="name"
+                        id="form-rhf-input-name"
+                      />
+
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+
+              {/* */}
+              <FieldGroup>
+                <Controller
+                  name="status"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-status">Status</FieldLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                            id="form-status"
+                          >
+                            <SelectValue placeholder="Select a status" />
+                          </SelectTrigger>
+
+                          <SelectContent align="end">
+                            <SelectGroup>
+                              {Object.values(ProductStatus).map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  {status}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+              </FieldGroup>
+
+              <div className="grid grid-cols-2 gap-x-2">
+                <FieldGroup>
+                  <Controller
+                    name="basePrice"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-rhf-input-basePrice">
+                          Base Price
+                        </FieldLabel>
+
+                        <InputGroup>
+                          <Input
+                            {...field}
+                            type="number"
+                            aria-invalid={fieldState.invalid}
+                            autoComplete="name"
+                            placeholder="Base Price"
+                            onChange={(e) => {
+                              const value = e.target.valueAsNumber
+
+                              if (isNaN(value)) {
+                                field.onChange(0) // Nếu không phải số, đặt về 0
+                              } else if (value < 0) {
+                                field.onChange(0) // Không cho nhập số âm
+                              } else {
+                                field.onChange(value)
+                              }
+                            }}
+                            id="form-rhf-input-basePrice"
+                          />
+
+                          <InputGroupAddon align="inline-end">
+                            USD
+                          </InputGroupAddon>
+                        </InputGroup>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+
+                {/* */}
+                <FieldGroup>
+                  <Controller
+                    name="discountPercent"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-rhf-input-discountPercent">
+                          Discount Percent
+                        </FieldLabel>
+
+                        <InputGroup>
+                          <Input
+                            {...field}
+                            type="number"
+                            aria-invalid={fieldState.invalid}
+                            autoComplete="name"
+                            placeholder="Discount Percent"
+                            onChange={(e) => {
+                              const value = e.target.valueAsNumber
+
+                              if (isNaN(value)) {
+                                field.onChange(0) // Nếu không phải số, đặt về 0
+                              } else if (value < 0) {
+                                field.onChange(0) // Không cho nhập số âm
+                              } else {
+                                field.onChange(value)
+                              }
+                            }}
+                            id="form-rhf-input-discountPercent"
+                          />
+
+                          <InputGroupAddon align="inline-end">
+                            %
+                          </InputGroupAddon>
+                        </InputGroup>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+              </div>
+
+              {/* */}
+              <FieldGroup>
+                <Controller
+                  name="category"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-category">
+                          Category
+                        </FieldLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                            id="form-category"
+                          >
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+
+                          <SelectContent align="end">
+                            <SelectGroup>
+                              {categories.map((category) => (
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id}
+                                >
+                                  {category.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+              </FieldGroup>
+
+              {/* */}
+              <FieldGroup>
+                <Controller
+                  name="brand"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-brand">Brand</FieldLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                            id="form-brand"
+                          >
+                            <SelectValue placeholder="Select a brand" />
+                          </SelectTrigger>
+
+                          <SelectContent align="end">
+                            <SelectGroup>
+                              {brands.map((brand) => (
+                                <SelectItem key={brand.id} value={brand.id}>
+                                  {brand.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+              </FieldGroup>
+
+              {/* Cột phải: Khối Dynamic Specifications (Nested Field Array) */}
+              <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-foreground text-sm font-semibold">
+                    Specifications
+                  </h3>
+
+                  <Button
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      appendSpec({
+                        title: "",
+
+                        items: [
+                          {
+                            key: "",
+
+                            value: "",
+
+                            order: 0,
+                          },
+                        ],
+                      })
+                    }
+                  >
+                    <Plus className="mr-1 h-4 w-4" /> Add Group
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {specFields.map((spec, specIdx) => (
+                    <div
+                      key={spec.id}
+                      className="bg-background relative space-y-3 rounded-md border p-3 shadow-sm"
+                    >
+                      <div className="flex items-center gap-x-2">
+                        <FieldGroup>
+                          <Controller
+                            name={`specifications.${specIdx}.title`}
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                              <Field data-invalid={fieldState.invalid}>
+                                <Input
+                                  {...field}
+                                  placeholder="Group Title (e.g., Screen, Memory)"
+                                  className="font-medium"
+                                />
+
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            )}
+                          />
+                        </FieldGroup>
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive shrink-0"
+                          onClick={() => removeSpec(specIdx)}
+                          disabled={specFields.length === 1}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {/* Component xử lý mảng con Items */}
+                      <SpecificationItems
+                        form={form as any}
+                        specIdx={specIdx}
+                      />
+                    </div>
+                  ))}
+                  {specFields.length === 0 && (
+                    <div className="text-muted-foreground border-muted-foreground/20 flex flex-col items-center justify-center rounded-lg border border-dashed py-6 text-center text-xs">
+                      <p>No attributes added yet.</p>
+                      <p>Click Add Attribute to add technical details.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+
+            <FieldGroup className="col-span-2">
+              <Controller
+                name="desc"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-rhf-editor-desc">
+                      Description
+                    </FieldLabel>
+                    <Editor
+                      className="w-full"
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Enter description here..."
+                    />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
           </div>
 
           <DialogFooterAction onClose={onClose} isPending={isPending} />
@@ -702,116 +749,132 @@ function SpecificationItems({
   })
 
   return (
-    <div className="space-y-2 pl-4">
-      {itemFields.map((item, itemIdx) => (
-        <div
-          key={item.id}
-          className="bg-muted/10 space-y-2 rounded p-2 text-xs"
-        >
-          <div className="flex items-center gap-2">
-            <FieldGroup>
-              <Controller
-                name={`specifications.${specIdx}.items.${itemIdx}.key`}
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <Input
-                      {...field}
-                      placeholder="Key (e.g. RAM)"
-                      className="h-8"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+    <div className="space-y-3">
+      {/* Container bọc danh sách các item */}
+      <div className="space-y-2.5">
+        {itemFields.map((item, itemIdx) => (
+          <div
+            key={item.id}
+            className="group border-muted-foreground/10 bg-muted/5 hover:border-muted-foreground/20 hover:bg-muted/10 relative space-y-3 rounded-xl border p-3 text-xs transition-all duration-200"
+          >
+            {/* Hàng 1: Inputs cho Key và Value + Nút Xóa */}
+            <div className="flex items-start gap-2.5">
+              <div className="grid flex-1 grid-cols-2 gap-2.5">
+                <FieldGroup>
+                  <Controller
+                    name={`specifications.${specIdx}.items.${itemIdx}.key`}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <Input
+                          {...field}
+                          placeholder="Key (e.g. RAM)"
+                          className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
                     )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <Controller
-                name={`specifications.${specIdx}.items.${itemIdx}.value`}
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <Input
-                      {...field}
-                      placeholder="Value (e.g. 16GB)"
-                      className="h-8"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <Button
-              size="icon"
-              type="button"
-              variant="ghost"
-              className="text-destructive h-8 w-8 shrink-0"
-              onClick={() => removeItem(itemIdx)}
-              disabled={itemFields.length === 1}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-
-          <div className="flex items-center justify-between gap-x-4 px-1">
-            <div className="flex items-center gap-x-2">
-              <Controller
-                name={`specifications.${specIdx}.items.${itemIdx}.isHighlight`}
-                control={form.control}
-                render={({ field }) => (
-                  <Switch
-                    className="scale-75"
-                    checked={field.value}
-                    id={`sku-${specIdx}-${itemIdx}`}
-                    onCheckedChange={field.onChange}
                   />
-                )}
-              />
-              <label
-                htmlFor={`sku-${specIdx}-${itemIdx}`}
-                className="text-muted-foreground select-none"
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Controller
+                    name={`specifications.${specIdx}.items.${itemIdx}.value`}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <Input
+                          {...field}
+                          placeholder="Value (e.g. 16GB)"
+                          className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
+                        />
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+              </div>
+
+              <Button
+                size="icon"
+                type="button"
+                variant="ghost"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-9 w-9 shrink-0 transition-colors"
+                onClick={() => removeItem(itemIdx)}
+                disabled={itemFields.length === 1}
               >
-                Is highlight?
-              </label>
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
 
-            <div className="flex w-24 items-center gap-x-1">
-              <span className="text-muted-foreground shrink-0">order:</span>
-              <Controller
-                name={`specifications.${specIdx}.items.${itemIdx}.order`}
-                control={form.control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="number"
-                    className="h-7 px-1 text-center"
-                    onChange={(e) =>
-                      field.onChange(e.target.valueAsNumber || 0)
-                    }
-                  />
-                )}
-              />
+            {/* Đường ngăn cách mờ giữa 2 hàng nội bộ */}
+            <div className="border-muted-foreground/5 my-1 border-t" />
+
+            {/* Hàng 2: Toggle Highlight & Ô Order */}
+            <div className="flex items-center justify-between px-0.5">
+              <div className="flex items-center gap-x-2.5">
+                <Controller
+                  name={`specifications.${specIdx}.items.${itemIdx}.isHighlight`}
+                  control={form.control}
+                  render={({ field }) => (
+                    <Switch
+                      className="data-[state=checked]:bg-primary scale-90"
+                      checked={field.value}
+                      id={`sku-${specIdx}-${itemIdx}`}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
+                />
+
+                <label
+                  htmlFor={`sku-${specIdx}-${itemIdx}`}
+                  className="text-muted-foreground group-hover:text-foreground cursor-pointer font-medium transition-colors select-none"
+                >
+                  highlight?
+                </label>
+              </div>
+
+              <div className="border-muted-foreground/10 bg-background flex items-center gap-x-2 rounded-xl border px-2 py-0.5 shadow-sm">
+                <span className="text-muted-foreground text-[11px] font-medium tracking-wide">
+                  Order:
+                </span>
+
+                <Controller
+                  name={`specifications.${specIdx}.items.${itemIdx}.order`}
+                  control={form.control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      className="h-6 w-12 [appearance:textfield] border-none bg-transparent p-0 text-center font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
+      {/* Nút thêm dòng */}
       <Button
         type="button"
-        variant="ghost"
+        variant="outline"
         size="sm"
-        className="text-primary hover:text-primary/80 h-7 text-xs"
+        className="border-primary/30 text-primary hover:text-primary hover:bg-primary/5 hover:border-primary mt-1 h-9 w-full rounded-xl border-dashed text-xs font-medium transition-all"
         onClick={() =>
           appendItem({ key: "", value: "", order: 0, isHighlight: false })
         }
       >
-        <Plus className="mr-1 h-3.5 w-3.5" /> Add Detail Row
+        <Plus className="mr-1.5 h-4 w-4" /> Add Item
       </Button>
     </div>
   )

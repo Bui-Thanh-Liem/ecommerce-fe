@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "leaflet/dist/leaflet.css";
@@ -126,5 +127,19 @@
   }
   html {
     @apply font-sans;
+  }
+
+  /* EDITOR */
+  .prose a {
+    @apply text-blue-600! underline transition-colors hover:text-blue-800!;
+  }
+  .prose code::before {
+    content: "" !important;
+  }
+  .prose code::after {
+    content: "" !important;
+  }
+  .prose code {
+    @apply rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm font-semibold text-pink-600;
   }
 }

@@ -11,17 +11,11 @@ const SalesAttributesSchema = z.object({
 export const CreateProductVariantSchema = z.object({
   product: z.uuidv4(),
 
-  price: z
-    .number({
-      error: "Price must be a number.",
-    })
-    .min(0, "Price must be greater than or equal to 0."),
+  price: z.number().min(0, "Base price must be at least 0."),
 
-  discountPercent: z
-    .number({
-      error: "Discount percent must be a number.",
-    })
-    .min(0, "Discount percent must be greater than or equal to 0."),
+  discountPercent: z.number().min(0).max(100).optional().default(0),
+
+  vat: z.number().min(0).max(100).optional().default(0),
 
   conditions: z.enum(ProductVariantCondition),
 

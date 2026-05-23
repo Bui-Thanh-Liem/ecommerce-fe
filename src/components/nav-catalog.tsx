@@ -33,9 +33,9 @@ export function NavCatalog() {
       icon: <Package />,
     },
     {
-      title: "Categories (product)",
-      url: "categories",
-      icon: <LayoutGrid />,
+      title: "Product variants (SKU)",
+      url: "product-variants",
+      icon: <Package />,
     },
   ]
 
@@ -44,6 +44,11 @@ export function NavCatalog() {
       title: "Brands",
       url: "brands",
       icon: <BadgeIcon />,
+    },
+    {
+      title: "Categories (product)",
+      url: "categories",
+      icon: <LayoutGrid />,
     },
   ]
 

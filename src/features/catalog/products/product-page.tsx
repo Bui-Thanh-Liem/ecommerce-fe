@@ -13,7 +13,6 @@ export function ProductPage() {
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)
-  const [initialData, setInitialData] = useState<IProduct | null>(null)
   const [dataEdit, setDataEdit] = useState<IProduct | null>(null)
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
@@ -34,7 +33,6 @@ export function ProductPage() {
   }
 
   if (!metadataProducts) return null
-  console.log(metadataProducts)
 
   return (
     <>
