@@ -1,11 +1,17 @@
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 
-export function RenderBlog({ content }: { content: string }) {
+export function RenderBlog({
+  content,
+  contentBtn = "View blog",
+}: {
+  content: string
+  contentBtn?: string
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">View Blog</Button>
+        <Button variant="outline">{contentBtn}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-max">
         <div

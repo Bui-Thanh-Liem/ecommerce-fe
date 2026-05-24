@@ -40,6 +40,9 @@ export const productColumns: ColumnDef<IProduct>[] = [
       <div className="space-y-1">
         <p>Name: {row.original.name}</p>
         <p>
+          Model: <Badge>{row.original.model}</Badge>
+        </p>
+        <p>
           SPU: <Badge>{row.original.spu}</Badge>
         </p>
         <p>
@@ -65,18 +68,46 @@ export const productColumns: ColumnDef<IProduct>[] = [
   },
   {
     accessorKey: "specifications",
-    header: "Specifications",
+    header: "Details",
     cell: ({ row }) => {
       const specifications = row.original.specifications || []
+      const weight = row.original.weight
+      const length = row.original.length
+      const width = row.original.width
+      const height = row.original.height
+      const isFeatured = row.original.isFeatured
+      const allowReview = row.original.allowReview
       if (specifications.length <= 0) return <span>-</span>
-      return <SpecificationsCell specifications={specifications} />
+      return (
+        <div className="space-y-1">
+          <p>
+            Is Featured:{" "}
+            <Badge className={randomColorByString(isFeatured.toString())}>
+              {isFeatured ? "Yes" : "No"}
+            </Badge>
+          </p>
+          <p>
+            Allow Review:{" "}
+            <Badge className={randomColorByString(allowReview.toString())}>
+              {allowReview ? "Yes" : "No"}
+            </Badge>
+          </p>
+          <p>Weight: {weight} kg</p>
+          <p>
+            Dimensions: {length} x {width} x {height} cm
+          </p>
+          <SpecificationsCell specifications={specifications} />
+        </div>
+      )
     },
   },
   {
     accessorKey: "desc",
     header: "Description",
     cell: ({ row }) => {
-      return <RenderBlog content={row.original.desc} />
+      return (
+        <RenderBlog content={row.original.desc} contentBtn="View Description" />
+      )
     },
   },
   {

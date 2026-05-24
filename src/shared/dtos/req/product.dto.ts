@@ -36,11 +36,25 @@ export const CreateProductSchema = z.object({
 
   desc: z.string().optional(),
 
+  model: z.string().max(20, "Model must be at most 20 characters."),
+
   basePrice: z.number().min(0, "Base price must be at least 0."),
 
   discountPercent: z.number().min(0).max(100).optional().default(0),
 
   status: z.enum(ProductStatus),
+
+  isFeatured: z.boolean().optional().default(false),
+
+  allowReview: z.boolean().optional().default(true),
+
+  weight: z.number().min(0).optional().default(0),
+
+  height: z.number().min(0).optional().default(0),
+
+  length: z.number().min(0).optional().default(0),
+
+  width: z.number().min(0).optional().default(0),
 
   specifications: z
     .array(SpecificationSchema)
