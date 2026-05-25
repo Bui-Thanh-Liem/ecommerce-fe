@@ -1,4 +1,4 @@
-import { InventoryPage } from "@/features/catalog/inventory/inventory-page"
+import { InventoryPage } from "@/features/inventory/inventory/inventory-page"
 import { Suspense } from "react"
 
 export default function Page() {

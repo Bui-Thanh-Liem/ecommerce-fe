@@ -7,19 +7,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { CircleHelpIcon, SearchIcon, Settings2Icon } from "lucide-react"
+import { BotMessageSquare, SearchIcon } from "lucide-react"
 
 export function NavSecondary() {
   const mainItems = [
     {
-      title: "Settings",
+      title: "Get help with AI",
       url: "#",
-      icon: <Settings2Icon />,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: <CircleHelpIcon />,
+      icon: <BotMessageSquare />,
     },
     {
       title: "Search",

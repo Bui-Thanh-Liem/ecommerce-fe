@@ -4,60 +4,63 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator, // đường kẽ
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction, // có sẵn hover
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { MoreHorizontalIcon, User, UserRoundKey, UsersIcon } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  Package,
+  LayoutGrid,
+  Badge as BadgeIcon,
+} from "lucide-react"
 import Link from "next/link"
-import { Badge } from "./ui/badge"
+import { Badge } from "../../components/ui/badge"
 
-export function NavManagement() {
+export function NavCatalog() {
   const { isMobile } = useSidebar()
 
   const mainItems = [
     {
-      title: "Staffs",
-      url: "staffs",
-      icon: <User />,
+      title: "Products (SPU)",
+      url: "products",
+      icon: <Package />,
+    },
+    {
+      title: "Product variants (SKU)",
+      url: "product-variants",
+      icon: <Package />,
+    },
+    {
+      title: "Product items (SERIAL)",
+      url: "product-items",
+      icon: <Package />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Teams",
-      url: "teams",
-      icon: <UsersIcon />,
+      title: "Brands",
+      url: "brands",
+      icon: <BadgeIcon />,
     },
     {
-      title: "Permissions",
-      url: "permissions",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Roles",
-      url: "roles",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Team Categories",
-      url: "team-categories",
-      icon: <UsersIcon />,
+      title: "Categories",
+      url: "categories",
+      icon: <LayoutGrid />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        Management
+        CATALOG
         <Badge variant="destructive" className="mb-3">
           admin
         </Badge>

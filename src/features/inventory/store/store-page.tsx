@@ -8,7 +8,8 @@ import { StoreAction } from "./store-action"
 import { storeColumns } from "./store-column"
 
 const StoreMap = dynamic(
-  () => import("@/features/manager/store/store-map").then((mod) => mod.StoreMap),
+  () =>
+    import("@/features/inventory/store/store-map").then((mod) => mod.StoreMap),
   {
     ssr: false,
     loading: () => (

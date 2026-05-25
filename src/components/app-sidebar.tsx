@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { NavMain } from "@/components/nav-main"
-import { NavStaff } from "@/components/nav-staff"
+import { NavMain } from "@/features/navbar/nav-main"
+import { NavStaff } from "@/features/navbar/nav-staff"
 import {
   Sidebar,
   SidebarContent,
@@ -13,10 +13,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { ShoppingBag } from "lucide-react"
-import { NavCatalog } from "./nav-catalog"
-import { NavSecondary } from "./nav-secondary"
-import { NavManagement } from "./nav-management"
-import { NavInventory } from "./nav-inventory"
+import { NavCatalog } from "../features/navbar/nav-catalog"
+import { NavSecondary } from "../features/navbar/nav-secondary"
+import { NavManagement } from "../features/navbar/nav-management"
+import { NavInventory } from "../features/navbar/nav-inventory"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

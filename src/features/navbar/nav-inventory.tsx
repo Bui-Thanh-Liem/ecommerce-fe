@@ -16,51 +16,41 @@ import {
 } from "@/components/ui/sidebar"
 import {
   MoreHorizontalIcon,
-  Package,
-  LayoutGrid,
-  Badge as BadgeIcon,
+  ShelvingUnit,
+  MapPinned,
+  Store,
 } from "lucide-react"
 import Link from "next/link"
-import { Badge } from "./ui/badge"
+import { Badge } from "../../components/ui/badge"
 
-export function NavCatalog() {
+export function NavInventory() {
   const { isMobile } = useSidebar()
 
   const mainItems = [
     {
-      title: "Products (SPU)",
-      url: "products",
-      icon: <Package />,
-    },
-    {
-      title: "Product variants (SKU)",
-      url: "product-variants",
-      icon: <Package />,
-    },
-    {
-      title: "Product items (SERIAL)",
-      url: "product-items",
-      icon: <Package />,
+      title: "Stores/Warehouses",
+      url: "stores-warehouses",
+      icon: <Store />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Brands",
-      url: "brands",
-      icon: <BadgeIcon />,
+      title: "Inventories",
+      url: "inventories",
+      icon: <ShelvingUnit />,
     },
     {
-      title: "Categories",
-      url: "categories",
-      icon: <LayoutGrid />,
+      title: "Locations Regions",
+      url: "location-regions",
+      icon: <MapPinned />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        CATALOG
+        INVENTORY
         <Badge variant="destructive" className="mb-3">
           admin
         </Badge>

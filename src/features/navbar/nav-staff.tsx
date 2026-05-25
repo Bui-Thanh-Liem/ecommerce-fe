@@ -20,9 +20,9 @@ import { useStaffContext } from "@/context/staff.context"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
-  CreditCardIcon,
   BellIcon,
   LogOutIcon,
+  Settings2Icon,
 } from "lucide-react"
 
 export function NavStaff() {
@@ -82,8 +82,8 @@ export function NavStaff() {
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
+                <Settings2Icon />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <BellIcon />
