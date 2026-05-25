@@ -145,6 +145,7 @@ interface DataTableProps<T extends IBase> {
   dataSource: ResMetadataDto<T>
   columns: ColumnDef<T>[]
   isPending?: boolean
+  extraAction?: (row: Row<T>) => React.ReactNode
 }
 
 export function DataTable<T extends IBase>({
@@ -157,6 +158,7 @@ export function DataTable<T extends IBase>({
   tabContent,
   dataSource,
   onDeleteRow,
+  extraAction,
   getRowClassName,
 }: DataTableProps<T>) {
   const { data: tableData, totalData, page, totalPage } = dataSource
@@ -244,6 +246,7 @@ export function DataTable<T extends IBase>({
               >
                 Edit
               </DropdownMenuItem>
+              {extraAction && extraAction(row)}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"

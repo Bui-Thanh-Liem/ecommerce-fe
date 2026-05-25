@@ -4,60 +4,53 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator, // đường kẽ
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction, // có sẵn hover
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { MoreHorizontalIcon, User, UserRoundKey, UsersIcon } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  ShelvingUnit,
+  MapPinned,
+  Store,
+} from "lucide-react"
 import Link from "next/link"
 import { Badge } from "./ui/badge"
 
-export function NavManagement() {
+export function NavInventory() {
   const { isMobile } = useSidebar()
 
   const mainItems = [
     {
-      title: "Staffs",
-      url: "staffs",
-      icon: <User />,
+      title: "Inventories",
+      url: "inventories",
+      icon: <ShelvingUnit />,
+    },
+    {
+      title: "Stores/Warehouses",
+      url: "stores-warehouses",
+      icon: <Store />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Teams",
-      url: "teams",
-      icon: <UsersIcon />,
-    },
-    {
-      title: "Permissions",
-      url: "permissions",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Roles",
-      url: "roles",
-      icon: <UserRoundKey />,
-    },
-    {
-      title: "Team Categories",
-      url: "team-categories",
-      icon: <UsersIcon />,
+      title: "Locations Regions",
+      url: "location-regions",
+      icon: <MapPinned />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        Management
+        INVENTORY
         <Badge variant="destructive" className="mb-3">
           admin
         </Badge>

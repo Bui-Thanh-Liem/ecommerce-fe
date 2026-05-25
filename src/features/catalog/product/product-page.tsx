@@ -5,8 +5,12 @@ import { IProduct } from "@/shared/interfaces/models/product.interface"
 import { useState } from "react"
 import { productColumns } from "./product-column"
 import { ProductAction } from "./product-action"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 export function ProductPage() {
+  const router = useRouter()
+
   const { mutateAsync, isPending } = useDeleteProduct()
   const { data } = useFindAllProducts()
   const metadataProducts = data?.metadata
@@ -32,6 +36,11 @@ export function ProductPage() {
     }
   }
 
+  //
+  function handleCreateVariant(product: IProduct) {
+    router.push(`/product-variants?p=${product.id}`)
+  }
+
   if (!metadataProducts) return null
 
   return (
@@ -49,6 +58,17 @@ export function ProductPage() {
           handleDeleteRow(row.original)
         }}
         isPending={isPending}
+        extraAction={(row) => {
+          return (
+            <>
+              <DropdownMenuItem
+                onClick={() => handleCreateVariant(row.original)}
+              >
+                Create Variant
+              </DropdownMenuItem>
+            </>
+          )
+        }}
       />
 
       <ProductAction open={open} onClose={handleClose} dataEdit={dataEdit} />

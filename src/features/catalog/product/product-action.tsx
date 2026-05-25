@@ -377,7 +377,7 @@ export function ProductAction({
           </FieldGroup>
 
           {/* */}
-          <div className="grid grid-cols-4 gap-x-2">
+          <div className="grid grid-cols-4 gap-x-4">
             <FieldGroup>
               <Controller
                 name="status"
@@ -470,7 +470,7 @@ export function ProductAction({
           </div>
 
           {/* */}
-          <div className="grid grid-cols-4 gap-x-2">
+          <div className="grid grid-cols-4 gap-x-4">
             <FieldGroup className="col-span-3">
               <Controller
                 name="name"
@@ -527,7 +527,7 @@ export function ProductAction({
           </div>
 
           {/*  */}
-          <div className="grid grid-cols-2 gap-x-2">
+          <div className="grid grid-cols-2 gap-x-4">
             {/* */}
             <FieldGroup>
               <Controller
@@ -612,7 +612,7 @@ export function ProductAction({
           </div>
 
           {/*  */}
-          <div className="grid grid-cols-2 gap-x-2">
+          <div className="grid grid-cols-2 gap-x-4">
             <FieldGroup>
               <Controller
                 name="basePrice"
@@ -700,7 +700,7 @@ export function ProductAction({
           </div>
 
           {/*  */}
-          <div className="grid grid-cols-4 gap-x-2">
+          <div className="grid grid-cols-4 gap-x-4">
             <FieldGroup>
               <Controller
                 name="weight"

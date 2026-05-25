@@ -43,11 +43,14 @@ import {
 import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
 import { useFindAllProducts } from "@/hooks/apis/use-product"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
+import { Switch } from "@/components/ui/switch"
 
 const initFormValue: z.infer<typeof CreateProductVariantSchema> = {
   vat: 0,
   price: 0,
+  barcode: "",
   product: "",
+  costPrice: 0,
   productImages: [],
   discountPercent: 0,
   salesAttributes: [],
@@ -104,6 +107,8 @@ export function ProductVariantAction({
       form.reset({
         vat: dataEdit.vat || 0,
         price: dataEdit.price || 0,
+        barcode: dataEdit.barcode || "",
+        costPrice: dataEdit.costPrice || 0,
         product: dataEdit.product.id,
         conditions: dataEdit.conditions,
         discountPercent: dataEdit.discountPercent || 0,
@@ -281,7 +286,7 @@ export function ProductVariantAction({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeaderAction
           title={
             !!dataEdit ? "Edit Product Variant" : "Add New Product Variant"
@@ -397,7 +402,126 @@ export function ProductVariantAction({
               />
             </FieldGroup>
 
-            <div className="grid grid-cols-3 gap-x-2">
+            {/* */}
+            <div className="grid grid-cols-2 gap-x-4">
+              <FieldGroup>
+                <Controller
+                  name="conditions"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-conditions">
+                          Conditions
+                        </FieldLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                            id="form-conditions"
+                          >
+                            <SelectValue placeholder="Select conditions" />
+                          </SelectTrigger>
+
+                          <SelectContent align="end">
+                            <SelectGroup>
+                              {Object.values(ProductVariantCondition).map(
+                                (status) => (
+                                  <SelectItem key={status} value={status}>
+                                    {status}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+              </FieldGroup>
+
+              <FieldGroup>
+                <Controller
+                  name="barcode"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-barcode">
+                        Barcode
+                      </FieldLabel>
+
+                      <Input
+                        {...field}
+                        type="text"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Barcode"
+                        autoComplete="name"
+                        id="form-rhf-input-barcode"
+                      />
+
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+
+            <div className="grid grid-cols-4 gap-x-2">
+              {/*  */}
+              <FieldGroup>
+                <Controller
+                  name="costPrice"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-cost-price">
+                        Cost Price
+                      </FieldLabel>
+
+                      <InputGroup>
+                        <Input
+                          {...field}
+                          type="number"
+                          aria-invalid={fieldState.invalid}
+                          autoComplete="name"
+                          placeholder="Cost Price"
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber
+
+                            if (isNaN(value)) {
+                              field.onChange(0) // Nếu không phải số, đặt về 0
+                            } else if (value < 0) {
+                              field.onChange(0) // Không cho nhập số âm
+                            } else {
+                              field.onChange(value)
+                            }
+                          }}
+                          id="form-rhf-input-cost-price"
+                        />
+
+                        <InputGroupAddon align="inline-end">
+                          USD
+                        </InputGroupAddon>
+                      </InputGroup>
+
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+
               {/*  */}
               <FieldGroup>
                 <Controller
@@ -528,51 +652,6 @@ export function ProductVariantAction({
             </div>
 
             {/* */}
-            <FieldGroup>
-              <Controller
-                name="conditions"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-conditions">
-                        Conditions
-                      </FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-conditions"
-                        >
-                          <SelectValue placeholder="Select conditions" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {Object.values(ProductVariantCondition).map(
-                              (status) => (
-                                <SelectItem key={status} value={status}>
-                                  {status}
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-
-            {/* */}
             <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
@@ -593,6 +672,7 @@ export function ProductVariantAction({
                       key: "",
                       label: "",
                       value: "",
+                      isSKU: false,
                     })
                   }
                 >
@@ -606,79 +686,102 @@ export function ProductVariantAction({
                     key={spec.id}
                     className="bg-background group border-muted-foreground/10 hover:border-muted-foreground/20 relative space-y-3 rounded-xl border p-3 shadow-sm transition-all duration-200"
                   >
-                    <div className="flex items-start gap-2">
-                      <div className="grid flex-1 grid-cols-3 gap-2">
-                        {/* Input cho Key */}
-                        <FieldGroup>
-                          <Controller
-                            name={`salesAttributes.${specIdx}.key`}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
-                                <Input
-                                  {...field}
-                                  placeholder="Key (e.g., screen)"
-                                  className="h-9 text-xs"
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        </FieldGroup>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <div className="grid flex-1 grid-cols-3 gap-2">
+                          {/* Input cho Key */}
+                          <FieldGroup>
+                            <Controller
+                              name={`salesAttributes.${specIdx}.key`}
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                  <Input
+                                    {...field}
+                                    placeholder="Key (e.g., 256)"
+                                    className="h-9 text-xs"
+                                  />
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              )}
+                            />
+                          </FieldGroup>
 
-                        {/* Input cho Label */}
-                        <FieldGroup>
-                          <Controller
-                            name={`salesAttributes.${specIdx}.label`}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
-                                <Input
-                                  {...field}
-                                  placeholder="Label (e.g., Screen Size)"
-                                  className="h-9 text-xs"
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        </FieldGroup>
+                          {/* Input cho Label */}
+                          <FieldGroup>
+                            <Controller
+                              name={`salesAttributes.${specIdx}.label`}
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                  <Input
+                                    {...field}
+                                    placeholder="Label (e.g., Disk)"
+                                    className="h-9 text-xs"
+                                  />
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              )}
+                            />
+                          </FieldGroup>
 
-                        {/* Input cho Value */}
-                        <FieldGroup>
-                          <Controller
-                            name={`salesAttributes.${specIdx}.value`}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
-                                <Input
-                                  {...field}
-                                  placeholder="Value (e.g., 6.7 inch)"
-                                  className="h-9 text-xs"
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        </FieldGroup>
+                          {/* Input cho Value */}
+                          <FieldGroup>
+                            <Controller
+                              name={`salesAttributes.${specIdx}.value`}
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                  <Input
+                                    {...field}
+                                    placeholder="Value (e.g., 256GB)"
+                                    className="h-9 text-xs"
+                                  />
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              )}
+                            />
+                          </FieldGroup>
+                        </div>
+
+                        {/* Nút xóa dòng thuộc tính */}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-9 w-9 shrink-0 transition-colors"
+                          onClick={() => removeSpec(specIdx)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
+                      <div className="flex items-center gap-x-2.5">
+                        <Controller
+                          name={`salesAttributes.${specIdx}.isSKU`}
+                          control={form.control}
+                          render={({ field }) => (
+                            <Switch
+                              className="data-[state=checked]:bg-primary scale-90"
+                              checked={field.value}
+                              id={`sku-${specIdx}`}
+                              onCheckedChange={field.onChange}
+                            />
+                          )}
+                        />
 
-                      {/* Nút xóa dòng thuộc tính */}
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-9 w-9 shrink-0 transition-colors"
-                        onClick={() => removeSpec(specIdx)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                        <label
+                          htmlFor={`sku-${specIdx}`}
+                          className="text-muted-foreground group-hover:text-foreground cursor-pointer font-medium transition-colors select-none"
+                        >
+                          SKU?
+                        </label>
+                      </div>
                     </div>
                   </div>
                 ))}

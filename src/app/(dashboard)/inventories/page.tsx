@@ -1,4 +1,4 @@
-import { ProductVariantPage } from "@/features/catalog/product-variant/product-variant-page"
+import { InventoryPage } from "@/features/catalog/inventory/inventory-page"
 import { Suspense } from "react"
 
 export default function Page() {
@@ -7,7 +7,7 @@ export default function Page() {
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 md:gap-6">
           <Suspense fallback={<div>Loading...</div>}>
-            <ProductVariantPage />
+            <InventoryPage />
           </Suspense>
         </div>
       </div>

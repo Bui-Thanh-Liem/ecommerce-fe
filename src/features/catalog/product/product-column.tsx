@@ -28,7 +28,6 @@ export const productColumns: ColumnDef<IProduct>[] = [
     header: "Product Images",
     cell: ({ row }) => {
       const images = row.original.productImages || []
-
       if (images.length <= 0) return <span>-</span>
       return <ProductImages images={images} />
     },
@@ -38,15 +37,20 @@ export const productColumns: ColumnDef<IProduct>[] = [
     header: "Information",
     cell: ({ row }) => (
       <div className="space-y-1">
-        <p>Name: {row.original.name}</p>
         <p>
-          Model: <Badge>{row.original.model}</Badge>
+          <span className="text-muted-foreground font-medium">SPU:</span>{" "}
+          <Badge>{row.original.spu}</Badge>
         </p>
         <p>
-          SPU: <Badge>{row.original.spu}</Badge>
+          <span className="text-muted-foreground font-medium">Model:</span>{" "}
+          <Badge>{row.original.model}</Badge>
+        </p>
+        <p className="line-clamp-4 max-w-96 whitespace-normal">
+          <span className="text-muted-foreground font-medium">Name:</span>{" "}
+          {row.original.name}
         </p>
         <p>
-          Category:{" "}
+          <span className="text-muted-foreground font-medium">Category:</span>{" "}
           <Badge
             variant="secondary"
             className={randomColorByString(row.original.category.name)}
@@ -55,7 +59,7 @@ export const productColumns: ColumnDef<IProduct>[] = [
           </Badge>
         </p>
         <p>
-          Brand:{" "}
+          <span className="text-muted-foreground font-medium">Brand:</span>{" "}
           <Badge
             variant="secondary"
             className={randomColorByString(row.original.brand.name)}
@@ -81,20 +85,30 @@ export const productColumns: ColumnDef<IProduct>[] = [
       return (
         <div className="space-y-1">
           <p>
-            Is Featured:{" "}
+            <span className="text-muted-foreground font-medium">
+              Is Featured:
+            </span>{" "}
             <Badge className={randomColorByString(isFeatured.toString())}>
               {isFeatured ? "Yes" : "No"}
             </Badge>
           </p>
           <p>
-            Allow Review:{" "}
+            <span className="text-muted-foreground font-medium">
+              Allow Review:
+            </span>{" "}
             <Badge className={randomColorByString(allowReview.toString())}>
               {allowReview ? "Yes" : "No"}
             </Badge>
           </p>
-          <p>Weight: {weight} kg</p>
           <p>
-            Dimensions: {length} x {width} x {height} cm
+            <span className="text-muted-foreground font-medium">Weight:</span>{" "}
+            {weight} kg
+          </p>
+          <p>
+            <span className="text-muted-foreground font-medium">
+              Dimensions:
+            </span>{" "}
+            {length} x {width} x {height} cm
           </p>
           <SpecificationsCell specifications={specifications} />
         </div>
@@ -177,7 +191,7 @@ function SpecificationsCell({
                         {item.key}
                       </span>
                       {/* Cột Value chiếm 2 phần, chữ đen rõ ràng hơn */}
-                      <span className="text-foreground col-span-2 font-medium break-words">
+                      <span className="text-foreground col-span-2 font-medium wrap-break-word">
                         {item.value}
                       </span>
                     </div>

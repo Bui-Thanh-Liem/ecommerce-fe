@@ -37,6 +37,11 @@ export function NavCatalog() {
       url: "product-variants",
       icon: <Package />,
     },
+    {
+      title: "Product items (SERIAL)",
+      url: "product-items",
+      icon: <Package />,
+    },
   ]
 
   const secondaryItems = [
@@ -46,7 +51,7 @@ export function NavCatalog() {
       icon: <BadgeIcon />,
     },
     {
-      title: "Categories (product)",
+      title: "Categories",
       url: "categories",
       icon: <LayoutGrid />,
     },
@@ -84,7 +89,7 @@ export function NavCatalog() {
             {/*  */}
             <DropdownMenuContent
               side="bottom"
-              className="w-24 rounded-2xl"
+              className="rounded-2xl"
               align={isMobile ? "end" : "start"}
             >
               {secondaryItems.map((item) => (

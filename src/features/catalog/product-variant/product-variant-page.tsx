@@ -8,11 +8,17 @@ import {
   useDeleteProductVariant,
   useFindAllProductVariants,
 } from "@/hooks/apis/use-product-variant"
+import { useRouter, useSearchParams } from "next/navigation"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 export function ProductVariantPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const productId = searchParams.get("p") // Lấy productId từ query parameter
+
   const { mutateAsync, isPending } = useDeleteProductVariant()
   const { data } = useFindAllProductVariants()
-  const metadataProducts = data?.metadata
+  const metadataProductVariants = data?.metadata
 
   // State quản lý dialog
   const [open, setOpen] = useState(false)
@@ -20,10 +26,12 @@ export function ProductVariantPage() {
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
   function handleClose() {
+    if (productId) router.push("/product-variants") // Xóa query parameter khi đóng dialog
     setOpen(false)
     const id = setTimeout(() => {
       setDataEdit(null)
     }, 100)
+
     return () => clearTimeout(id)
   }
 
@@ -35,14 +43,24 @@ export function ProductVariantPage() {
     }
   }
 
-  if (!metadataProducts) return null
+  //
+  const initialData = productId
+    ? ({ product: { id: productId } } as IProductVariant)
+    : null
+  const dialogOpen = open || !!productId
 
-  console.log("metadataProducts :::", metadataProducts)
+  //
+  function handleCreateInventory(product: IProductVariant) {
+    router.push(`/inventories?pv=${product.id}`)
+  }
+
+  //
+  if (!metadataProductVariants) return null
 
   return (
     <>
       <DataTable
-        dataSource={metadataProducts}
+        dataSource={metadataProductVariants}
         columns={productVariantColumns}
         //
         onAddRow={() => setOpen(true)}
@@ -54,12 +72,24 @@ export function ProductVariantPage() {
           handleDeleteRow(row.original)
         }}
         isPending={isPending}
+        extraAction={(row) => {
+          return (
+            <>
+              <DropdownMenuItem
+                onClick={() => handleCreateInventory(row.original)}
+              >
+                Create Inventory
+              </DropdownMenuItem>
+            </>
+          )
+        }}
       />
 
       <ProductVariantAction
-        open={open}
-        onClose={handleClose}
+        open={dialogOpen}
         dataEdit={dataEdit}
+        onClose={handleClose}
+        initialData={initialData}
       />
     </>
   )

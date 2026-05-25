@@ -19,12 +19,15 @@ export interface IVariantAttribute {
   key: string // vd: "color", "storage"
   label: string // vd: "Màu sắc", "Dung lượng"
   value: string // vd: "Đen lục bảo", "128GB"
+  isSKU: boolean // Thuộc tính nào sẽ hiển thị ở SKU, vd: màu sắc thì sẽ hiển thị ở SKU, còn tên sản phẩm thì không cần thiết
 }
 
 export interface IProductVariant extends IBase {
   product: IProduct
   sku: string
+  barcode: string
   price: number
+  costPrice: number
   discountPercent: number
   vat?: number // Thuế VAT (nếu có) được tính trên giá gốc (price), không tính trên giá đã giảm (discountPrice) %
   soldCount: number
