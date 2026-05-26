@@ -1,5 +1,5 @@
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
-import { type ColumnDef } from "@tanstack/react-table"
+import { Row, type ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/apis/use-mobile"
 import {
@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
 //
-const StatusCell = ({ row }: { row: any }) => {
+const StatusCell = ({ row }: { row: Row<IStaff> }) => {
   const { mutate } = useUpdateStaff()
 
   function toggleActiveStatus() {

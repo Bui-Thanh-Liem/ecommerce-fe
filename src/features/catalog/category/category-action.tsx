@@ -104,9 +104,6 @@ export function CategoryAction({
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
-    } else {
-      form.reset(initFormValue)
-      setPreviewUrl("")
     }
   }, [dataEdit, form])
 
@@ -128,6 +125,9 @@ export function CategoryAction({
     onOpenChange?.(open)
     if (!open) {
       onClose?.() // Gọi onClose khi dialog đóng (overlay click, esc, hoặc nút close)
+      setPreviewUrl("")
+      setSelectedFile(null)
+      form.reset(initFormValue)
     }
   }
 

@@ -12,6 +12,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -20,9 +21,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { useFindAllProducts } from "@/hooks/apis/use-product"
+import {
+  useCreateProductVariant,
+  useUpdateProductVariant,
+} from "@/hooks/apis/use-product-variant"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
+import {
+  CreateProductVariantSchema,
+  UpdateProductVariantSchema,
+} from "@/shared/dtos/req/product-variant.dto"
+import { ProductVariantCondition } from "@/shared/enums/product-variant-condition.enum"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
+import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
+import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
@@ -30,20 +44,6 @@ import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
-import {
-  CreateProductVariantSchema,
-  UpdateProductVariantSchema,
-} from "@/shared/dtos/req/product-variant.dto"
-import { ProductVariantCondition } from "@/shared/enums/product-variant-condition.enum"
-import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
-import {
-  useCreateProductVariant,
-  useUpdateProductVariant,
-} from "@/hooks/apis/use-product-variant"
-import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
-import { useFindAllProducts } from "@/hooks/apis/use-product"
-import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
-import { Switch } from "@/components/ui/switch"
 
 const initFormValue: z.infer<typeof CreateProductVariantSchema> = {
   vat: 0,
@@ -128,14 +128,6 @@ export function ProductVariantAction({
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreviews(existingImages)
       }
-    } else {
-      form.reset(initFormValue)
-      setPreviews([])
-    }
-
-    return () => {
-      form.reset(initFormValue)
-      setPreviews([])
     }
   }, [dataEdit, form])
 
@@ -146,11 +138,6 @@ export function ProductVariantAction({
         ...initFormValue,
         product: initialData.product.id,
       })
-    }
-
-    return () => {
-      form.reset(initFormValue)
-      setPreviews([])
     }
   }, [form, initialData])
 

@@ -135,9 +135,6 @@ export function StoreAction({
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
-    } else {
-      form.reset(initFormValue)
-      setPreviewUrl("")
     }
   }, [dataEdit, form])
 
@@ -316,6 +313,7 @@ export function StoreAction({
                     )}
                   />
                 </FieldGroup>
+
                 <FieldGroup>
                   <Controller
                     name="closingHours"

@@ -120,7 +120,7 @@ export function StaffAction({
     } else {
       form.reset(initFormValue)
     }
-  }, [dataEdit])
+  }, [dataEdit, form])
 
   //
   useEffect(() => {
@@ -130,7 +130,7 @@ export function StaffAction({
         directManager: initialData.directManager?.id || undefined,
       })
     }
-  }, [initialData])
+  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {

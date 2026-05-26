@@ -83,9 +83,6 @@ export function BrandAction({
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
-    } else {
-      form.reset(initFormValue)
-      setPreviewUrl("")
     }
   }, [dataEdit, form])
 

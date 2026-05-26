@@ -145,14 +145,6 @@ export function ProductAction({
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreviews(existingImages)
       }
-    } else {
-      form.reset(initFormValue)
-      setPreviews([])
-    }
-
-    return () => {
-      form.reset(initFormValue)
-      setPreviews([])
     }
   }, [dataEdit, form])
 
@@ -164,11 +156,6 @@ export function ProductAction({
         brand: initialData.brand.id,
         category: initialData.category.id,
       })
-    }
-
-    return () => {
-      form.reset(initFormValue)
-      setPreviews([])
     }
   }, [form, initialData])
 
