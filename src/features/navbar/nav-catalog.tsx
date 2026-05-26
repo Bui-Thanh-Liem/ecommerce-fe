@@ -19,6 +19,8 @@ import {
   Package,
   LayoutGrid,
   Badge as BadgeIcon,
+  ScanBarcode,
+  RectangleEllipsis,
 } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../components/ui/badge"
@@ -32,19 +34,19 @@ export function NavCatalog() {
       url: "products",
       icon: <Package />,
     },
+  ]
+
+  const secondaryItems = [
     {
       title: "Product variants (SKU)",
       url: "product-variants",
-      icon: <Package />,
+      icon: <ScanBarcode />,
     },
     {
       title: "Product items (SERIAL)",
       url: "product-items",
       icon: <Package />,
     },
-  ]
-
-  const secondaryItems = [
     {
       title: "Brands",
       url: "brands",
@@ -54,6 +56,11 @@ export function NavCatalog() {
       title: "Categories",
       url: "categories",
       icon: <LayoutGrid />,
+    },
+    {
+      title: "Product navbars",
+      url: "product-navbars",
+      icon: <RectangleEllipsis />,
     },
   ]
 

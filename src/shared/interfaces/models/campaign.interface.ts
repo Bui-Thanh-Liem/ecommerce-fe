@@ -1,14 +1,17 @@
-import { IBase } from '../common/base.interface';
-import { IPromotion } from './promotion.interface';
+import { IBase } from "../common/base.interface"
+import { IImage } from "../common/image.interface"
+import { IPromotion } from "./promotion.interface"
 
 export interface ICampaign extends IBase {
-  name: string;
-  slug: string;
-  desc: string;
-  mainImageUrl: string;
-  imageUrls: string[]; // Max 5 images
-  startDate: Date; // Ngày bắt đầu khuyến mãi
-  endDate: Date; // Ngày kết thúc khuyến mãi
+  name: string
+  slug: string
+  desc: string
+  isActive: boolean
+  mainImage: IImage // Ảnh chính của chiến dịch
+  images: IImage[] // Max 5 images
+  startDate: Date // Ngày bắt đầu khuyến mãi
+  endDate: Date // Ngày kết thúc khuyến mãi
 
-  promotions: IPromotion[]; // Mảng chứa ID của các khuyến mãi liên quan đến chiến dịch này
+  // Relations
+  promotions: IPromotion[] // Mảng chứa ID của các khuyến mãi liên quan đến chiến dịch này
 }
