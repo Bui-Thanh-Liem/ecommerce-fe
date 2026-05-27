@@ -121,7 +121,7 @@ const StaffNode = ({ data }: { data: IStaff }) => {
 
       <div className="flex items-center gap-x-4">
         <Avatar className="h-10 w-10 rounded-lg">
-          <AvatarImage src={data?.avatarUrl} alt={data?.fullName} />
+          <AvatarImage src={data?.avatar?.url} alt={data?.fullName} />
           <AvatarFallback className="bg-slate-100 font-bold">
             {data?.fullName?.substring(0, 2).toUpperCase()}
           </AvatarFallback>

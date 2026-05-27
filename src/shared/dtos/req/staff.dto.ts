@@ -1,9 +1,10 @@
 import { REGEX_PASSWORD, REGEX_PHONE } from "@/shared/constants/regex.constant"
 import { MAX_ROLES_IN_STAFF } from "@/shared/constants/staff.constant"
 import z from "zod"
+import { imageDtoSchema } from "../common/image.dto"
 
 export const StaffBaseSchema = z.object({
-  avatarUrl: z.string().optional(),
+  avatar: imageDtoSchema.optional(),
 
   fullName: z
     .string()

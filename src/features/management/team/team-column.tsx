@@ -71,7 +71,7 @@ export const teamColumns: ColumnDef<ITeam>[] = [
         <div className="flex items-center space-x-2">
           <Avatar className="border-2 border-white shadow-sm">
             <AvatarImage
-              src={leader.avatarUrl || undefined}
+              src={leader.avatar?.url || undefined}
               alt={leader.fullName}
             />
             <AvatarFallback>{leader.fullName[0].toUpperCase()}</AvatarFallback>
@@ -108,7 +108,7 @@ export function MemberAvatars({ members }: { members: IStaff[] }) {
               <div className="cursor-pointer transition-all duration-200 hover:z-10 hover:-translate-y-1">
                 <Avatar className="border-2 border-white shadow-sm">
                   <AvatarImage
-                    src={m.avatarUrl || undefined}
+                    src={m.avatar?.url || undefined}
                     alt={m.fullName}
                   />
                   <AvatarFallback>{m.fullName[0].toUpperCase()}</AvatarFallback>

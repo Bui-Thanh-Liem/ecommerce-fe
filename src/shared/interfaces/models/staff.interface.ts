@@ -3,9 +3,10 @@ import { IBase } from "../common/base.interface"
 import { IRole } from "./role.interface"
 import { IStore } from "./store.interface"
 import { ITeam } from "./team.interface"
+import { IImage } from "../common/image.interface"
 
 export interface IStaff extends IBase {
-  avatarUrl?: string
+  avatar?: IImage
   fullName: string
   email: string
   phone: string

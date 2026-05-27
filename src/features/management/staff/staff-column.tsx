@@ -46,7 +46,7 @@ export const staffColumns: ColumnDef<IStaff>[] = [
       return (
         <Avatar>
           <AvatarImage
-            src={row.original.avatarUrl}
+            src={row.original.avatar?.url}
             alt={row.original.fullName}
           />
           <AvatarFallback>AV</AvatarFallback>
@@ -147,7 +147,7 @@ function TableCellViewer({ item }: { item: IStaff }) {
             <div className="space-y-6">
               <div className="flex items-center justify-center">
                 <Avatar className="h-28 w-28 border">
-                  <AvatarImage src={item.avatarUrl} alt={item.fullName} />
+                  <AvatarImage src={item.avatar?.url} alt={item.fullName} />
                   <AvatarFallback>AV</AvatarFallback>
                 </Avatar>
               </div>

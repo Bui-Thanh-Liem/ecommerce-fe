@@ -1,4 +1,4 @@
-import { StaffPage } from "@/features/manager/staff/staff-page"
+import { StaffPage } from "@/features/management/staff/staff-page"
 
 export default function Page() {
   return (

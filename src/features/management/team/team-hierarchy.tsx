@@ -77,7 +77,7 @@ const TeamNode = ({ data }: { data: ITeam }) => (
 const LeaderNode = ({ data }: { data: IStaff }) => (
   <div className="flex min-w-45 items-center gap-3 rounded-full border-2 border-amber-400 bg-amber-50 px-4 py-2 shadow-sm">
     <Avatar>
-      <AvatarImage src={data.avatarUrl} />
+      <AvatarImage src={data.avatar?.url} alt={data.fullName} />
       <AvatarFallback>AV</AvatarFallback>
     </Avatar>
     <div className="flex flex-col">
@@ -95,7 +95,7 @@ const LeaderNode = ({ data }: { data: IStaff }) => (
 const MemberNode = ({ data }: { data: IStaff }) => (
   <div className="flex min-w-40 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
     <Avatar>
-      <AvatarImage src={data.avatarUrl} />
+      <AvatarImage src={data.avatar?.url} alt={data.fullName} />
       <AvatarFallback>AV</AvatarFallback>
     </Avatar>
     <div className="flex flex-col">

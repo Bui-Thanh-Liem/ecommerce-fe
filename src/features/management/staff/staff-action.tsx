@@ -66,7 +66,7 @@ const initFormValue: z.infer<typeof CreateStaffSchema> = {
   workLocationID: "",
   confirmPassword: "",
   directManager: "",
-  avatarUrl: "",
+  avatar: undefined,
 }
 
 export function StaffAction({
@@ -112,7 +112,7 @@ export function StaffAction({
         fullName: dataEdit.fullName || "",
         isActive: dataEdit.isActive ?? true,
         isSubAdmin: dataEdit.isSubAdmin ?? false,
-        avatarUrl: dataEdit.avatarUrl || "",
+        avatar: dataEdit.avatar || undefined,
         roles: dataEdit.roles.map((r) => r.id) || [],
         workLocationID: dataEdit.workLocationID || "",
         directManager: dataEdit.directManager?.id || undefined,
@@ -181,7 +181,7 @@ export function StaffAction({
           className="max-h-[calc(100vh-200px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
         >
           <FieldGroup className="mb-12 flex items-center justify-center">
-            <AvatarUpload form={form} name="avatarUrl" />
+            <AvatarUpload form={form} name="avatar" />
           </FieldGroup>
 
           <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-2">
@@ -428,7 +428,7 @@ export function StaffAction({
                               <SelectItemStaff
                                 key={manager.id}
                                 value={manager.id}
-                                avatarUrl={manager.avatarUrl}
+                                avatarUrl={manager.avatar?.url}
                                 fullName={manager.fullName}
                               />
                             ))}
