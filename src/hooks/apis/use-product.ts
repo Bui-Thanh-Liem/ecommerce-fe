@@ -1,4 +1,5 @@
 import { productServices } from "@/services/product.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateProductDto,
   UpdateProductDto,
@@ -6,10 +7,17 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-export const useFindAllProducts = () => {
+export const useFindAllProducts = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["products"],
-    queryFn: productServices.findAll,
+    queryFn: () => productServices.findAll(query),
+  })
+}
+
+export const useFindOptionsProducts = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["products", "options"],
+    queryFn: () => productServices.findOptions(query),
   })
 }
 

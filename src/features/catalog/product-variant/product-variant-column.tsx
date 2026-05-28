@@ -122,7 +122,7 @@ function SalesAttributesCell({
         </DialogHeader>
 
         {/* Đặt chiều cao cố định và thanh cuộn mượt nếu danh sách quá dài */}
-        <div className="scrollbar-thin max-h-[60vh] space-y-3 overflow-y-auto">
+        <div className="max-h-[60vh] scrollbar-thin space-y-3 overflow-y-auto">
           {salesAttributes.map((attr, idx) => {
             const isSUKU = attr.isSKU
             return (

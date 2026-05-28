@@ -10,6 +10,13 @@ export const useFindAllBrands = (query?: QueryDto) => {
   })
 }
 
+export const useFindOptionsBrands = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["brands-options", JSON.stringify(query)],
+    queryFn: () => brandServices.findOptions(query),
+  })
+}
+
 export const useCreateBrand = () => {
   const queryClient = useQueryClient()
 

@@ -1,14 +1,22 @@
 import { inventoryServices } from "@/services/inventory.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateInventoryDto,
   UpdateInventoryDto,
 } from "@/shared/dtos/req/inventory.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllInventories = () => {
+export const useFindAllInventories = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["inventories"],
-    queryFn: inventoryServices.findAll,
+    queryFn: () => inventoryServices.findAll(query),
+  })
+}
+
+export const useFindOptionsInventories = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["inventory-options"],
+    queryFn: () => inventoryServices.findOptions(query),
   })
 }
 

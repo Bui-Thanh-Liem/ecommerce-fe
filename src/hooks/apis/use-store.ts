@@ -1,11 +1,19 @@
 import { storeServices } from "@/services/store.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateStoreDto, UpdateStoreDto } from "@/shared/dtos/req/store.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllStores = () => {
+export const useFindAllStores = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["stores"],
-    queryFn: storeServices.findAll,
+    queryFn: () => storeServices.findAll(query),
+  })
+}
+
+export const useFindOptionsStores = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["stores-options"],
+    queryFn: () => storeServices.findOptions(query),
   })
 }
 
@@ -19,7 +27,7 @@ export const useCreateStore = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stores"] })
-      queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["stores-options"] })
     },
   })
 }
@@ -35,7 +43,7 @@ export const useUpdateStore = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stores"] })
-      queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["stores-options"] })
     },
   })
 }
@@ -50,7 +58,7 @@ export const useDeleteStore = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stores"] })
-      queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["stores-options"] })
     },
   })
 }

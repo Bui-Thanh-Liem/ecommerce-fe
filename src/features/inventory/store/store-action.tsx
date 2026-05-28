@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllStaffs } from "@/hooks/apis/use-staff"
+import { useFindAllStaffs, useFindOptionsStaffs } from "@/hooks/apis/use-staff"
 import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
@@ -85,7 +85,7 @@ export function StoreAction({
   const updateApi = useUpdateStore()
   const uploadApi = useUploadCloudinary()
 
-  const { data: s } = useFindAllStaffs()
+  const { data: s } = useFindOptionsStaffs()
   const staffs = s?.metadata?.data || []
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)

@@ -1,3 +1,4 @@
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateInventoryDto,
   UpdateInventoryDto,
@@ -5,6 +6,7 @@ import {
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IInventory } from "@/shared/interfaces/models/inventory.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const inventoryServices = {
@@ -17,10 +19,28 @@ export const inventoryServices = {
     return handleResponse(res)
   },
 
-  findAll: async () => {
-    const res = await apiCall<ResMetadataDto<IInventory>>("/inventories", {
-      method: "GET",
-    })
+  findAll: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IInventory>>(
+      `/inventories?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IInventory>>(res)
+  },
+
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IInventory>>(
+      `/inventories/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
 
     return handleResponse<ResMetadataDto<IInventory>>(res)
   },

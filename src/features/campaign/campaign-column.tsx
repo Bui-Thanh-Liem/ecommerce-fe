@@ -1,6 +1,13 @@
 import { Active } from "@/components/active"
 import { Images } from "@/components/cell-in-table/images"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { useUpdateCampaign } from "@/hooks/apis/use-campaign"
 import { ICampaign } from "@/shared/interfaces/models/campaign.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
@@ -31,7 +38,11 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => {
-      return <p>{row.original.name || "-"}</p>
+      return (
+        <p className="max-w-60 overflow-auto whitespace-normal">
+          {row.original.name || "-"}
+        </p>
+      )
     },
   },
   {
@@ -59,21 +70,90 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
       const { startDate, endDate } = row.original
 
       if (!startDate || !endDate) {
-        return <span>-</span>
+        return <span className="text-muted-foreground">-</span>
       }
 
-      const start = new Date(startDate)
-      const end = new Date(endDate)
+      const start = new Date(startDate).getTime()
+      const end = new Date(endDate).getTime()
+      const now = Date.now()
+
+      // 1. Tính toán phần trăm tiến độ
+      let percentage = 0
+      if (now >= end) {
+        percentage = 100
+      } else if (now <= start) {
+        percentage = 0
+      } else {
+        const total = end - start
+        const elapsed = now - start
+        percentage = Math.round((elapsed / total) * 100)
+      }
+
+      // 2. Xác định màu sắc dựa trên trạng thái (Tùy chọn)
+      const isCompleted = now >= end
+      const isNotStarted = now < start
+
+      const formattedStart = `${format(start, "MMM do, yyyy")} ${format(start, "hh:mm:ss a")}`
+      const formattedEnd = `${format(end, "MMM do, yyyy")} ${format(end, "hh:mm:ss a")}`
 
       return (
-        <div className="space-y-1 text-sm leading-5">
-          <p>
-            {format(start, "MMM do, yyyy")} {format(start, "hh:mm:ss a")}
-          </p>
+        <div className="w-[180px] space-y-2 py-1">
+          {/* Phần Text hiển thị % hoặc Trạng thái ngắn gọn */}
+          <div className="text-muted-foreground flex justify-between text-xs font-medium">
+            <span>
+              {isNotStarted
+                ? "Not Started"
+                : isCompleted
+                  ? "Completed"
+                  : "Running"}
+            </span>
+            <span className="font-mono">{percentage}%</span>
+          </div>
 
-          <p className="text-muted-foreground">
-            {format(end, "MMM do, yyyy")} {format(end, "hh:mm:ss a")}
-          </p>
+          {/* Thanh Progress tích hợp Tooltip khi hover vào sẽ hiện ngày chi tiết */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="w-full cursor-help">
+                <Progress
+                  value={percentage}
+                  className="h-2"
+                  // Nếu dùng progress mặc định của Shadcn, có thể đổi màu tùy trạng thái qua indicatorClassName (nếu có)
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="space-y-1 p-2 text-xs">
+              <p>
+                <span className="text-muted-foreground">Start:</span>{" "}
+                {formattedStart}
+              </p>
+              <p>
+                <span className="text-muted-foreground">End:</span>{" "}
+                {formattedEnd}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "productHighlighted",
+    header: "Product Highlighted",
+    cell: ({ row }) => {
+      const productHighlighted = row.original.productHighlighted || []
+      if (!productHighlighted.length) return <span>-</span>
+      return (
+        <div className="space-y-1">
+          {productHighlighted.map((p) => (
+            <Tooltip key={p.id}>
+              <TooltipTrigger asChild>
+                <Badge className="cursor-help">{p.sku}</Badge>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{p.product.name}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
         </div>
       )
     },

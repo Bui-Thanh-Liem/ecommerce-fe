@@ -38,6 +38,19 @@ export const brandServices = {
     return handleResponse<ResMetadataDto<IBrand>>(res)
   },
 
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IBrand>>(
+      `/brands/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IBrand>>(res)
+  },
+
   delete: async (id: string) => {
     const res = await apiCall(`/brands/${id}`, {
       method: "DELETE",

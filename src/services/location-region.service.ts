@@ -42,6 +42,19 @@ export const locationRegionServices = {
     return handleResponse<ResMetadataDto<ILocationRegion>>(res)
   },
 
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<ILocationRegion>>(
+      `/location-regions/options?${queryParams.toString()}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<ILocationRegion>>(res)
+  },
+
   getTreeData: async (query?: QueryDto) => {
     const queryParams = generateQueryParams(query)
 

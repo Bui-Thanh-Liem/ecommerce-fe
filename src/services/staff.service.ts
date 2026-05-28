@@ -1,7 +1,9 @@
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateStaffDto, UpdateStaffDto } from "@/shared/dtos/req/staff.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const staffServices = {
@@ -14,10 +16,28 @@ export const staffServices = {
     return handleResponse(res)
   },
 
-  findAll: async () => {
-    const res = await apiCall<ResMetadataDto<IStaff>>("/staffs", {
-      method: "GET",
-    })
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IStaff>>(
+      `/staffs/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IStaff>>(res)
+  },
+
+  findAll: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IStaff>>(
+      `/staffs?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
 
     return handleResponse<ResMetadataDto<IStaff>>(res)
   },

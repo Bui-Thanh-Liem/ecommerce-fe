@@ -9,6 +9,7 @@ import { useState } from "react"
 import { campaignColumns } from "./campaign-column"
 import { DataTable } from "@/components/data-table"
 import { CampaignAction } from "./campaign-action"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 export function CampaignPage() {
   const { mutateAsync, isPending } = useDeleteCampaign()
@@ -38,6 +39,11 @@ export function CampaignPage() {
   }
 
   //
+  function handleCreatePromotion(campaign: ICampaign) {
+    console.log("handleCreatePromotion :::", campaign)
+  }
+
+  //
   if (!metadataCampaigns) return null
 
   return (
@@ -55,6 +61,17 @@ export function CampaignPage() {
           handleDeleteRow(row.original)
         }}
         isPending={isPending}
+        extraAction={(row) => {
+          return (
+            <>
+              <DropdownMenuItem
+                onClick={() => handleCreatePromotion(row.original)}
+              >
+                Create promotion
+              </DropdownMenuItem>
+            </>
+          )
+        }}
       />
 
       <CampaignAction open={open} dataEdit={dataEdit} onClose={handleClose} />

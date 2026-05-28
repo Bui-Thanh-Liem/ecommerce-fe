@@ -23,7 +23,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { useFindAllProductVariants } from "@/hooks/apis/use-product-variant"
+import {
+  useFindAllProductVariants,
+  useFindOptionsProductVariants,
+} from "@/hooks/apis/use-product-variant"
 import {
   CreateProductItemSchema,
   UpdateProductItemSchema,
@@ -34,7 +37,10 @@ import {
   useUpdateProductItem,
 } from "@/hooks/apis/use-product-item"
 import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
-import { useFindAllInventories } from "@/hooks/apis/use-inventory"
+import {
+  useFindAllInventories,
+  useFindOptionsInventories,
+} from "@/hooks/apis/use-inventory"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -64,9 +70,9 @@ export function ProductItemAction({
   const createApi = useCreateProductItem()
   const updateApi = useUpdateProductItem()
 
-  const { data: productVariantsData } = useFindAllProductVariants()
+  const { data: productVariantsData } = useFindOptionsProductVariants()
   const productVariants = productVariantsData?.metadata?.data || []
-  const { data: inventoryData } = useFindAllInventories()
+  const { data: inventoryData } = useFindOptionsInventories()
   const inventories = inventoryData?.metadata?.data || []
 
   const [isPending, setIsPending] = useState(false)

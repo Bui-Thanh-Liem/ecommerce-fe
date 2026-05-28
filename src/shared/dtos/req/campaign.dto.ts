@@ -32,7 +32,9 @@ export const CreateCampaignSchema = z.object({
       return date
     }),
 
-  promotions: z.array(z.uuidv4()).optional(),
+  productHighlighted: z.array(z.uuidv4()).optional(),
+
+  promotions: z.array(z.uuidv4()).max(5).optional(),
 })
 
 export const UpdateCampaignSchema = CreateCampaignSchema.partial()

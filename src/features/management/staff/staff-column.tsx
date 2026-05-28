@@ -81,7 +81,7 @@ export const staffColumns: ColumnDef<IStaff>[] = [
     accessorKey: "roles",
     header: "Roles",
     cell: ({ row }) => {
-      const roles = row.original.roles.map((role) => role.name).join(", ")
+      const roles = row.original.roles?.map((role) => role.name).join(", ")
       return <p>{roles || "-"}</p>
     },
   },

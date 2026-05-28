@@ -1,4 +1,16 @@
 import { Button } from "@/components/ui/button"
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "@/components/ui/combobox"
 import { DatePickerTime } from "@/components/ui/date-time-picker"
 import {
   Dialog,
@@ -16,6 +28,10 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateCampaign, useUpdateCampaign } from "@/hooks/apis/use-campaign"
+import {
+  useFindAllProductVariants,
+  useFindOptionsProductVariants,
+} from "@/hooks/apis/use-product-variant"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateCampaignSchema,
@@ -42,6 +58,7 @@ const initFormValue: z.infer<typeof CreateCampaignSchema> = {
   startDate: new Date(),
   endDate: new Date(),
   mainImage: undefined,
+  productHighlighted: [],
 }
 
 //
@@ -58,9 +75,13 @@ export function CampaignAction({
   initialData?: ICampaign | null
   onOpenChange?: (open: boolean) => void
 }) {
+  const anchor = useComboboxAnchor()
   const createApi = useCreateCampaign()
   const updateApi = useUpdateCampaign()
   const uploadApi = useUploadCloudinary()
+
+  const { data: productVariantsData } = useFindOptionsProductVariants()
+  const productVariants = productVariantsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
@@ -88,6 +109,8 @@ export function CampaignAction({
         startDate: new Date(dataEdit.startDate),
         endDate: new Date(dataEdit.endDate),
         promotions: dataEdit?.promotions?.map((promo) => promo.id),
+        productHighlighted:
+          dataEdit?.productHighlighted?.map((pv) => pv.id) || [],
       })
 
       // Nếu có ảnh cũ từ API, map vào danh sách preview
@@ -286,8 +309,6 @@ export function CampaignAction({
     }
   }
 
-  console.log("Erorr :::", form.formState.errors)
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-xl">
@@ -433,6 +454,29 @@ export function CampaignAction({
 
             <FieldGroup>
               <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
+                    <Input
+                      {...field}
+                      type="text"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Name"
+                      autoComplete="name"
+                      id="form-rhf-input-name"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+
+            <FieldGroup>
+              <Controller
                 name="startDate"
                 control={form.control}
                 render={({ field, fieldState }) => (
@@ -483,19 +527,63 @@ export function CampaignAction({
 
             <FieldGroup>
               <Controller
-                name="name"
+                name="productHighlighted"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Name"
-                      autoComplete="name"
-                      id="form-rhf-input-name"
-                    />
+                    <FieldLabel htmlFor="form-product-highlighted">
+                      Highlighted Products
+                    </FieldLabel>
+
+                    <Combobox
+                      multiple
+                      autoHighlight
+                      items={productVariants}
+                      id="form-product-highlighted"
+                      value={field.value || []}
+                      onValueChange={(values) => {
+                        if (values.length <= 10) {
+                          field.onChange(values)
+                        }
+                      }}
+                    >
+                      <ComboboxChips ref={anchor} className="w-full">
+                        <ComboboxValue>
+                          {(values: string[]) => (
+                            <>
+                              {values.map((value) => {
+                                const productName = productVariants.find(
+                                  (p) => p.id === value
+                                )?.product?.name
+                                return (
+                                  <ComboboxChip key={value}>
+                                    {productName || "Unknown Product"}
+                                  </ComboboxChip>
+                                )
+                              })}
+                              <ComboboxChipsInput placeholder="Select products..." />
+                            </>
+                          )}
+                        </ComboboxValue>
+                      </ComboboxChips>
+
+                      <ComboboxContent
+                        anchor={anchor}
+                        className="pointer-events-auto"
+                      >
+                        <ComboboxEmpty>No products found.</ComboboxEmpty>
+                        <ComboboxList>
+                          {(
+                            variant // ← dùng render prop
+                          ) => (
+                            <ComboboxItem key={variant.id} value={variant.id}>
+                              {variant.product?.name}
+                            </ComboboxItem>
+                          )}
+                        </ComboboxList>
+                      </ComboboxContent>
+                    </Combobox>
+
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select"
 import {
   useCreateLocationRegion,
-  useFindAllLocationRegions,
+  useFindOptionsLocationRegions,
   useUpdateLocationRegion,
 } from "@/hooks/apis/use-location-region"
 import {
@@ -75,10 +75,7 @@ export function LocationRegionAction({
 }) {
   const createApi = useCreateLocationRegion()
   const updateApi = useUpdateLocationRegion()
-  const { data } = useFindAllLocationRegions({
-    page: 1,
-    limit: 99,
-  })
+  const { data } = useFindOptionsLocationRegions()
   const locations = data?.metadata?.data || []
 
   //
@@ -101,7 +98,7 @@ export function LocationRegionAction({
     } else {
       form.reset(initFormValue)
     }
-  }, [dataEdit])
+  }, [dataEdit, form])
 
   //
   useEffect(() => {
@@ -115,7 +112,7 @@ export function LocationRegionAction({
         type: generateTypeByParent(parent.type)[0].value,
       })
     }
-  }, [initialData])
+  }, [form, initialData])
 
   //
   const handleOpenChange = (open: boolean) => {

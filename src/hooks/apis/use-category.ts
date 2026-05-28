@@ -13,6 +13,13 @@ export const useFindAllCategories = (query?: QueryDto) => {
   })
 }
 
+export const useFindOptionsCategories = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["categories-options", JSON.stringify(query)],
+    queryFn: () => categoryServices.findOptions(query),
+  })
+}
+
 export const useFindTreeDataCategories = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["categories-tree"],

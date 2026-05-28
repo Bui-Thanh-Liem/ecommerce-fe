@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindAllProducts } from "@/hooks/apis/use-product"
+import { useFindAllProducts, useFindOptionsProducts } from "@/hooks/apis/use-product"
 import {
   useCreateProductVariant,
   useUpdateProductVariant,
@@ -75,7 +75,7 @@ export function ProductVariantAction({
   const updateApi = useUpdateProductVariant()
   const uploadApi = useUploadCloudinary()
 
-  const { data: productsData } = useFindAllProducts()
+  const { data: productsData } = useFindOptionsProducts()
   const products = productsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)

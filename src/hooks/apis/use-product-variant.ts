@@ -1,15 +1,22 @@
 import { productVariantServices } from "@/services/product-variant.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateProductVariantDto,
   UpdateProductVariantDto,
 } from "@/shared/dtos/req/product-variant.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
 
-export const useFindAllProductVariants = () => {
+export const useFindAllProductVariants = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["product-variants"],
-    queryFn: productVariantServices.findAll,
+    queryFn: () => productVariantServices.findAll(query),
+  })
+}
+
+export const useFindOptionsProductVariants = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["product-variants-options"],
+    queryFn: () => productVariantServices.findOptions(query),
   })
 }
 
@@ -24,6 +31,7 @@ export const useCreateProductVariant = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-variants"] })
+      queryClient.invalidateQueries({ queryKey: ["product-variants-options"] })
     },
   })
 }
@@ -44,6 +52,7 @@ export const useUpdateProductVariant = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-variants"] })
+      queryClient.invalidateQueries({ queryKey: ["product-variants-options"] })
     },
   })
 }
@@ -55,27 +64,10 @@ export const useDeleteProductVariant = () => {
     //
     mutationFn: (id: string) => productVariantServices.delete(id),
 
-    // 1. onMutate chạy trước, tạo toast loading và RETURN về id của toast đó
-    onMutate: async () => {
-      const id = toast.loading("Đang xóa sản phẩm...")
-
-      // Bất kỳ thứ gì bạn return ở đây sẽ được chuyển vào tham số 'context' phía dưới
-      return { currentToastId: id }
-    },
-
-    // 2. onSuccess nhận context (tham số thứ 3) chứa currentToastId
-    onSuccess: (data, variables, context) => {
-      if (context?.currentToastId) {
-        toast.success("Xóa thành công!", { id: context.currentToastId })
-      }
+    //
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-variants"] })
-    },
-
-    // 3. onError cũng nhận context tương tự nếu xảy ra lỗi
-    onError: (error, variables, context) => {
-      if (context?.currentToastId) {
-        toast.error("Xóa thất bại rồi!", { id: context.currentToastId })
-      }
+      queryClient.invalidateQueries({ queryKey: ["product-variants-options"] })
     },
   })
 }

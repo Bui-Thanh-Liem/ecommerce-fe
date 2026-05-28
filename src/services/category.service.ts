@@ -41,6 +41,19 @@ export const categoryServices = {
     return handleResponse<ResMetadataDto<ICategory>>(res)
   },
 
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<ICategory>>(
+      `/categories/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<ICategory>>(res)
+  },
+
   getTreeData: async (query?: QueryDto) => {
     const queryParams = generateQueryParams(query)
 

@@ -4,15 +4,19 @@ import {
   CreateLocationRegionDto,
   UpdateLocationRegionDto,
 } from "@/shared/dtos/req/location-region.dto"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllLocationRegions = (
-  query?: QueryDto<ILocationRegion>
-) => {
+export const useFindAllLocationRegions = (query?: QueryDto) => {
   return useQuery({
-    queryKey: ["location-regions", query ? JSON.stringify(query) : null],
+    queryKey: ["location-regions", JSON.stringify(query)],
     queryFn: () => locationRegionServices.findAll(query),
+  })
+}
+
+export const useFindOptionsLocationRegions = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["location-regions-options", JSON.stringify(query)],
+    queryFn: () => locationRegionServices.findOptions(query),
   })
 }
 

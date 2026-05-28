@@ -11,6 +11,13 @@ export const useFindAllRoles = (query?: QueryDto<IRole>) => {
   })
 }
 
+export const useFindOptionsRoles = (query?: QueryDto<IRole>) => {
+  return useQuery({
+    queryKey: ["roles", query ? JSON.stringify(query) : null],
+    queryFn: () => roleServices.findOptions(query),
+  })
+}
+
 export const useCreateRole = () => {
   const queryClient = useQueryClient()
 

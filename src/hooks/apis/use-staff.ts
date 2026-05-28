@@ -1,11 +1,19 @@
 import { staffServices } from "@/services/staff.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateStaffDto, UpdateStaffDto } from "@/shared/dtos/req/staff.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllStaffs = () => {
+export const useFindAllStaffs = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["staffs"],
-    queryFn: staffServices.findAll,
+    queryFn: () => staffServices.findAll(query),
+  })
+}
+
+export const useFindOptionsStaffs = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["staffs"],
+    queryFn: () => staffServices.findOptions(query),
   })
 }
 

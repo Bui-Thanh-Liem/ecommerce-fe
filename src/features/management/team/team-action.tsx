@@ -33,8 +33,8 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllStaffs } from "@/hooks/apis/use-staff"
-import { useFindAllStores } from "@/hooks/apis/use-store"
+import { useFindAllStaffs, useFindOptionsStaffs } from "@/hooks/apis/use-staff"
+import { useFindAllStores, useFindOptionsStores } from "@/hooks/apis/use-store"
 import { useCreateTeam, useUpdateTeam } from "@/hooks/apis/use-team"
 import { useFindAllTeamCategories } from "@/hooks/apis/use-team-category"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
@@ -76,11 +76,11 @@ export function TeamAction({
   const updateApi = useUpdateTeam()
 
   //
-  const { data: staffData } = useFindAllStaffs()
+  const { data: staffData } = useFindOptionsStaffs()
   const staffs = staffData?.metadata?.data || []
 
   //
-  const { data: storeData } = useFindAllStores()
+  const { data: storeData } = useFindOptionsStores()
   const stores = storeData?.metadata?.data || []
 
   //

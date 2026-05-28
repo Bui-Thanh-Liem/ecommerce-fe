@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { useFindAllProductVariants } from "@/hooks/apis/use-product-variant"
+import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   CreateInventorySchema,
@@ -34,7 +34,7 @@ import {
   useCreateInventory,
   useUpdateInventory,
 } from "@/hooks/apis/use-inventory"
-import { useFindAllStores } from "@/hooks/apis/use-store"
+import { useFindOptionsStores } from "@/hooks/apis/use-store"
 import { IInventory } from "@/shared/interfaces/models/inventory.interface"
 
 const initFormValue: z.infer<typeof CreateInventorySchema> = {
@@ -62,9 +62,9 @@ export function InventoryAction({
   const createApi = useCreateInventory()
   const updateApi = useUpdateInventory()
 
-  const { data: storesData } = useFindAllStores()
+  const { data: storesData } = useFindOptionsStores()
   const stores = storesData?.metadata?.data || []
-  const { data: productVariantsData } = useFindAllProductVariants()
+  const { data: productVariantsData } = useFindOptionsProductVariants()
   const productVariants = productVariantsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)

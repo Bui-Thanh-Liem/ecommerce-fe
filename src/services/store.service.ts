@@ -1,7 +1,9 @@
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateStoreDto, UpdateStoreDto } from "@/shared/dtos/req/store.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IStore } from "@/shared/interfaces/models/store.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const storeServices = {
@@ -23,10 +25,28 @@ export const storeServices = {
     return handleResponse<IStore>(res)
   },
 
-  findAll: async () => {
-    const res = await apiCall<ResMetadataDto<IStore>>("/stores", {
-      method: "GET",
-    })
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IStore>>(
+      `/stores/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IStore>>(res)
+  },
+
+  findAll: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IStore>>(
+      `/stores?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
 
     return handleResponse<ResMetadataDto<IStore>>(res)
   },

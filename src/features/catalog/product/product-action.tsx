@@ -23,8 +23,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindAllBrands } from "@/hooks/apis/use-brand"
-import { useFindAllCategories } from "@/hooks/apis/use-category"
+import { useFindAllBrands, useFindOptionsBrands } from "@/hooks/apis/use-brand"
+import {
+  useFindAllCategories,
+  useFindOptionsCategories,
+} from "@/hooks/apis/use-category"
 import { useCreateProduct, useUpdateProduct } from "@/hooks/apis/use-product"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
@@ -86,9 +89,9 @@ export function ProductAction({
   const updateApi = useUpdateProduct()
   const uploadApi = useUploadCloudinary()
 
-  const { data: categoriesData } = useFindAllCategories()
+  const { data: categoriesData } = useFindOptionsCategories()
   const categories = categoriesData?.metadata?.data || []
-  const { data: brandsData } = useFindAllBrands()
+  const { data: brandsData } = useFindOptionsBrands()
   const brands = brandsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)

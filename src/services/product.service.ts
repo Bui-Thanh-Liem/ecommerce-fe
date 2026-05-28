@@ -1,3 +1,4 @@
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateProductDto,
   UpdateProductDto,
@@ -5,6 +6,7 @@ import {
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IProduct } from "@/shared/interfaces/models/product.interface"
 import { apiCall } from "@/utils/call-api.util"
+import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const productServices = {
@@ -17,10 +19,28 @@ export const productServices = {
     return handleResponse(res)
   },
 
-  findAll: async () => {
-    const res = await apiCall<ResMetadataDto<IProduct>>("/products", {
-      method: "GET",
-    })
+  findAll: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IProduct>>(
+      `/products?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IProduct>>(res)
+  },
+
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IProduct>>(
+      `/products/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
 
     return handleResponse<ResMetadataDto<IProduct>>(res)
   },
