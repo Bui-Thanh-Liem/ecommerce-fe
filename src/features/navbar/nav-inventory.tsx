@@ -22,9 +22,12 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../components/ui/badge"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 export function NavInventory() {
   const { isMobile } = useSidebar()
+  const pathname = usePathname()
 
   const mainItems = [
     {
@@ -57,7 +60,12 @@ export function NavInventory() {
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (
-          <SidebarMenuItem key={item.title}>
+          <SidebarMenuItem
+            key={item.title}
+            className={cn(
+              pathname === `/${item.url}` ? "rounded-full bg-gray-100" : ""
+            )}
+          >
             <SidebarMenuButton asChild>
               <Link href={item.url}>
                 {item.icon}
@@ -70,7 +78,13 @@ export function NavInventory() {
           <DropdownMenu>
             {/*  */}
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton className="text-sidebar-foreground/70">
+              <SidebarMenuButton
+                className={cn(
+                  "text-sidebar-foreground/70",
+                  secondaryItems.some((item) => pathname === `/${item.url}`) &&
+                    "bg-gray-100"
+                )}
+              >
                 <MoreHorizontalIcon className="text-sidebar-foreground/70" />
                 <span>More</span>
               </SidebarMenuButton>
@@ -79,11 +93,19 @@ export function NavInventory() {
             {/*  */}
             <DropdownMenuContent
               side="bottom"
-              className="rounded-2xl"
+              className="space-y-0.5 rounded-2xl"
               align={isMobile ? "end" : "start"}
             >
               {secondaryItems.map((item) => (
-                <DropdownMenuItem key={item.title} asChild>
+                <DropdownMenuItem
+                  key={item.title}
+                  asChild
+                  className={cn(
+                    pathname === `/${item.url}`
+                      ? "rounded-full bg-gray-100"
+                      : ""
+                  )}
+                >
                   <Link href={item.url}>
                     {item.icon}
                     <span>{item.title}</span>

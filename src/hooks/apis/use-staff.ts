@@ -12,7 +12,7 @@ export const useFindAllStaffs = (query?: QueryDto) => {
 
 export const useFindOptionsStaffs = (query?: QueryDto) => {
   return useQuery({
-    queryKey: ["staffs"],
+    queryKey: ["staffs-options"],
     queryFn: () => staffServices.findOptions(query),
   })
 }
@@ -27,6 +27,7 @@ export const useCreateStaff = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["staffs-options"] })
     },
   })
 }
@@ -40,8 +41,10 @@ export const useUpdateStaff = () => {
       staffServices.update(id, payload),
 
     //
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["staffs-options"] })
+      queryClient.invalidateQueries({ queryKey: ["staff", variables.id] })
     },
   })
 }
@@ -54,8 +57,10 @@ export const useDeleteStaff = () => {
     mutationFn: (id: string) => staffServices.delete(id),
 
     //
-    onSuccess: () => {
+    onSuccess: (data, id) => {
+      queryClient.invalidateQueries({ queryKey: ["staff", id] })
       queryClient.invalidateQueries({ queryKey: ["staffs"] })
+      queryClient.invalidateQueries({ queryKey: ["staffs-options"] })
     },
   })
 }

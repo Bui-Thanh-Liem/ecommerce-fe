@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 
-export function Images({ images }: { images: IImage[] }) {
+export function ImagesCell({ images }: { images: IImage[] }) {
   return (
     <div className="flex -space-x-8">
       {images?.map((img) => (

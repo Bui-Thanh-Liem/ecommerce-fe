@@ -32,6 +32,19 @@ export const campaignServices = {
     return handleResponse<ResMetadataDto<ICampaign>>(res)
   },
 
+  findOptions: async (query?: QueryDto<ICampaign>) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<ICampaign>>(
+      `/campaigns/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<ICampaign>>(res)
+  },
+
   update: async (id: string, payload: UpdateCampaignDto) => {
     const res = await apiCall<ICampaign>(`/campaigns/${id}`, {
       method: "PATCH",

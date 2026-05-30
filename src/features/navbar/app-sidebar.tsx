@@ -13,10 +13,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { ShoppingBag } from "lucide-react"
-import { NavCatalog } from "../features/navbar/nav-catalog"
-import { NavSecondary } from "../features/navbar/nav-secondary"
-import { NavManagement } from "../features/navbar/nav-management"
-import { NavInventory } from "../features/navbar/nav-inventory"
+import { NavCatalog } from "./nav-catalog"
+import { NavSecondary } from "./nav-secondary"
+import { NavManagement } from "./nav-management"
+import { NavInventory } from "./nav-inventory"
+import { NavCampaign } from "./nav-campaign"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -41,6 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavManagement />
         <NavCatalog />
         <NavInventory />
+        <NavCampaign />
         <NavSecondary />
       </SidebarContent>
       <SidebarFooter>

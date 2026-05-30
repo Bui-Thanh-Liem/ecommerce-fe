@@ -14,63 +14,36 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import {
-  MoreHorizontalIcon,
-  Package,
-  LayoutGrid,
-  Badge as BadgeIcon,
-  ScanBarcode,
-  RectangleEllipsis,
-} from "lucide-react"
+import { MoreHorizontalIcon, Target, Proportions } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../components/ui/badge"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-export function NavCatalog() {
+export function NavCampaign() {
   const { isMobile } = useSidebar()
   const pathname = usePathname()
 
   const mainItems = [
     {
-      title: "Products (SPU)",
-      url: "products",
-      icon: <Package />,
+      title: "campaigns",
+      url: "campaigns",
+      icon: <Target />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Product variants (SKU)",
-      url: "product-variants",
-      icon: <ScanBarcode />,
-    },
-    {
-      title: "Product items (SERIAL)",
-      url: "product-items",
-      icon: <Package />,
-    },
-    {
-      title: "Brands",
-      url: "brands",
-      icon: <BadgeIcon />,
-    },
-    {
-      title: "Categories",
-      url: "categories",
-      icon: <LayoutGrid />,
-    },
-    {
-      title: "Product navbars",
-      url: "product-navbars",
-      icon: <RectangleEllipsis />,
+      title: "Promotions",
+      url: "promotions",
+      icon: <Proportions />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        CATALOG
+        CAMPAIGN
         <Badge variant="destructive" className="mb-3">
           admin
         </Badge>

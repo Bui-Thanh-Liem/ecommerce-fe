@@ -23,6 +23,7 @@ export function InventoryPage() {
   const [open, setOpen] = useState(false)
   const [dataEdit, setDataEdit] = useState<IInventory | null>(null)
 
+  //
   function handleClose() {
     if (productVariantId) router.push("/inventories") // Xóa query parameter khi đóng dialog
 

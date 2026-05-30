@@ -9,12 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import {
-  CirclePlusIcon,
-  LayoutDashboardIcon,
-  MailIcon,
-  Target,
-} from "lucide-react"
+import { CirclePlusIcon, LayoutDashboardIcon, MailIcon } from "lucide-react"
 import Link from "next/link"
 
 export function NavMain() {
@@ -23,11 +18,6 @@ export function NavMain() {
       title: "Dashboard",
       url: "dashboard",
       icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: "campaigns",
-      url: "campaigns",
-      icon: <Target />,
     },
   ]
 

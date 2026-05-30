@@ -23,11 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindAllBrands, useFindOptionsBrands } from "@/hooks/apis/use-brand"
-import {
-  useFindAllCategories,
-  useFindOptionsCategories,
-} from "@/hooks/apis/use-category"
+import { useFindOptionsBrands } from "@/hooks/apis/use-brand"
+import { useFindOptionsCategories } from "@/hooks/apis/use-category"
 import { useCreateProduct, useUpdateProduct } from "@/hooks/apis/use-product"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
@@ -874,13 +871,10 @@ export function ProductAction({
                 onClick={() =>
                   appendSpec({
                     title: "",
-
                     items: [
                       {
                         key: "",
-
                         value: "",
-
                         order: 0,
                       },
                     ],

@@ -28,10 +28,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateCampaign, useUpdateCampaign } from "@/hooks/apis/use-campaign"
-import {
-  useFindAllProductVariants,
-  useFindOptionsProductVariants,
-} from "@/hooks/apis/use-product-variant"
+import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateCampaignSchema,

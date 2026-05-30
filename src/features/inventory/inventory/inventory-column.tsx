@@ -41,7 +41,7 @@ export const inventoryColumns: ColumnDef<IInventory>[] = [
             <span className="text-muted-foreground font-medium">Name: </span>
             {product.name}
           </p>
-          <p>
+          <div>
             {salesAttributes.map((attr) => (
               <p key={attr.key}>
                 <span className="text-muted-foreground font-medium">
@@ -50,7 +50,7 @@ export const inventoryColumns: ColumnDef<IInventory>[] = [
                 {attr.value}
               </p>
             ))}
-          </p>
+          </div>
         </div>
       )
     },

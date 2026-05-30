@@ -1,5 +1,5 @@
 import { Active } from "@/components/active"
-import { Images } from "@/components/cell-in-table/images"
+import { ImagesCell } from "@/components/cell-in-table/images"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
@@ -51,7 +51,7 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
     cell: ({ row }) => {
       const mainImage = row.original.mainImage
       if (!mainImage) return <span>-</span>
-      return <Images images={[mainImage]} />
+      return <ImagesCell images={[mainImage]} />
     },
   },
   {
@@ -60,7 +60,7 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
     cell: ({ row }) => {
       const images = row.original.images || []
       if (images.length <= 0) return <span>-</span>
-      return <Images images={images} />
+      return <ImagesCell images={images} />
     },
   },
   {
