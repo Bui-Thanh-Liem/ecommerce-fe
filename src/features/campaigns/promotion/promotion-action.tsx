@@ -43,7 +43,6 @@ import {
 } from "@/hooks/apis/use-promotion"
 import { useFindOptionsStores } from "@/hooks/apis/use-store"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
-
 import {
   CreatePromotionSchema,
   UpdatePromotionSchema,
@@ -62,19 +61,19 @@ import { toast } from "sonner"
 import z from "zod"
 
 const initFormValue: z.infer<typeof CreatePromotionSchema> = {
-  campaign: "",
   name: "",
-  image: undefined,
-  isActive: true,
-  applyType: PromotionApplyType.CATEGORY,
-  applyScope: PromotionApplyScope.ALL,
-  discountPercentage: 0,
-  productHighlighted: [],
-  limitQuantity: 0,
   stores: [],
+  campaign: "",
   locations: [],
+  isActive: true,
+  image: undefined,
+  limitQuantity: 0,
+  discountPercentage: 0,
   productPromotions: [],
+  productHighlighted: [],
   categoryPromotions: [],
+  applyScope: PromotionApplyScope.ALL,
+  applyType: PromotionApplyType.CATEGORY,
 }
 
 //
@@ -110,7 +109,6 @@ export function PromotionAction({
   const { data: locationRegionsData } = useFindOptionsLocationRegions()
   const locationRegions = locationRegionsData?.metadata?.data || []
 
-  // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previewUrl, setPreviewUrl] = useState<string>("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -277,9 +275,7 @@ export function PromotionAction({
 
             {/*  */}
             <FieldGroup className="gap-y-3">
-              <FieldLabel htmlFor="form-rhf-input-main-image">
-                Main Image
-              </FieldLabel>
+              <FieldLabel htmlFor="form-rhf-input-main-image">Image</FieldLabel>
               <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed p-4">
                 {previewUrl ? (
                   <div className="relative h-40 w-full overflow-hidden rounded-md border">

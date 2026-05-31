@@ -38,6 +38,7 @@ export const useCreateLocationRegion = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["location-regions"] })
+      queryClient.invalidateQueries({ queryKey: ["location-regions-options"] })
       queryClient.invalidateQueries({ queryKey: ["location-regions-tree"] })
     },
   })
@@ -59,6 +60,7 @@ export const useUpdateLocationRegion = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["location-regions"] })
+      queryClient.invalidateQueries({ queryKey: ["location-regions-options"] })
       queryClient.invalidateQueries({ queryKey: ["location-regions-tree"] })
     },
   })
@@ -74,6 +76,7 @@ export const useDeleteLocationRegions = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["location-regions"] })
+      queryClient.invalidateQueries({ queryKey: ["location-regions-options"] })
       queryClient.invalidateQueries({ queryKey: ["location-regions-tree"] })
     },
   })
