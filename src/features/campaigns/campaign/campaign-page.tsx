@@ -10,8 +10,10 @@ import { campaignColumns } from "./campaign-column"
 import { DataTable } from "@/components/data-table"
 import { CampaignAction } from "./campaign-action"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 export function CampaignPage() {
+  const router = useRouter()
   const { mutateAsync, isPending } = useDeleteCampaign()
   const { data } = useFindAllCampaigns()
   const metadataCampaigns = data?.metadata
@@ -40,7 +42,7 @@ export function CampaignPage() {
 
   //
   function handleCreatePromotion(campaign: ICampaign) {
-    console.log("handleCreatePromotion :::", campaign)
+    router.push(`/promotions?c=${campaign.id}`)
   }
 
   //
@@ -74,7 +76,9 @@ export function CampaignPage() {
         }}
       />
 
-      <CampaignAction open={open} dataEdit={dataEdit} onClose={handleClose} />
+      {open && (
+        <CampaignAction open={open} dataEdit={dataEdit} onClose={handleClose} />
+      )}
     </>
   )
 }

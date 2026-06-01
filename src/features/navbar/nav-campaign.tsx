@@ -38,6 +38,11 @@ export function NavCampaign() {
       url: "promotions",
       icon: <Proportions />,
     },
+    {
+      title: "Category Promotions",
+      url: "category-promotions",
+      icon: <Proportions />,
+    },
   ]
 
   return (
