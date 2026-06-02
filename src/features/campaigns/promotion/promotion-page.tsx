@@ -10,6 +10,7 @@ import { useState } from "react"
 import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
 import { PromotionAction } from "./promotion-action"
 import { useRouter, useSearchParams } from "next/navigation"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 export function PromotionPage() {
   const router = useRouter()
@@ -49,6 +50,16 @@ export function PromotionPage() {
   const dialogOpen = open || !!campaignId
 
   //
+  function handleCreateCatePromotion(campaign: IPromotion) {
+    router.push(`/category-promotions?p=${campaign.id}`)
+  }
+
+  //
+  function handleCreateProdPromotion(campaign: IPromotion) {
+    router.push(`/product-promotions?p=${campaign.id}`)
+  }
+
+  //
   if (!metadataPromotions) return null
 
   return (
@@ -66,6 +77,22 @@ export function PromotionPage() {
           handleDeleteRow(row.original)
         }}
         isPending={isPending}
+        extraAction={(row) => {
+          return (
+            <>
+              <DropdownMenuItem
+                onClick={() => handleCreateCatePromotion(row.original)}
+              >
+                Create category promotion
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleCreateProdPromotion(row.original)}
+              >
+                Create product promotion
+              </DropdownMenuItem>
+            </>
+          )
+        }}
       />
 
       {dialogOpen && (

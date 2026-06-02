@@ -93,8 +93,6 @@ export function PromotionAction({
   const pvAnchor = useComboboxAnchor()
   const storeAnchor = useComboboxAnchor()
   const locationAnchor = useComboboxAnchor()
-  const ppAnchor = useComboboxAnchor()
-  const cpAnchor = useComboboxAnchor()
 
   const createApi = useCreatePromotion()
   const updateApi = useUpdatePromotion()

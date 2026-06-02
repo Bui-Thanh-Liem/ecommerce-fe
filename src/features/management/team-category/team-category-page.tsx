@@ -58,13 +58,15 @@ export function TeamCategoryPage() {
         }}
       />
 
-      <TeamCategoryAction
-        open={open}
-        onOpenChange={(open) => setOpen(open)}
-        onClose={handleClose}
-        initialData={null}
-        dataEdit={dataEdit}
-      />
+      {open && (
+        <TeamCategoryAction
+          open={open}
+          onOpenChange={(open) => setOpen(open)}
+          onClose={handleClose}
+          initialData={null}
+          dataEdit={dataEdit}
+        />
+      )}
     </>
   )
 }

@@ -39,7 +39,7 @@ export const productItemColumns: ColumnDef<IProductItem>[] = [
 
           <p className="line-clamp-4 max-w-96 whitespace-normal">
             <span className="text-muted-foreground font-medium">Name: </span>
-            {product.name}
+            {product?.name}
           </p>
 
           <div>

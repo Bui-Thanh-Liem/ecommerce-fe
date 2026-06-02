@@ -54,9 +54,7 @@ export function NavInventory() {
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
         INVENTORY
-        <Badge variant="destructive" className="mb-3">
-          admin
-        </Badge>
+        <Badge className="mb-3 bg-yellow-50 text-yellow-700">medium</Badge>
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (

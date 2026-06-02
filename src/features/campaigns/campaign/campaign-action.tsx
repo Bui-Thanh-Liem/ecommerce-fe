@@ -81,7 +81,6 @@ export function CampaignAction({
   const productVariants = productVariantsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
-  // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previews, setPreviews] = useState<PreviewImage[]>([])
   const [previewUrl, setPreviewUrl] = useState<string>("")
   const [selectedFiles, setSelectedFiles] = useState<File[] | null>(null)

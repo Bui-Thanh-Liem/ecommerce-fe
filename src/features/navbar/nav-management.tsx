@@ -16,7 +16,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { MoreHorizontalIcon, User, UserRoundKey, UsersIcon } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  ScrollText,
+  User,
+  UserRoundKey,
+  UsersIcon,
+} from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -55,6 +61,11 @@ export function NavManagement() {
       url: "team-categories",
       icon: <UsersIcon />,
     },
+    {
+      title: "Audit Logs",
+      url: "audit-logs",
+      icon: <ScrollText />,
+    },
   ]
 
   return (
@@ -62,7 +73,7 @@ export function NavManagement() {
       <SidebarGroupLabel className="gap-x-1 uppercase">
         Management
         <Badge variant="destructive" className="mb-3">
-          admin
+          high
         </Badge>
       </SidebarGroupLabel>
       <SidebarMenu>

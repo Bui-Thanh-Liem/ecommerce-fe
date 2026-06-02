@@ -412,7 +412,7 @@ export function RolePage() {
         onAddCard={() => setOpen(true)}
       />
 
-      <RoleAdd open={open} onClose={() => setOpen(false)} />
+      {open && <RoleAdd open={open} onClose={() => setOpen(false)} />}
     </>
   )
 }

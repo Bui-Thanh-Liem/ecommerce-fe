@@ -2,6 +2,7 @@ import { Active } from "@/components/active"
 import { ImagesCell } from "@/components/cell-in-table/images"
 import { Badge } from "@/components/ui/badge"
 import { useUpdatePromotion } from "@/hooks/apis/use-promotion"
+import { PromotionApplyScope } from "@/shared/enums/promotion-apply-scope.enum"
 import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 
@@ -27,6 +28,17 @@ const StatusCell = ({ row }: { row: Row<IPromotion> }) => {
 
 export const promotionColumns: ColumnDef<IPromotion>[] = [
   {
+    accessorKey: "campaign",
+    header: "Campaign",
+    cell: ({ row }) => {
+      return (
+        <p className="max-w-60 overflow-auto whitespace-normal">
+          {row.original.campaign?.name || "-"}
+        </p>
+      )
+    },
+  },
+  {
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => {
@@ -35,12 +47,12 @@ export const promotionColumns: ColumnDef<IPromotion>[] = [
     },
   },
   {
-    accessorKey: "campaign",
-    header: "Campaign",
+    accessorKey: "name",
+    header: "Name",
     cell: ({ row }) => {
       return (
         <p className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.campaign?.name || "-"}
+          {row.original.name || "-"}
         </p>
       )
     },
@@ -61,27 +73,32 @@ export const promotionColumns: ColumnDef<IPromotion>[] = [
     },
   },
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      return (
-        <p className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.name || "-"}
-        </p>
-      )
-    },
-  },
-  {
-    accessorKey: "isActive",
-    header: "Active",
-    cell: ({ row }) => <StatusCell row={row} />,
-    enableHiding: false,
-  },
-  {
     accessorKey: "applyScope",
     header: "Apply Scope",
     cell: ({ row }) => {
-      return <Badge>{row.original.applyScope || "-"}</Badge>
+      const promotion = row.original
+
+      return (
+        <div className="space-y-1">
+          <Badge>{promotion.applyScope || "-"}</Badge>
+          {promotion.applyScope === PromotionApplyScope.REGIONS && (
+            <>
+              {promotion.locations?.map((l) => (
+                <p key={l.id}>
+                  {l.type}: {l.name}
+                </p>
+              ))}
+            </>
+          )}
+          {promotion.applyScope === PromotionApplyScope.SPECIFIC_STORES && (
+            <>
+              {promotion.stores?.map((s) => (
+                <p key={s.id}>store: {s.name}</p>
+              ))}
+            </>
+          )}
+        </div>
+      )
     },
   },
   {
@@ -93,42 +110,20 @@ export const promotionColumns: ColumnDef<IPromotion>[] = [
   },
   {
     accessorKey: "limitQuantity",
-    header: "Limit Quantity",
-    cell: ({ row }) => {
-      return <p>{row.original.limitQuantity || 0}</p>
-    },
-  },
-  {
-    accessorKey: "totalSoldQuantity",
-    header: "Total Sold Quantity",
-    cell: ({ row }) => {
-      return <p>{row.original.totalSoldQuantity || 0}</p>
-    },
-  },
-  {
-    accessorKey: "stores",
-    header: "Stores",
+    header: "Quantity",
     cell: ({ row }) => {
       return (
-        <div className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.stores?.map((s) => (
-            <p key={s.id}>{s.name}</p>
-          ))}
+        <div className="space-y-1">
+          <p>Limit: {row.original.limitQuantity || 0}</p>
+          <p>Sold: {row.original.totalSoldQuantity || 0}</p>
         </div>
       )
     },
   },
   {
-    accessorKey: "locations",
-    header: "Locations",
-    cell: ({ row }) => {
-      return (
-        <div className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.locations?.map((l) => (
-            <p key={l.id}>{l.name}</p>
-          ))}
-        </div>
-      )
-    },
+    accessorKey: "isActive",
+    header: "Active",
+    cell: ({ row }) => <StatusCell row={row} />,
+    enableHiding: false,
   },
 ]

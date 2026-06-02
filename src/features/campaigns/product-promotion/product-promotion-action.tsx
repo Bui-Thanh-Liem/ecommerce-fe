@@ -20,31 +20,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFindOptionsCategories } from "@/hooks/apis/use-category"
 import {
-  useCreateCategoryPromotion,
-  useUpdateCategoryPromotion,
-} from "@/hooks/apis/use-category-promotion"
+  useCreateProductPromotion,
+  useUpdateProductPromotion,
+} from "@/hooks/apis/use-product-promotion"
+import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import { useFindOptionsPromotions } from "@/hooks/apis/use-promotion"
 import {
-  CreateCategoryPromotionSchema,
-  UpdateCategoryPromotionSchema,
-} from "@/shared/dtos/req/category-promotion.dto"
-import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
+  CreateProductPromotionSchema,
+  UpdateProductPromotionSchema,
+} from "@/shared/dtos/req/product-promotion.dto"
+import { IProductPromotion } from "@/shared/interfaces/models/product-promotion.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowBigUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateCategoryPromotionSchema> = {
+const initFormValue: z.infer<typeof CreateProductPromotionSchema> = {
   promotion: "",
-  category: "",
+  productVariant: "",
   customDiscount: 0,
   priority: 0,
 }
 
-export function CategoryPromotionAction({
+export function ProductPromotionAction({
   open,
   onClose,
   dataEdit,
@@ -53,15 +53,15 @@ export function CategoryPromotionAction({
 }: {
   open?: boolean
   onClose?: () => void
-  dataEdit: ICategoryPromotion | null
-  initialData?: ICategoryPromotion | null
+  dataEdit: IProductPromotion | null
+  initialData?: IProductPromotion | null
   onOpenChange?: (open: boolean) => void
 }) {
-  const createApi = useCreateCategoryPromotion()
-  const updateApi = useUpdateCategoryPromotion()
+  const createApi = useCreateProductPromotion()
+  const updateApi = useUpdateProductPromotion()
 
-  const { data: categoriesData } = useFindOptionsCategories()
-  const categories = categoriesData?.metadata?.data || []
+  const { data: productVariantsData } = useFindOptionsProductVariants()
+  const productVariants = productVariantsData?.metadata?.data || []
   const { data: promotionsData } = useFindOptionsPromotions()
   const promotions = promotionsData?.metadata?.data || []
 
@@ -69,8 +69,8 @@ export function CategoryPromotionAction({
   const [isPending, setIsPending] = useState(false)
 
   const formSchema = !!dataEdit
-    ? UpdateCategoryPromotionSchema
-    : CreateCategoryPromotionSchema
+    ? UpdateProductPromotionSchema
+    : CreateProductPromotionSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -81,8 +81,8 @@ export function CategoryPromotionAction({
     if (dataEdit) {
       form.reset({
         priority: dataEdit.priority,
-        category: dataEdit.category.id,
         promotion: dataEdit.promotion.id,
+        productVariant: dataEdit.productVariant.id,
         customDiscount: dataEdit.customDiscount,
       })
     }
@@ -122,7 +122,7 @@ export function CategoryPromotionAction({
       } else {
         res = await createApi.mutateAsync({
           ...data,
-        } as z.infer<typeof CreateCategoryPromotionSchema>)
+        } as z.infer<typeof CreateProductPromotionSchema>)
       }
 
       if (res && [200, 201].includes(res?.statusCode)) {
@@ -141,11 +141,9 @@ export function CategoryPromotionAction({
       <DialogContent className="sm:max-w-xl">
         <DialogHeaderAction
           title={
-            !!dataEdit
-              ? "Edit Category Promotion"
-              : "Add New Category Promotion"
+            !!dataEdit ? "Edit Product Promotion" : "Add New Product Promotion"
           }
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new category promotion.`}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new product promotion.`}
         />
 
         <form
@@ -200,12 +198,14 @@ export function CategoryPromotionAction({
 
             <FieldGroup>
               <Controller
-                name="category"
+                name="productVariant"
                 control={form.control}
                 render={({ field, fieldState }) => {
                   return (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-category">Category</FieldLabel>
+                      <FieldLabel htmlFor="form-productVariant">
+                        Product Variant
+                      </FieldLabel>
 
                       <Select
                         value={field.value}
@@ -213,16 +213,16 @@ export function CategoryPromotionAction({
                       >
                         <SelectTrigger
                           className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-category"
+                          id="form-productVariant"
                         >
-                          <SelectValue placeholder="Select a category" />
+                          <SelectValue placeholder="Select a product variant" />
                         </SelectTrigger>
 
                         <SelectContent align="end">
                           <SelectGroup>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
+                            {productVariants.map((variant) => (
+                              <SelectItem key={variant.id} value={variant.id}>
+                                {variant.sku}
                               </SelectItem>
                             ))}
                           </SelectGroup>

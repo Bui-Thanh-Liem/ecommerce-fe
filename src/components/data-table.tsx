@@ -53,7 +53,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
@@ -61,6 +60,7 @@ import {
   type Row,
   type SortingState,
   type VisibilityState,
+  type PaginationState,
 } from "@tanstack/react-table"
 import {
   ChevronDownIcon,
@@ -72,18 +72,18 @@ import {
   EllipsisVerticalIcon,
   GripVerticalIcon,
   PlusIcon,
+  RotateCcw,
 } from "lucide-react"
 import * as React from "react"
 import { Badge } from "./ui/badge"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { Checkbox } from "./ui/checkbox"
 import { cn } from "@/lib/utils"
+import { useUrlParams } from "@/hooks/use-url-params"
 
 // Create a separate component for the drag handle
 export function DragHandle({ id }: { id: string }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  })
+  const { attributes, listeners } = useSortable({ id })
 
   return (
     <Button
@@ -146,6 +146,9 @@ interface DataTableProps<T extends IBase> {
   columns: ColumnDef<T>[]
   isPending?: boolean
   extraAction?: (row: Row<T>) => React.ReactNode
+  onRefetch?: () => void
+  // Bổ sung callback để thông báo cho component cha khi User thay đổi trang hoặc pageSize
+  onPaginationChange?: (pagination: PaginationState) => void
 }
 
 export function DataTable<T extends IBase>({
@@ -156,10 +159,12 @@ export function DataTable<T extends IBase>({
   onEditRow,
   tabHeader,
   tabContent,
+  onRefetch,
   dataSource,
   onDeleteRow,
   extraAction,
   getRowClassName,
+  onPaginationChange,
 }: DataTableProps<T>) {
   const { data: tableData, totalData, page, totalPage } = dataSource
 
@@ -171,10 +176,22 @@ export function DataTable<T extends IBase>({
     []
   )
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
+
+  // Đồng bộ pagination state nội bộ dựa trên dữ liệu API truyền xuống ban đầu
+  const { params: urlParams, setParams: setUrlParams } = useUrlParams({
+    page: 1,
+    limit: 10,
   })
+
+  // Định nghĩa state pagination để truyền vào React Table (Sync từ URL xuống)
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex: urlParams.page - 1, // URL bắt đầu từ 1, Tanstack Table từ 0
+      pageSize: urlParams.limit,
+    }),
+    [urlParams.page, urlParams.limit]
+  )
+
   const sortableId = React.useId()
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
@@ -182,6 +199,7 @@ export function DataTable<T extends IBase>({
     useSensor(KeyboardSensor, {})
   )
 
+  // Cập nhật dữ liệu khi tableData thay đổi từ phía API
   React.useEffect(() => {
     setData(tableData)
   }, [tableData])
@@ -239,9 +257,7 @@ export function DataTable<T extends IBase>({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-32">
               <DropdownMenuItem
-                onClick={() => {
-                  onEditRow?.(row)
-                }}
+                onClick={() => onEditRow?.(row)}
                 disabled={isPending}
               >
                 Edit
@@ -250,9 +266,7 @@ export function DataTable<T extends IBase>({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => {
-                  onDeleteRow?.(row)
-                }}
+                onClick={() => onDeleteRow?.(row)}
                 disabled={isPending}
               >
                 {isPending ? "Deleting..." : "Delete"}
@@ -270,23 +284,38 @@ export function DataTable<T extends IBase>({
       columnFilters,
       pagination,
     },
+    // Server-side pagination config quan trọng:
+    manualPagination: true,
+    pageCount: totalPage ?? -1,
+
     enableRowSelection: true,
     getRowId: (row) => row.id.toString(),
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
+    onPaginationChange: (updater) => {
+      const nextPagination =
+        typeof updater === "function" ? updater(pagination) : updater
+
+      // Đẩy ngược value lên URL (Nó sẽ tự gỡ param xuống nếu rơi vào điều kiện mặc định)
+      setUrlParams({
+        page: nextPagination.pageIndex + 1,
+        limit: nextPagination.pageSize,
+      })
+
+      // Đồng thời kích hoạt callback báo cho cha biết (nếu có)
+      onPaginationChange?.(nextPagination)
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => table.getRowModel().rows.map((row) => row.id), // Sử dụng row.id từ table engine
+    () => table.getRowModel().rows.map((row) => row.id),
     [table]
   )
 
@@ -294,23 +323,25 @@ export function DataTable<T extends IBase>({
     const { active, over } = event
     if (active && over && active.id !== over.id) {
       setData((currentData) => {
-        // Tìm vị trí thật trong mảng data tổng dựa trên ID
         const oldIndex = currentData.findIndex(
           (item) => item.id.toString() === active.id.toString()
         )
         const newIndex = currentData.findIndex(
           (item) => item.id.toString() === over.id.toString()
         )
-
         return arrayMove(currentData, oldIndex, newIndex)
       })
     }
   }
 
+  // Helper tinh toán hiển thị số lượng selected/total chính xác theo tổng data API
+  const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length
+  const currentShowingCount = table.getFilteredRowModel().rows.length
+
   return (
     <Tabs defaultValue="table" className="w-full flex-col justify-start gap-6">
       <div className="flex items-center justify-between">
-        {/* Mobile */}
+        {/* Mobile View Selector */}
         <Select defaultValue="table">
           <SelectTrigger
             size="sm"
@@ -324,7 +355,6 @@ export function DataTable<T extends IBase>({
               <SelectItem value="table">
                 Table <Badge variant="secondary">{totalData}</Badge>
               </SelectItem>
-
               {tabHeader && (
                 <SelectItem value={tabHeader?.toLowerCase() || ""}>
                   {tabHeader} <Badge variant="secondary">{totalData}</Badge>
@@ -334,7 +364,7 @@ export function DataTable<T extends IBase>({
           </SelectContent>
         </Select>
 
-        {/* Desktop */}
+        {/* Desktop Tabs */}
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           <TabsTrigger value="table">
             Table <Badge variant="secondary">{totalData}</Badge>
@@ -365,34 +395,36 @@ export function DataTable<T extends IBase>({
                     typeof column.accessorFn !== "undefined" &&
                     column.getCanHide()
                 )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button size="sm" onClick={onAddRow}>
-            <PlusIcon />
-            <span className="hidden lg:inline">Add item</span>
-          </Button>
+          {onRefetch && (
+            <Button variant="outline" size="icon-sm" onClick={onRefetch}>
+              <RotateCcw />
+            </Button>
+          )}
+          {onAddRow && (
+            <Button size="sm" onClick={onAddRow}>
+              <PlusIcon />
+              <span className="hidden lg:inline">Add item</span>
+            </Button>
+          )}
         </div>
       </div>
 
-      <TabsContent
-        value="table"
-        className="relative flex flex-col gap-4 overflow-auto"
-      >
-        <div className="overflow-hidden rounded-2xl border">
+      <TabsContent value="table" className="relative flex flex-col gap-4">
+        <div className="max-h-[calc(100vh-220px)] overflow-auto rounded-2xl border">
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
@@ -404,23 +436,21 @@ export function DataTable<T extends IBase>({
               <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
                   </TableRow>
                 ))}
               </TableHeader>
               <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
+                {currentShowingCount ? (
                   <SortableContext
                     items={dataIds}
                     strategy={verticalListSortingStrategy}
@@ -436,7 +466,7 @@ export function DataTable<T extends IBase>({
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={columns.length}
+                      colSpan={columns.length + 3}
                       className="h-24 text-center"
                     >
                       No results.
@@ -447,27 +477,29 @@ export function DataTable<T extends IBase>({
             </Table>
           </DndContext>
         </div>
-        {/* Pagination */}
+
+        {/* ----------------- PHẦN PAGINATION ĐÃ HOÀN THIỆN LOGIC ----------------- */}
         <div className="flex items-center justify-between px-4">
+          {/* Thông tin số lượng hàng được chọn */}
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {selectedRowsCount} trên {currentShowingCount} hàng được chọn (Tổng
+            số: {totalData})
           </div>
+
           <div className="flex w-full items-center gap-8 lg:w-fit">
+            {/* Hàng trên mỗi trang (Rows per page) */}
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
                 Rows per page
               </Label>
               <Select
-                value={`${table.getState().pagination.pageSize}`}
+                value={`${pagination.pageSize}`}
                 onValueChange={(value) => {
                   table.setPageSize(Number(value))
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
+                  <SelectValue placeholder={pagination.pageSize} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   <SelectGroup>
@@ -480,10 +512,13 @@ export function DataTable<T extends IBase>({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Hiển thị số trang hiện tại */}
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              Page {pagination.pageIndex + 1} of {table.getPageCount() || 1}
             </div>
+
+            {/* Bộ điều hướng trang (Các nút bấm) */}
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button
                 variant="outline"
@@ -527,6 +562,7 @@ export function DataTable<T extends IBase>({
             </div>
           </div>
         </div>
+        {/* ----------------------------------------------------------------------- */}
       </TabsContent>
 
       {tabContent && (

@@ -15,6 +15,13 @@ export const useFindAllPromotions = (query?: QueryDto<IPromotion>) => {
   })
 }
 
+export const useFindOptionsPromotions = (query?: QueryDto<IPromotion>) => {
+  return useQuery({
+    queryKey: ["promotions", "options", query ? JSON.stringify(query) : null],
+    queryFn: () => promotionServices.findOptions(query),
+  })
+}
+
 export const useCreatePromotion = () => {
   const queryClient = useQueryClient()
 

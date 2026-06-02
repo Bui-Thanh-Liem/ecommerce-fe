@@ -1,28 +1,28 @@
 "use client"
 
-import { DataTable } from "@/components/data-table"
 import {
-  useDeleteCategoryPromotion,
-  useFindAllCategoryPromotions,
-} from "@/hooks/apis/use-category-promotion"
-import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
-import { useState } from "react"
-import { categoryPromotionColumns } from "./category-promotion-column"
-import { CategoryPromotionAction } from "./category-promotion-action"
+  useDeleteProductPromotion,
+  useFindAllProductPromotions,
+} from "@/hooks/apis/use-product-promotion"
+import { IProductPromotion } from "@/shared/interfaces/models/product-promotion.interface"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { productPromotionColumns } from "./product-promotion-column"
+import { DataTable } from "@/components/data-table"
+import { ProductPromotionAction } from "./product-promotion-action"
 
-export function CategoryPromotionPage() {
+export function ProductPromotionPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const promotionId = searchParams.get("p")
 
-  const { mutateAsync, isPending } = useDeleteCategoryPromotion()
-  const { data } = useFindAllCategoryPromotions()
-  const metadataPromotions = data?.metadata
+  const { mutateAsync, isPending } = useDeleteProductPromotion()
+  const { data } = useFindAllProductPromotions()
+  const metadataProdPromotions = data?.metadata
 
   //
   const [open, setOpen] = useState(false)
-  const [dataEdit, setDataEdit] = useState<ICategoryPromotion | null>(null)
+  const [dataEdit, setDataEdit] = useState<IProductPromotion | null>(null)
 
   //
   function handleClose() {
@@ -36,7 +36,7 @@ export function CategoryPromotionPage() {
   }
 
   //
-  async function handleDeleteRow(row: ICategoryPromotion) {
+  async function handleDeleteRow(row: IProductPromotion) {
     const res = await mutateAsync(row.id)
     if (res?.statusCode === 200) {
       setOpen(false)
@@ -45,18 +45,19 @@ export function CategoryPromotionPage() {
 
   //
   const initialData = promotionId
-    ? ({ promotion: { id: promotionId } } as ICategoryPromotion)
+    ? ({ promotion: { id: promotionId } } as IProductPromotion)
     : null
   const dialogOpen = open || !!promotionId
 
   //
-  if (!metadataPromotions) return null
+  if (!metadataProdPromotions) return null
+  console.log("metadataProdPromotions :>> ", metadataProdPromotions)
 
   return (
     <>
       <DataTable
-        dataSource={metadataPromotions}
-        columns={categoryPromotionColumns}
+        dataSource={metadataProdPromotions}
+        columns={productPromotionColumns}
         //
         onAddRow={() => setOpen(true)}
         onEditRow={(row) => {
@@ -70,7 +71,7 @@ export function CategoryPromotionPage() {
       />
 
       {dialogOpen && (
-        <CategoryPromotionAction
+        <ProductPromotionAction
           open={dialogOpen}
           dataEdit={dataEdit}
           onClose={handleClose}

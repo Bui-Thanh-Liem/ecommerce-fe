@@ -75,12 +75,14 @@ export function StaffPage() {
         }}
       />
 
-      <StaffAction
-        open={open}
-        dataEdit={dataEdit}
-        onClose={handleClose}
-        initialData={initialData}
-      />
+      {open && (
+        <StaffAction
+          open={open}
+          dataEdit={dataEdit}
+          onClose={handleClose}
+          initialData={initialData}
+        />
+      )}
     </>
   )
 }

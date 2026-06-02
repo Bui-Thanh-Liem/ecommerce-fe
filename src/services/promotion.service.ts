@@ -32,6 +32,19 @@ export const promotionServices = {
     return handleResponse<ResMetadataDto<IPromotion>>(res)
   },
 
+  findOptions: async (query?: QueryDto<IPromotion>) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IPromotion>>(
+      `/promotions/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IPromotion>>(res)
+  },
+
   update: async (id: string, payload: UpdatePromotionDto) => {
     const res = await apiCall<IPromotion>(`/promotions/${id}`, {
       method: "PATCH",

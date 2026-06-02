@@ -1,18 +1,7 @@
 import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
 import { ColumnDef } from "@tanstack/table-core"
 
-export const campaignColumns: ColumnDef<ICategoryPromotion>[] = [
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => {
-      return (
-        <p className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.category.name || "-"}
-        </p>
-      )
-    },
-  },
+export const categoryPromotionColumns: ColumnDef<ICategoryPromotion>[] = [
   {
     accessorKey: "promotion",
     header: "Promotion",
@@ -20,6 +9,17 @@ export const campaignColumns: ColumnDef<ICategoryPromotion>[] = [
       return (
         <p className="max-w-60 overflow-auto whitespace-normal">
           {row.original.promotion.name || "-"}
+        </p>
+      )
+    },
+  },
+  {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      return (
+        <p className="max-w-60 overflow-auto whitespace-normal">
+          {row.original.category.name || "-"}
         </p>
       )
     },

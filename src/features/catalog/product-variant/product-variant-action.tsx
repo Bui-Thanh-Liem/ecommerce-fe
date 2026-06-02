@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindAllProducts, useFindOptionsProducts } from "@/hooks/apis/use-product"
+import { useFindOptionsProducts } from "@/hooks/apis/use-product"
 import {
   useCreateProductVariant,
   useUpdateProductVariant,

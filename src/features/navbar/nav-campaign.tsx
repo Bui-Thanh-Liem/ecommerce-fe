@@ -43,15 +43,18 @@ export function NavCampaign() {
       url: "category-promotions",
       icon: <Proportions />,
     },
+    {
+      title: "Product Promotions",
+      url: "product-promotions",
+      icon: <Proportions />,
+    },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
         CAMPAIGN
-        <Badge variant="destructive" className="mb-3">
-          admin
-        </Badge>
+        <Badge className="mb-3 bg-green-50 text-green-700">low</Badge>
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (

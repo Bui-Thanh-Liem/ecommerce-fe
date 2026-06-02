@@ -139,19 +139,23 @@ export function TeamPage() {
         }
       />
 
-      <TeamAction
-        open={open}
-        dataEdit={dataEdit}
-        selectedParent={null}
-        onClose={handleClose}
-        initialData={initialData}
-      />
+      {open && (
+        <TeamAction
+          open={open}
+          dataEdit={dataEdit}
+          selectedParent={null}
+          onClose={handleClose}
+          initialData={initialData}
+        />
+      )}
 
-      <TeamAddMember
-        open={openFromAddMember}
-        dataEdit={dataEdit}
-        onClose={handleClose}
-      />
+      {openFromAddMember && (
+        <TeamAddMember
+          open={openFromAddMember}
+          dataEdit={dataEdit}
+          onClose={handleClose}
+        />
+      )}
     </>
   )
 }
