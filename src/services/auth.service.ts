@@ -20,4 +20,12 @@ export const authServices = {
 
     return handleResponse(res)
   },
+
+  signout: async () => {
+    const res = await apiCall<ResSignInDto>("/auth/signout", {
+      method: "POST",
+    })
+
+    return handleResponse<ResSignInDto>(res)
+  },
 }

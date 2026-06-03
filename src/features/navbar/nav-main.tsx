@@ -16,7 +16,7 @@ export function NavMain() {
   const mainItems = [
     {
       title: "Dashboard",
-      url: "dashboard",
+      url: "/dashboard",
       icon: <LayoutDashboardIcon />,
     },
   ]

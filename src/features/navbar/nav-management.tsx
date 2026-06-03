@@ -35,7 +35,7 @@ export function NavManagement() {
   const mainItems = [
     {
       title: "Staffs",
-      url: "staffs",
+      url: "/management/staffs",
       icon: <User />,
     },
   ]
@@ -43,27 +43,27 @@ export function NavManagement() {
   const secondaryItems = [
     {
       title: "Teams",
-      url: "teams",
+      url: "/management/teams",
       icon: <UsersIcon />,
     },
     {
       title: "Permissions",
-      url: "permissions",
+      url: "/management/permissions",
       icon: <UserRoundKey />,
     },
     {
       title: "Roles",
-      url: "roles",
+      url: "/management/roles",
       icon: <UserRoundKey />,
     },
     {
       title: "Team Categories",
-      url: "team-categories",
+      url: "/management/team-categories",
       icon: <UsersIcon />,
     },
     {
       title: "Audit Logs",
-      url: "audit-logs",
+      url: "/management/audit-logs",
       icon: <ScrollText />,
     },
   ]
@@ -81,7 +81,7 @@ export function NavManagement() {
           <SidebarMenuItem
             key={item.title}
             className={cn(
-              pathname === `/${item.url}` ? "rounded-full bg-gray-100" : ""
+              pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
             )}
           >
             <SidebarMenuButton asChild>
@@ -99,7 +99,7 @@ export function NavManagement() {
               <SidebarMenuButton
                 className={cn(
                   "text-sidebar-foreground/70",
-                  secondaryItems.some((item) => pathname === `/${item.url}`) &&
+                  secondaryItems.some((item) => pathname === `${item.url}`) &&
                     "bg-gray-100"
                 )}
               >
@@ -119,9 +119,7 @@ export function NavManagement() {
                   key={item.title}
                   asChild
                   className={cn(
-                    pathname === `/${item.url}`
-                      ? "rounded-full bg-gray-100"
-                      : ""
+                    pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
                   )}
                 >
                   <Link href={item.url}>

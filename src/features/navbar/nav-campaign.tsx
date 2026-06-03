@@ -27,7 +27,7 @@ export function NavCampaign() {
   const mainItems = [
     {
       title: "campaigns",
-      url: "campaigns",
+      url: "/campaigns",
       icon: <Target />,
     },
   ]
@@ -35,17 +35,17 @@ export function NavCampaign() {
   const secondaryItems = [
     {
       title: "Promotions",
-      url: "promotions",
+      url: "/campaigns/promotions",
       icon: <Proportions />,
     },
     {
       title: "Category Promotions",
-      url: "category-promotions",
+      url: "/campaigns/category-promotions",
       icon: <Proportions />,
     },
     {
       title: "Product Promotions",
-      url: "product-promotions",
+      url: "/campaigns/product-promotions",
       icon: <Proportions />,
     },
   ]
@@ -61,7 +61,7 @@ export function NavCampaign() {
           <SidebarMenuItem
             key={item.title}
             className={cn(
-              pathname === `/${item.url}` ? "rounded-full bg-gray-100" : ""
+              pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
             )}
           >
             <SidebarMenuButton asChild>
@@ -79,7 +79,7 @@ export function NavCampaign() {
               <SidebarMenuButton
                 className={cn(
                   "text-sidebar-foreground/70",
-                  secondaryItems.some((item) => pathname === `/${item.url}`) &&
+                  secondaryItems.some((item) => pathname === `${item.url}`) &&
                     "bg-gray-100"
                 )}
               >
@@ -99,9 +99,7 @@ export function NavCampaign() {
                   key={item.title}
                   asChild
                   className={cn(
-                    pathname === `/${item.url}`
-                      ? "rounded-full bg-gray-100"
-                      : ""
+                    pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
                   )}
                 >
                   <Link href={item.url}>

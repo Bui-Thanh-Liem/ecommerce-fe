@@ -17,16 +17,29 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useStaffContext } from "@/context/staff.context"
+import { useSignOut } from "@/hooks/apis/use-auth"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
   LogOutIcon,
   Settings2Icon,
 } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export function NavStaff() {
+  const router = useRouter()
   const { isMobile } = useSidebar()
   const { staff } = useStaffContext()
+  const signOutApi = useSignOut()
+
+  //
+  async function handleLogout() {
+    const res = await signOutApi.mutateAsync()
+    if (res?.statusCode === 201) {
+      router.replace("/")
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -53,7 +66,7 @@ export function NavStaff() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-2xl"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -76,17 +89,19 @@ export function NavStaff() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUserRoundIcon />
-                Account
-              </DropdownMenuItem>
+              <Link href="/staff/account">
+                <DropdownMenuItem>
+                  <CircleUserRoundIcon />
+                  Account
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <Settings2Icon />
                 Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={handleLogout} variant="destructive">
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

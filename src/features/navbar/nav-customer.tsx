@@ -14,47 +14,37 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import {
-  MoreHorizontalIcon,
-  ShelvingUnit,
-  MapPinned,
-  Store,
-} from "lucide-react"
+import { Headphones, MoreHorizontalIcon, ShoppingCart } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../components/ui/badge"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-export function NavInventory() {
+export function NavCustomer() {
   const { isMobile } = useSidebar()
   const pathname = usePathname()
 
   const mainItems = [
     {
-      title: "Inventories",
-      url: "/inventories",
-      icon: <ShelvingUnit />,
+      title: "Customers",
+      url: "/customers",
+      icon: <Headphones />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Stores/Warehouses",
-      url: "/inventories/stores-warehouses",
-      icon: <Store />,
-    },
-    {
-      title: "Locations Regions",
-      url: "/inventories/location-regions",
-      icon: <MapPinned />,
+      title: "Carts",
+      url: "/customers/carts",
+      icon: <ShoppingCart />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        INVENTORY
-        <Badge className="mb-3 bg-yellow-50 text-yellow-700">medium</Badge>
+        CUSTOMERS
+        <Badge className="mb-3 bg-green-50 text-green-700">Low</Badge>
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (

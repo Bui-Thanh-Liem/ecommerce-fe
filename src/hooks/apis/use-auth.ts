@@ -2,6 +2,7 @@ import { authServices } from "@/services/auth.service"
 import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
 import { useStaffContext } from "@/context/staff.context"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { deleteStorage } from "@/utils/delete-storage.util"
 
 export const useSignIn = () => {
   const { setStaff } = useStaffContext()
@@ -40,5 +41,23 @@ export const useWhoami = () => {
 
     // Tự động fetch lại sau mỗi 30s (nếu cần sync liên tục)
     // refetchInterval: 30000,
+  })
+}
+
+export const useSignOut = () => {
+  const { clearStaff } = useStaffContext()
+
+  return useMutation({
+    //
+    mutationFn: () => authServices.signout(),
+
+    //
+    onSuccess: (data) => {
+      //
+      if (data?.statusCode === 201) {
+        deleteStorage() // Xóa token, staff info, etc. trong localStorage/sessionStorage
+        clearStaff() // Clear staff context
+      }
+    },
   })
 }

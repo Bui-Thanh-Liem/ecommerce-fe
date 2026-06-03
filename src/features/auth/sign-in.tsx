@@ -39,7 +39,7 @@ export function SignInPage() {
   async function onSubmit(data: z.infer<typeof SignInFormSchema>) {
     const res = await signInApi.mutateAsync(data)
     if (res?.statusCode === 201) {
-      router.push("/dashboard")
+      router.replace("/dashboard")
     }
   }
 

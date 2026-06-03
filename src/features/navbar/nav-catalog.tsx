@@ -34,7 +34,7 @@ export function NavCatalog() {
   const mainItems = [
     {
       title: "Products (SPU)",
-      url: "products",
+      url: "/products",
       icon: <Package />,
     },
   ]
@@ -42,27 +42,27 @@ export function NavCatalog() {
   const secondaryItems = [
     {
       title: "Product variants (SKU)",
-      url: "product-variants",
+      url: "/products/product-variants",
       icon: <ScanBarcode />,
     },
     {
       title: "Product items (SERIAL)",
-      url: "product-items",
+      url: "/products/product-items",
       icon: <Package />,
     },
     {
       title: "Brands",
-      url: "brands",
+      url: "/products/brands",
       icon: <BadgeIcon />,
     },
     {
       title: "Categories",
-      url: "categories",
+      url: "/products/categories",
       icon: <LayoutGrid />,
     },
     {
       title: "Product navbars",
-      url: "product-navbars",
+      url: "/products/product-navbars",
       icon: <RectangleEllipsis />,
     },
   ]
@@ -78,7 +78,7 @@ export function NavCatalog() {
           <SidebarMenuItem
             key={item.title}
             className={cn(
-              pathname === `/${item.url}` ? "rounded-full bg-gray-100" : ""
+              pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
             )}
           >
             <SidebarMenuButton asChild>
@@ -96,7 +96,7 @@ export function NavCatalog() {
               <SidebarMenuButton
                 className={cn(
                   "text-sidebar-foreground/70",
-                  secondaryItems.some((item) => pathname === `/${item.url}`) &&
+                  secondaryItems.some((item) => pathname === `${item.url}`) &&
                     "bg-gray-100"
                 )}
               >
@@ -116,9 +116,7 @@ export function NavCatalog() {
                   key={item.title}
                   asChild
                   className={cn(
-                    pathname === `/${item.url}`
-                      ? "rounded-full bg-gray-100"
-                      : ""
+                    pathname === `${item.url}` ? "rounded-full bg-gray-100" : ""
                   )}
                 >
                   <Link href={item.url}>

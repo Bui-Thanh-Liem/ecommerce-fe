@@ -18,6 +18,7 @@ import { NavSecondary } from "./nav-secondary"
 import { NavManagement } from "./nav-management"
 import { NavInventory } from "./nav-inventory"
 import { NavCampaign } from "./nav-campaign"
+import { NavCustomer } from "./nav-customer"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -43,6 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavCatalog />
         <NavInventory />
         <NavCampaign />
+        <NavCustomer />
         <NavSecondary />
       </SidebarContent>
       <SidebarFooter>
