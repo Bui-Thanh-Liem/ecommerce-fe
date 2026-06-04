@@ -9,7 +9,9 @@ import { storeColumns } from "./store-column"
 
 const StoreMap = dynamic(
   () =>
-    import("@/features/inventory/store/store-map").then((mod) => mod.StoreMap),
+    import("@/features/(private)/inventory/store/store-map").then(
+      (mod) => mod.StoreMap
+    ),
   {
     ssr: false,
     loading: () => (

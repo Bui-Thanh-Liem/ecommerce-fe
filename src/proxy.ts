@@ -10,11 +10,11 @@ export function proxy(req: NextRequest) {
     return NextResponse.next()
   }
 
-  if (!token && pathname !== "/") {
-    return NextResponse.redirect(new URL("/", req.url))
+  if (!token && pathname !== "/auth") {
+    return NextResponse.redirect(new URL("/auth", req.url))
   }
 
-  if (token && pathname === "/") {
+  if (token && pathname === "/auth") {
     return NextResponse.redirect(new URL(`/staff/account?t=1`, req.url))
   }
 
@@ -23,12 +23,13 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/",
+    "/auth",
     "/dashboard/:path*",
     "/campaigns/:path*",
+    "/customers/:path*",
     "/management/:path*",
     "/products/:path*",
     "/inventories/:path*",
-    "/staff/account",
+    "/staff/:path*",
   ],
 }

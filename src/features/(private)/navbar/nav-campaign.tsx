@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar"
 import { MoreHorizontalIcon, Target, Proportions } from "lucide-react"
 import Link from "next/link"
-import { Badge } from "../../components/ui/badge"
+import { Badge } from "../../../components/ui/badge"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 

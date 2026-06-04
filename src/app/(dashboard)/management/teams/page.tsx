@@ -1,4 +1,4 @@
-import { TeamPage } from "@/features/management/team/team-page"
+import { TeamPage } from "@/features/(private)/management/team/team-page"
 import { Suspense } from "react"
 
 export default function Page() {

@@ -1,4 +1,4 @@
-import { ProductNavbarPage } from "@/features/catalog/product-navbar/product-navbar-page"
+import { ProductNavbarPage } from "@/features/(private)/catalog/product-navbar/product-navbar-page"
 
 export default function Page() {
   return (

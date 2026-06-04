@@ -1,4 +1,4 @@
-import { StorePage } from "@/features/inventory/store/store-page";
+import { StorePage } from "@/features/(private)/inventory/store/store-page"
 
 export default function Page() {
   return (

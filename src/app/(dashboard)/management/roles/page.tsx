@@ -1,4 +1,4 @@
-import { RolePage } from "@/features/management/role/role-page"
+import { RolePage } from "@/features/(private)/management/role/role-page"
 
 export default function Page() {
   return (

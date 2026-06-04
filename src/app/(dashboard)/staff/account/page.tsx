@@ -1,4 +1,4 @@
-import { AccountPage } from "@/features/management/staff/account-page"
+import { AccountPage } from "@/features/(private)/management/staff/account-page"
 
 export default function Page() {
   return (

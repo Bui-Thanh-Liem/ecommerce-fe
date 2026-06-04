@@ -1,16 +1,16 @@
 import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
-import { ResSignInDto } from "@/shared/dtos/res/sign-in.dto"
+import { ResSignInStaffDto } from "@/shared/dtos/res/sign-in.dto"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const authServices = {
   signIn: async (payload: SignInDto) => {
-    const res = await apiCall<ResSignInDto>("/auth/signin", {
+    const res = await apiCall<ResSignInStaffDto>("/auth/signin", {
       method: "POST",
       body: JSON.stringify(payload),
     })
 
-    return handleResponse<ResSignInDto>(res)
+    return handleResponse<ResSignInStaffDto>(res)
   },
 
   whoami: async () => {
@@ -22,10 +22,10 @@ export const authServices = {
   },
 
   signout: async () => {
-    const res = await apiCall<ResSignInDto>("/auth/signout", {
+    const res = await apiCall("/auth/signout", {
       method: "POST",
     })
 
-    return handleResponse<ResSignInDto>(res)
+    return handleResponse(res)
   },
 }

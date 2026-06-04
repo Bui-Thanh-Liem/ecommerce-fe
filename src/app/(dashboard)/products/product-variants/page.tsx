@@ -1,4 +1,4 @@
-import { ProductVariantPage } from "@/features/catalog/product-variant/product-variant-page"
+import { ProductVariantPage } from "@/features/(private)/catalog/product-variant/product-variant-page"
 import { Suspense } from "react"
 
 export default function Page() {

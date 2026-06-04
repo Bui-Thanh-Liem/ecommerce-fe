@@ -1,4 +1,4 @@
-import { AuditLogPage } from "@/features/management/audit-log/audit-log-page"
+import { AuditLogPage } from "@/features/(private)/management/audit-log/audit-log-page"
 
 export default function Page() {
   return (

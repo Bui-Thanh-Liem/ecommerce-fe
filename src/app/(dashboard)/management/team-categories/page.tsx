@@ -1,4 +1,4 @@
-import { TeamCategoryPage } from "@/features/management/team-category/team-category-page"
+import { TeamCategoryPage } from "@/features/(private)/management/team-category/team-category-page"
 
 export default function Page() {
   return (

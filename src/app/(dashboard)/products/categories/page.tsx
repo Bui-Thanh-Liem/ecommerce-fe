@@ -1,4 +1,4 @@
-import { CategoryPage } from "@/features/catalog/category/category-page"
+import { CategoryPage } from "@/features/(private)/catalog/category/category-page"
 
 export default function Page() {
   return (

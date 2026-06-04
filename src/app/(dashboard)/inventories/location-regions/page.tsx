@@ -1,4 +1,4 @@
-import { LocationRegionPage } from "@/features/inventory/location-region/location-region-page"
+import { LocationRegionPage } from "@/features/(private)/inventory/location-region/location-region-page"
 
 export default function Page() {
   return (

@@ -1,4 +1,4 @@
-import { ProductPage } from "@/features/catalog/product/product-page"
+import { ProductPage } from "@/features/(private)/catalog/product/product-page"
 
 export default function Page() {
   return (

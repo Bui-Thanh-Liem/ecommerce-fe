@@ -1,5 +1,5 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/features/navbar/app-sidebar"
+import { AppSidebar } from "@/features/(private)/navbar/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 
 export default function RootLayout({

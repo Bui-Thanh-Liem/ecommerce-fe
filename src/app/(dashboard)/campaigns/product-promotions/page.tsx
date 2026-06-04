@@ -1,4 +1,4 @@
-import { ProductPromotionPage } from "@/features/campaigns/product-promotion/product-promotion-page"
+import { ProductPromotionPage } from "@/features/(private)/campaigns/product-promotion/product-promotion-page"
 
 export default function Page() {
   return (
