@@ -8,15 +8,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="grid grid-cols-12">
-      <div className="col-span-2"></div>
-      <div className="col-span-8">
-        <TopBanner />
-        <Header />
-        <Navbar />
-        {children}
-      </div>
-      <div className="col-span-2"></div>
-    </div>
+    <main>
+      <TopBanner />
+      <Header />
+      <Navbar />
+      {children}
+    </main>
   )
 }

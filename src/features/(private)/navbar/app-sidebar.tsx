@@ -19,6 +19,7 @@ import { NavManagement } from "./nav-management"
 import { NavInventory } from "./nav-inventory"
 import { NavCampaign } from "./nav-campaign"
 import { NavCustomer } from "./nav-customer"
+import Link from "next/link"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -30,10 +31,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
+              <Link href="/dashboard">
                 <ShoppingBag className="size-5!" />
                 <span className="text-base font-semibold">E-commerce.</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
