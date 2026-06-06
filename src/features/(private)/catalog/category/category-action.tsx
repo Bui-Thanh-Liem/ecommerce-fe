@@ -110,9 +110,6 @@ export function CategoryAction({
   //
   useEffect(() => {
     if (initialData) {
-      const parent = initialData.parent
-      if (!parent) return
-
       form.reset({
         ...initFormValue,
         parent: initialData?.id,

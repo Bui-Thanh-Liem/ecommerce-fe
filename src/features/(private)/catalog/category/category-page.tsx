@@ -62,7 +62,7 @@ function CategoryCard({
           </Button>
         </CardAction>
         <CardTitle>
-          {category.name} <Badge variant="secondary">{category.code}</Badge>
+          <p className="line-clamp-1">{category.name}</p>
         </CardTitle>
         <CardDescription className="line-clamp-3">
           {category.desc}
@@ -75,6 +75,10 @@ function CategoryCard({
             Parent: {category.parent.name}
           </Badge>
         )}
+      </div>
+
+      <div className="absolute top-16 left-4">
+        <Badge variant="secondary">{category.code}</Badge>
       </div>
 
       <div className={cn("absolute inset-0 hidden", isPending && "flex")}>
