@@ -32,6 +32,19 @@ export const productNavbarServices = {
     return handleResponse<ResMetadataDto<IProductNavbar>>(res)
   },
 
+  findOptions: async (query?: QueryDto<IProductNavbar>) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<ResMetadataDto<IProductNavbar>>(
+      `/product-navbars/options?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IProductNavbar>>(res)
+  },
+
   update: async (id: string, payload: UpdateProductNavbarDto) => {
     const res = await apiCall<IProductNavbar>(`/product-navbars/${id}`, {
       method: "PATCH",

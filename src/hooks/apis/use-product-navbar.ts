@@ -14,6 +14,15 @@ export const useFindAllProductNavbars = (query?: QueryDto<IProductNavbar>) => {
   })
 }
 
+export const useFindOptionsProductNavbars = (
+  query?: QueryDto<IProductNavbar>
+) => {
+  return useQuery({
+    queryKey: ["product-navbars-options", query ? JSON.stringify(query) : null],
+    queryFn: () => productNavbarServices.findOptions(query),
+  })
+}
+
 export const useCreateProductNavbar = () => {
   const queryClient = useQueryClient()
 

@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -6,18 +7,40 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Field } from "@/components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
+import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Smartphone } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function LoginPage() {
+  const router = useRouter()
+
+  const [isPhoneForm, setIsPhoneForm] = useState(true)
+
+  function handlePhoneFormSuccess() {
+    setIsPhoneForm(false)
+  }
+
+  function handleOtpFormSuccess() {
+    setIsPhoneForm(true)
+    router.replace("/")
+  }
+
   return (
-    <div className="grid h-16 grid-cols-12">
+    <div className="grid grid-cols-12">
       <div className="col-span-2"></div>
-      <div className="col-span-8 flex h-[calc(100vh-200px)] items-center justify-center gap-x-20">
+      <div className="col-span-8 flex h-[calc(100vh-150px)] items-center justify-center gap-x-20">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 800 500"
@@ -386,23 +409,16 @@ export function LoginPage() {
             <circle cx="15" cy="12" r="5" fill="#FFFFFF" />
           </g>
         </svg>
-        <Card className="text-center">
+        <Card className="mr-54 text-center">
           <CardHeader>
             <CardTitle className="text-3xl">Đăng nhập</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
-            <form className="flex flex-col items-center space-y-4">
-              <InputGroup className="w-62 text-center">
-                <InputGroupAddon align="inline-start">
-                  <Smartphone />
-                </InputGroupAddon>
-                <InputGroupInput
-                  id="input-group-url"
-                  placeholder="Số điện thoại"
-                />
-              </InputGroup>
-              <Button>Tiếp tục</Button>
-            </form>
+            {isPhoneForm ? (
+              <PhoneForm onSuccess={handlePhoneFormSuccess} />
+            ) : (
+              <OtpForm onSuccess={handleOtpFormSuccess} />
+            )}
             <CardDescription>
               Nhấn “Tiếp tục” đồng nghĩa với việc bạn cho phép hệ thống gửi tin
               nhắn xác thực đến số điện thoại trên
@@ -412,5 +428,64 @@ export function LoginPage() {
       </div>
       <div className="col-span-2"></div>
     </div>
+  )
+}
+
+function OtpForm({ onSuccess }: { onSuccess?: () => void }) {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // Giả lập thành công sau 1 giây
+    setTimeout(() => {
+      if (onSuccess) onSuccess()
+    }, 1000)
+  }
+
+  return (
+    <form className="flex flex-col items-center space-y-4">
+      <Field className="w-fit">
+        <InputOTP
+          id="digits-only"
+          maxLength={6}
+          pattern={REGEXP_ONLY_DIGITS}
+          autoFocus
+        >
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+      </Field>
+      <Button onClick={handleSubmit}>Tiếp tục</Button>
+    </form>
+  )
+}
+
+function PhoneForm({ onSuccess }: { onSuccess?: () => void }) {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // Giả lập thành công sau 1 giây
+    setTimeout(() => {
+      if (onSuccess) onSuccess()
+    }, 1000)
+  }
+
+  return (
+    <form className="flex flex-col items-center space-y-4">
+      <InputGroup className="w-62 text-center">
+        <InputGroupAddon align="inline-start">
+          <Smartphone />
+        </InputGroupAddon>
+        <InputGroupInput
+          type="tel"
+          id="input-group-url"
+          placeholder="Số điện thoại"
+        />
+      </InputGroup>
+      <Button onClick={handleSubmit}>Tiếp tục</Button>
+    </form>
   )
 }

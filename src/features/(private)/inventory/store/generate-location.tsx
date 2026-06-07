@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useFindAllLocationRegions } from "@/hooks/apis/use-location-region"
+import { useFindOptionsLocationRegions } from "@/hooks/apis/use-location-region"
 import {
   CreateStoreSchema,
   UpdateStoreSchema,
@@ -36,7 +36,7 @@ export function GenerateLocation({
   const districtId = form.watch("districtTown")
 
   //
-  const { data: c } = useFindAllLocationRegions({
+  const { data: c } = useFindOptionsLocationRegions({
     filters: {
       type: LocationRegionType.COUNTRY,
     },
@@ -44,7 +44,7 @@ export function GenerateLocation({
   const countries = c?.metadata?.data || []
 
   //
-  const { data: p } = useFindAllLocationRegions({
+  const { data: p } = useFindOptionsLocationRegions({
     filters: {
       type: LocationRegionType.PROVINCE_CITY,
       parent: countryId as any,
@@ -53,7 +53,7 @@ export function GenerateLocation({
   const provincesCities = p?.metadata?.data || []
 
   //
-  const { data: d } = useFindAllLocationRegions({
+  const { data: d } = useFindOptionsLocationRegions({
     filters: {
       type: LocationRegionType.DISTRICT_TOWN,
       parent: provinceCityId as any,
@@ -61,7 +61,7 @@ export function GenerateLocation({
   })
   const districtsTowns = d?.metadata?.data || []
 
-  const { data: w } = useFindAllLocationRegions({
+  const { data: w } = useFindOptionsLocationRegions({
     filters: {
       type: LocationRegionType.WARD_COMMUNE,
       parent: districtId as any,
