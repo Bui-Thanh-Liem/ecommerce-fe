@@ -81,3 +81,11 @@ export const useDeleteLocationRegions = () => {
     },
   })
 }
+
+export const useSelectionLocationRegion = () => {
+  return useMutation({
+    mutationFn: () => locationRegionServices.selection(),
+    onSuccess: () => {},
+    onError: () => {},
+  })
+}

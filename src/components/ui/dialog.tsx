@@ -168,19 +168,25 @@ function DialogHeaderAction({
 function DialogFooterAction({
   onClose,
   isPending,
+  contentOk = "Save changes",
+  contentCancel = "Cancel",
+  contentPending = "Saving...",
 }: {
   onClose?: () => void
   isPending?: boolean
+  contentCancel?: string
+  contentOk?: string
+  contentPending?: string
 }) {
   return (
     <DialogFooter>
       <DialogClose asChild>
         <Button variant="outline" onClick={onClose} disabled={isPending}>
-          Cancel
+          {contentCancel}
         </Button>
       </DialogClose>
       <Button disabled={isPending} type="submit">
-        {isPending ? "Saving..." : "Save changes"}
+        {isPending ? contentPending : contentOk}
       </Button>
     </DialogFooter>
   )

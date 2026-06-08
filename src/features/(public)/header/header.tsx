@@ -1,7 +1,6 @@
 "use client"
-
 import { Input } from "@/components/ui/input"
-import { MapPin, Menu, ShoppingBag, ShoppingCart, User } from "lucide-react"
+import { Menu, ShoppingBag, ShoppingCart, User } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,32 +17,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useFindTreeDataCategories } from "@/hooks/apis/use-category"
 import Image from "next/image"
-import { GenerateLocation } from "@/features/(private)/inventory/store/generate-location"
-import {
-  Dialog,
-  DialogContent,
-  DialogFooterAction,
-  DialogHeaderAction,
-} from "@/components/ui/dialog"
-import { Controller, useForm } from "react-hook-form"
-import z from "zod"
-import { useState } from "react"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Textarea } from "@/components/ui/textarea"
+import { Address } from "./address"
 
 export function Header() {
   return (
-    <header className="grid h-16 grid-cols-12 bg-blue-500">
+    <header className="sticky top-0 z-50 grid h-16 grid-cols-12 bg-blue-500">
       <div className="col-span-2"></div>
       <div className="col-span-8 flex items-center">
         <Logo />
         <Category />
-        <div className="ml-10 w-100">
+        <div className="ml-8 w-100">
           <Input
             className="bg-white text-black placeholder:text-gray-500"
             placeholder="Tìm kiếm sản phẩm..."
@@ -76,10 +59,14 @@ function Category() {
   const categories = data?.metadata || []
 
   return (
-    <div className="ml-10">
+    <div className="ml-8">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="lg" className="text-white">
+          <Button
+            variant="ghost"
+            size="lg"
+            className="cursor-pointer text-white"
+          >
             <Menu />
             <span>Danh mục</span>
           </Button>
@@ -171,7 +158,7 @@ function Category() {
             </DropdownMenuGroup>
           ) : (
             <DropdownMenuItem className="text-gray-500">
-              No category found
+              Không có danh mục nào
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -183,7 +170,11 @@ function Category() {
 function Login() {
   return (
     <Link href="/purchase-history/login">
-      <Button className="ml-10 text-white" variant="ghost" size="lg">
+      <Button
+        className="ml-4 cursor-pointer text-white"
+        variant="ghost"
+        size="lg"
+      >
         <User />
         <span>Đăng nhập</span>
       </Button>
@@ -194,95 +185,14 @@ function Login() {
 function Cart() {
   return (
     <Link href="/cart">
-      <Button className="ml-10 text-white" variant="ghost" size="lg">
+      <Button
+        className="ml-4 cursor-pointer text-white"
+        variant="ghost"
+        size="lg"
+      >
         <ShoppingCart />
         <span>Giỏ hàng</span>
       </Button>
     </Link>
-  )
-}
-
-function Address() {
-  const [open, setOpen] = useState(false)
-
-  //
-  const form = useForm<z.infer<any>>({
-    // resolver: zodResolver(formSchema),
-    defaultValues: {
-      country: "",
-      provinceCity: "",
-      districtTown: "",
-      wardCommune: "",
-    },
-  })
-
-  //
-  const handleOpenChange = (open: boolean) => {
-    setOpen?.(open)
-    if (!open) {
-      form.reset()
-    }
-  }
-
-  //
-  async function onSubmit(data: z.infer<any>) {
-    console.log(data)
-  }
-
-  console.log("Error :::", form.formState.errors)
-
-  return (
-    <>
-      <Button
-        className="ml-10 flex-1 text-white"
-        variant="ghost"
-        size="lg"
-        onClick={() => setOpen(true)}
-      >
-        <MapPin />
-        <span>Địa chỉ</span>
-      </Button>
-
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent>
-          <DialogHeaderAction
-            title="Where to deliver?"
-            desc="Please select a delivery address"
-          />
-
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <GenerateLocation form={form} />
-            <FieldGroup>
-              <Controller
-                name="addressDetail"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-desc">
-                      Address Detail
-                    </FieldLabel>
-                    <Textarea
-                      {...field}
-                      rows={2}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter address detail..."
-                      id="form-rhf-textarea-desc"
-                      className="resize-none"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </form>
-          <DialogFooterAction
-            onClose={() => setOpen(false)}
-            isPending={false}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
   )
 }

@@ -4,6 +4,7 @@ import {
   UpdateLocationRegionDto,
 } from "@/shared/dtos/req/location-region.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
+import { ISelectLocationRegion } from "@/shared/dtos/res/selection-location-region"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
 import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
 import { apiCall } from "@/utils/call-api.util"
@@ -88,5 +89,15 @@ export const locationRegionServices = {
     })
 
     return handleResponse(res)
+  },
+
+  selection: async () => {
+    const res = await apiCall<ISelectLocationRegion>(
+      `/location-regions/selection`,
+      {
+        method: "POST",
+      }
+    )
+    return handleResponse<ISelectLocationRegion>(res)
   },
 }

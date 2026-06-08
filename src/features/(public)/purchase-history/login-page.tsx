@@ -40,7 +40,7 @@ export function LoginPage() {
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-2"></div>
-      <div className="col-span-8 flex h-[calc(100vh-150px)] items-center justify-center gap-x-20">
+      <div className="col-span-8 flex h-[calc(100vh-300px)] items-center justify-center gap-x-20">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 800 500"

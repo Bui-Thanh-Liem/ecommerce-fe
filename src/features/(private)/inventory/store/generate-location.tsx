@@ -27,8 +27,24 @@ type FormValues =
 
 export function GenerateLocation({
   form,
+  labelCountry = "Country",
+  labelProvinceCity = "Province/City",
+  labelDistrictTown = "District/Town",
+  labelWardCommune = "Ward/Commune",
+  placeholderCountry = "Select a country",
+  placeholderProvinceCity = "Select a province/city",
+  placeholderDistrictTown = "Select a district/town",
+  placeholderWardCommune = "Select a ward/commune",
 }: {
   form: UseFormReturn<FormValues>
+  labelCountry?: string
+  labelProvinceCity?: string
+  labelDistrictTown?: string
+  labelWardCommune?: string
+  placeholderCountry?: string
+  placeholderProvinceCity?: string
+  placeholderDistrictTown?: string
+  placeholderWardCommune?: string
 }) {
   //
   const countryId = form.watch("country")
@@ -78,7 +94,7 @@ export function GenerateLocation({
           render={({ field, fieldState }) => {
             return (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-country">Country</FieldLabel>
+                <FieldLabel htmlFor="form-country">{labelCountry}</FieldLabel>
 
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
@@ -86,7 +102,7 @@ export function GenerateLocation({
                     size="sm"
                     id="form-country"
                   >
-                    <SelectValue placeholder="Select a country" />
+                    <SelectValue placeholder={placeholderCountry} />
                   </SelectTrigger>
                   <SelectContent align="end" className="z-3000">
                     <SelectGroup>
@@ -115,7 +131,7 @@ export function GenerateLocation({
             return (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="form-province-city">
-                  Province/City
+                  {labelProvinceCity}
                 </FieldLabel>
 
                 <Select value={field.value} onValueChange={field.onChange}>
@@ -124,7 +140,7 @@ export function GenerateLocation({
                     size="sm"
                     id="form-province-city"
                   >
-                    <SelectValue placeholder="Select a province/city" />
+                    <SelectValue placeholder={placeholderProvinceCity} />
                   </SelectTrigger>
                   <SelectContent align="end" className="z-3000">
                     <SelectGroup>
@@ -156,7 +172,7 @@ export function GenerateLocation({
             return (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="form-district-town">
-                  District/Town
+                  {labelDistrictTown}
                 </FieldLabel>
 
                 <Select value={field.value} onValueChange={field.onChange}>
@@ -165,7 +181,7 @@ export function GenerateLocation({
                     size="sm"
                     id="form-district-town"
                   >
-                    <SelectValue placeholder="Select a district/town" />
+                    <SelectValue placeholder={placeholderDistrictTown} />
                   </SelectTrigger>
                   <SelectContent align="end" className="z-3000">
                     <SelectGroup>
@@ -197,7 +213,7 @@ export function GenerateLocation({
             return (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="form-ward-commune">
-                  Ward/Commune
+                  {labelWardCommune}
                 </FieldLabel>
 
                 <Select value={field.value} onValueChange={field.onChange}>
@@ -206,7 +222,7 @@ export function GenerateLocation({
                     size="sm"
                     id="form-ward-commune"
                   >
-                    <SelectValue placeholder="Select a ward/commune" />
+                    <SelectValue placeholder={placeholderWardCommune} />
                   </SelectTrigger>
                   <SelectContent align="end" className="z-3000">
                     <SelectGroup>
