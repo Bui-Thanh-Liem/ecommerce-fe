@@ -89,7 +89,7 @@ export function NavStaff() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="/staff/account">
+              <Link href="/staffs/account">
                 <DropdownMenuItem>
                   <CircleUserRoundIcon />
                   Account

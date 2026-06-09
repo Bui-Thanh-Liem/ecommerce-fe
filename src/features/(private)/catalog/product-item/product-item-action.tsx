@@ -23,10 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import {
-  useFindAllProductVariants,
-  useFindOptionsProductVariants,
-} from "@/hooks/apis/use-product-variant"
+import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import {
   CreateProductItemSchema,
   UpdateProductItemSchema,
@@ -37,10 +34,7 @@ import {
   useUpdateProductItem,
 } from "@/hooks/apis/use-product-item"
 import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
-import {
-  useFindAllInventories,
-  useFindOptionsInventories,
-} from "@/hooks/apis/use-inventory"
+import { useFindOptionsInventories } from "@/hooks/apis/use-inventory"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
 

@@ -1,3 +1,5 @@
+import { HomePage } from "@/features/(public)/home/home-page"
+
 export default function Page() {
   return (
     <div className="relative min-h-screen">
@@ -11,15 +13,7 @@ export default function Page() {
 
         {/* Center Content - Không scroll riêng, để trang scroll */}
         <div className="col-span-8 bg-transparent">
-          <div className="space-y-8 px-6 py-12">
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-            <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-          </div>
+          <HomePage />
         </div>
 
         {/* Right side - transparent */}
@@ -41,7 +35,7 @@ function LayoutImage() {
       {/* Top Left Decoration */}
       <div
         id="layout-top-left"
-        className="pointer-events-none fixed top-32 left-0 h-96 w-96 bg-no-repeat"
+        className="pointer-events-none fixed top-32 left-0 h-80 w-80 bg-no-repeat"
         style={{
           backgroundImage: "url('/images/top-left.png')",
           backgroundSize: "contain",

@@ -4,7 +4,7 @@ import {
   UpdateProductNavbarDto,
 } from "@/shared/dtos/req/product-navbar.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
-import { IProductNavbar } from "@/shared/interfaces/models/navbar.interface"
+import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"

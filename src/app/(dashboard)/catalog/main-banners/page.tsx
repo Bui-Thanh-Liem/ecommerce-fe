@@ -1,0 +1,13 @@
+import { MainBannerPage } from "@/features/(private)/catalog/main-banner/main-banner-page"
+
+export default function Page() {
+  return (
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 md:gap-6">
+          <MainBannerPage />
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -11,6 +11,8 @@ export const CreateProductNavbarSchema = z.object({
   link: z
     .url("Invalid URL format.")
     .max(100, "Link must be at most 100 characters."),
+
+  isActive: z.boolean().optional(),
 })
 
 export const UpdateProductNavbarSchema = CreateProductNavbarSchema.partial()

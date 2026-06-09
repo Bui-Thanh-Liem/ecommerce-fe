@@ -4,7 +4,7 @@ import {
   CreateProductNavbarDto,
   UpdateProductNavbarDto,
 } from "@/shared/dtos/req/product-navbar.dto"
-import { IProductNavbar } from "@/shared/interfaces/models/navbar.interface"
+import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllProductNavbars = (query?: QueryDto<IProductNavbar>) => {

@@ -8,8 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
-import { BellIcon, CirclePlusIcon, LayoutDashboardIcon } from "lucide-react"
+import { BellIcon, LayoutDashboardIcon, LayoutGrid } from "lucide-react"
 import Link from "next/link"
 
 export function NavMain() {
@@ -21,20 +20,17 @@ export function NavMain() {
     },
   ]
 
-  const classNameActive =
-    "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
-
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
-              tooltip="Quick Create"
-              className={cn("", classNameActive)}
+              tooltip="Customer overview"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
             >
-              <CirclePlusIcon />
-              <span>Quick Create</span>
+              <LayoutGrid />
+              <span>Customer overview</span>
             </SidebarMenuButton>
             <Button
               size="icon"

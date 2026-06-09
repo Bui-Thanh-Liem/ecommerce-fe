@@ -77,8 +77,9 @@ function CategoryCard({
         )}
       </div>
 
-      <div className="absolute top-16 left-4">
+      <div className="absolute top-16 left-4 space-x-2">
         <Badge variant="secondary">{category.code}</Badge>
+        <Badge variant="destructive">${category.minPrice?.toFixed(2)}</Badge>
       </div>
 
       <div className={cn("absolute inset-0 hidden", isPending && "flex")}>

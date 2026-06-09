@@ -12,29 +12,20 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  useCreateCategory,
-  useFindAllCategories,
-  useUpdateCategory,
-} from "@/hooks/apis/use-category"
+  useCreateMainBanner,
+  useUpdateMainBanner,
+} from "@/hooks/apis/use-main-banner"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
-  CreateCategorySchema,
-  UpdateCategorySchema,
-} from "@/shared/dtos/req/category.dto"
+  CreateMainBannerSchema,
+  UpdateMainBannerSchema,
+} from "@/shared/dtos/req/main-banner.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+import { IMainBanner } from "@/shared/interfaces/models/main-banner.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
@@ -43,15 +34,14 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateCategorySchema> = {
-  name: "",
+const initFormValue: z.infer<typeof CreateMainBannerSchema> = {
+  title: "",
   desc: "",
-  minPrice: 0,
   image: undefined,
-  parent: undefined,
+  isActive: true,
 }
 
-export function CategoryAction({
+export function MainBannerAction({
   open,
   onClose,
   dataEdit,
@@ -60,18 +50,14 @@ export function CategoryAction({
 }: {
   open: boolean
   onClose?: () => void
-  initialData?: ICategory | null
-  dataEdit: ICategory | null
+  initialData?: IMainBanner | null
+  dataEdit: IMainBanner | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
-  const createApi = useCreateCategory()
-  const updateApi = useUpdateCategory()
+  const createApi = useCreateMainBanner()
+  const updateApi = useUpdateMainBanner()
   const uploadApi = useUploadCloudinary()
-
-  //
-  const { data: categoryData } = useFindAllCategories()
-  const categories = categoryData?.metadata?.data || []
 
   //
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -79,7 +65,9 @@ export function CategoryAction({
   const [isPending, setIsPending] = useState(false)
 
   //
-  const formSchema = !!dataEdit ? UpdateCategorySchema : CreateCategorySchema
+  const formSchema = !!dataEdit
+    ? UpdateMainBannerSchema
+    : CreateMainBannerSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -99,11 +87,10 @@ export function CategoryAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        name: dataEdit.name,
-        image: dataEdit.image,
+        title: dataEdit.title,
         desc: dataEdit.desc || "",
-        minPrice: dataEdit.minPrice,
-        parent: dataEdit.parent?.id,
+        image: dataEdit.image,
+        isActive: dataEdit.isActive,
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
@@ -115,7 +102,6 @@ export function CategoryAction({
     if (initialData) {
       form.reset({
         ...initFormValue,
-        parent: initialData?.id,
       })
     }
   }, [form, initialData])
@@ -140,7 +126,7 @@ export function CategoryAction({
       // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
         const res = await uploadApi.mutateAsync({
-          payload: { folder: "category" },
+          payload: { folder: "main-banner" },
           file: selectedFile,
         })
 
@@ -166,7 +152,7 @@ export function CategoryAction({
         })
       } else {
         res = await createApi.mutateAsync({ ...data, image } as z.infer<
-          typeof CreateCategorySchema
+          typeof CreateMainBannerSchema
         >)
       }
 
@@ -175,7 +161,7 @@ export function CategoryAction({
         onClose?.()
       }
     } catch (error) {
-      console.error("Failed to create category:", error)
+      console.error("Failed to create main banner:", error)
     } finally {
       setIsPending(false)
     }
@@ -185,11 +171,35 @@ export function CategoryAction({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeaderAction
-          title={!!dataEdit ? "Edit Category" : "Add New Category"}
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new category.`}
+          title={!!dataEdit ? "Edit Main Banner" : "Add New Main Banner"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new main banner.`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+          <FieldGroup>
+            <Controller
+              name="isActive"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex items-center justify-between">
+                    <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
+                    <Switch
+                      id="form-isActive"
+                      checked={field.value} // RHF lưu giá trị boolean
+                      onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
+                      aria-invalid={fieldState.invalid}
+                    />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
           <FieldGroup>
             <FieldLabel htmlFor="form-rhf-input-store-image">Image</FieldLabel>
             <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed p-4">
@@ -233,72 +243,28 @@ export function CategoryAction({
             </div>
           </FieldGroup>
 
-          <div className="grid grid-cols-5 gap-4">
-            <FieldGroup className="col-span-3">
-              <Controller
-                name="name"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Name"
-                      autoComplete="name"
-                      id="form-rhf-input-name"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <FieldGroup className="col-span-2">
-              <Controller
-                name="minPrice"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-min-price">
-                      Minimum Price
-                    </FieldLabel>
-
-                    <InputGroup>
-                      <Input
-                        {...field}
-                        type="number"
-                        aria-invalid={fieldState.invalid}
-                        autoComplete="name"
-                        placeholder="Minimum Price"
-                        onChange={(e) => {
-                          const value = e.target.valueAsNumber
-
-                          if (isNaN(value)) {
-                            field.onChange(0) // Nếu không phải số, đặt về 0
-                          } else if (value < 0) {
-                            field.onChange(0) // Không cho nhập số âm
-                          } else {
-                            field.onChange(value)
-                          }
-                        }}
-                        id="form-rhf-input-min-price"
-                      />
-
-                      <InputGroupAddon align="inline-end">USD</InputGroupAddon>
-                    </InputGroup>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
+          <FieldGroup>
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-title">Title</FieldLabel>
+                  <Input
+                    {...field}
+                    type="text"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="title"
+                    autoComplete="title"
+                    id="form-rhf-input-title"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
 
           <FieldGroup>
             <Controller
@@ -322,45 +288,6 @@ export function CategoryAction({
                   )}
                 </Field>
               )}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Controller
-              name="parent"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-parent">
-                      Parent Category
-                    </FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
             />
           </FieldGroup>
 

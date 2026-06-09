@@ -35,7 +35,7 @@ export function NavManagement() {
   const mainItems = [
     {
       title: "Staffs",
-      url: "/management/staffs",
+      url: "/staffs",
       icon: <User />,
     },
   ]

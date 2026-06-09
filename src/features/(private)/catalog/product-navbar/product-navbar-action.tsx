@@ -19,17 +19,19 @@ import {
   CreateProductNavbarSchema,
   UpdateProductNavbarSchema,
 } from "@/shared/dtos/req/product-navbar.dto"
-import { IProductNavbar } from "@/shared/interfaces/models/navbar.interface"
+import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import {
   useCreateProductNavbar,
   useUpdateProductNavbar,
 } from "@/hooks/apis/use-product-navbar"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 
 const initFormValue: z.infer<typeof CreateProductNavbarSchema> = {
   name: "",
   desc: "",
   link: "",
+  isActive: true,
 }
 
 //
@@ -66,6 +68,7 @@ export function ProductNavbarAction({
       form.reset({
         name: dataEdit.name,
         link: dataEdit.link,
+        isActive: dataEdit.isActive,
       })
     } else {
       form.reset(initFormValue)
@@ -140,6 +143,30 @@ export function ProductNavbarAction({
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
           <div className="col-span-1 mb-6 space-y-6">
+            <FieldGroup>
+              <Controller
+                name="isActive"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <div className="flex items-center justify-between">
+                      <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
+                      <Switch
+                        id="form-isActive"
+                        checked={field.value} // RHF lưu giá trị boolean
+                        onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
+                        aria-invalid={fieldState.invalid}
+                      />
+                    </div>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+
             <FieldGroup>
               <Controller
                 name="name"

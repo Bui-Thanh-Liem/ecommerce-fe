@@ -83,7 +83,7 @@ export function Address() {
         onClick={() => setOpen(true)}
       >
         <MapPin />
-        <span>{location || "Địa chỉ"}</span>
+        <p className="max-w-32 line-clamp-1">{location || "Địa chỉ"}</p>
       </Button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>

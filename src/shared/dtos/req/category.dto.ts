@@ -12,6 +12,8 @@ export const CreateCategorySchema = z.object({
     .min(1, "Description is required.")
     .max(200, "Description must be at most 200 characters."),
   parent: z.uuidv4().optional(),
+
+  minPrice: z.number().optional(),
 })
 
 export const UpdateCategorySchema = CreateCategorySchema.partial()

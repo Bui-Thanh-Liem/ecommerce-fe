@@ -7,7 +7,7 @@ import {
 } from "@/hooks/apis/use-product-navbar"
 import { productNavbarColumns } from "./product-navbar-column"
 import { useState } from "react"
-import { IProductNavbar } from "@/shared/interfaces/models/navbar.interface"
+import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import { ProductNavbarAction } from "./product-navbar-action"
 
 export function ProductNavbarPage() {

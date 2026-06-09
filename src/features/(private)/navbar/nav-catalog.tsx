@@ -21,6 +21,7 @@ import {
   Badge as BadgeIcon,
   ScanBarcode,
   RectangleEllipsis,
+  Flag,
 } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../../components/ui/badge"
@@ -42,28 +43,33 @@ export function NavCatalog() {
   const secondaryItems = [
     {
       title: "Product variants (SKU)",
-      url: "/products/product-variants",
+      url: "/catalog/product-variants",
       icon: <ScanBarcode />,
     },
     {
       title: "Product items (SERIAL)",
-      url: "/products/product-items",
+      url: "/catalog/product-items",
       icon: <Package />,
     },
     {
       title: "Brands",
-      url: "/products/brands",
+      url: "/catalog/brands",
       icon: <BadgeIcon />,
     },
     {
       title: "Categories",
-      url: "/products/categories",
+      url: "/catalog/categories",
       icon: <LayoutGrid />,
     },
     {
       title: "Product navbars",
-      url: "/products/product-navbars",
+      url: "/catalog/product-navbars",
       icon: <RectangleEllipsis />,
+    },
+    {
+      title: "Main banners",
+      url: "/catalog/main-banners",
+      icon: <Flag />,
     },
   ]
 
