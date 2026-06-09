@@ -5,11 +5,11 @@ export function CartPage() {
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-2"></div>
-      <div className="col-span-8 h-[calc(100vh-300px)]">
+      <div className="col-span-8 h-[calc(100vh-300px)] items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 800 500"
-          className="mx-auto h-auto w-full max-w-2xl"
+          className="mx-auto h-auto w-auto max-w-xl"
         >
           {/* 1. NỀN BLOB PHÍA SAU */}
           <path
@@ -224,6 +224,7 @@ export function CartPage() {
             </g>
           </g>
         </svg>
+
         <div className="space-y-2 text-center">
           <p className="font-bold">Giỏ hàng trống</p>
           <p className="text-gray-400">Không có sản phẩm nào trong giỏ hàng</p>

@@ -10,7 +10,7 @@ export function Navbar() {
   if (navbars.length === 0) return null
 
   return (
-    <nav className="grid h-6 grid-cols-12">
+    <nav className="grid grid-cols-12 bg-white">
       <div className="col-span-2"></div>
       <div className="col-span-8 flex h-8 items-center justify-center">
         {navbars.map((navbar) => (
