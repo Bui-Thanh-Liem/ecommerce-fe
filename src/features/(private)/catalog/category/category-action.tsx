@@ -1,3 +1,4 @@
+import { CategorySelectInForm } from "@/components/select-in-form/category"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,7 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import {
   useCreateCategory,
-  useFindAllCategories,
+  useFindOptionsCategories,
   useUpdateCategory,
 } from "@/hooks/apis/use-category"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
@@ -47,8 +48,8 @@ const initFormValue: z.infer<typeof CreateCategorySchema> = {
   name: "",
   desc: "",
   minPrice: 0,
+  parent: "",
   image: undefined,
-  parent: undefined,
 }
 
 export function CategoryAction({
@@ -60,8 +61,8 @@ export function CategoryAction({
 }: {
   open: boolean
   onClose?: () => void
-  initialData?: ICategory | null
   dataEdit: ICategory | null
+  initialData?: ICategory | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
@@ -70,7 +71,7 @@ export function CategoryAction({
   const uploadApi = useUploadCloudinary()
 
   //
-  const { data: categoryData } = useFindAllCategories()
+  const { data: categoryData } = useFindOptionsCategories()
   const categories = categoryData?.metadata?.data || []
 
   //
@@ -171,8 +172,7 @@ export function CategoryAction({
       }
 
       if (res && [200, 201].includes(res?.statusCode)) {
-        form.reset()
-        onClose?.()
+        handleOpenChange(false)
       }
     } catch (error) {
       console.error("Failed to create category:", error)
@@ -325,44 +325,12 @@ export function CategoryAction({
             />
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="parent"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-parent">
-                      Parent Category
-                    </FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
+          <CategorySelectInForm
+            form={form}
+            name="parent"
+            label="Parent Category"
+            multiple={false}
+          />
 
           <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>

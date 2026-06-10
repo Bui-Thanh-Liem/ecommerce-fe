@@ -1,3 +1,5 @@
+import { BrandSelectInForm } from "@/components/select-in-form/brand"
+import { CategorySelectInForm } from "@/components/select-in-form/category"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -23,8 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindOptionsBrands } from "@/hooks/apis/use-brand"
-import { useFindOptionsCategories } from "@/hooks/apis/use-category"
 import { useCreateProduct, useUpdateProduct } from "@/hooks/apis/use-product"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
@@ -85,11 +85,6 @@ export function ProductAction({
   const createApi = useCreateProduct()
   const updateApi = useUpdateProduct()
   const uploadApi = useUploadCloudinary()
-
-  const { data: categoriesData } = useFindOptionsCategories()
-  const categories = categoriesData?.metadata?.data || []
-  const { data: brandsData } = useFindOptionsBrands()
-  const brands = brandsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previews, setPreviews] = useState<PreviewImage[]>([])
@@ -516,86 +511,14 @@ export function ProductAction({
           {/*  */}
           <div className="grid grid-cols-2 gap-x-4">
             {/* */}
-            <FieldGroup>
-              <Controller
-                name="category"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-category">Category</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-category"
-                        >
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <CategorySelectInForm
+              form={form}
+              name="category"
+              label="Category"
+            />
 
             {/* */}
-            <FieldGroup>
-              <Controller
-                name="brand"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-brand">Brand</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-brand"
-                        >
-                          <SelectValue placeholder="Select a brand" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {brands.map((brand) => (
-                              <SelectItem key={brand.id} value={brand.id}>
-                                {brand.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <BrandSelectInForm form={form} name="brand" label="Brand" />
           </div>
 
           {/*  */}

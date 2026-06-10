@@ -17,6 +17,9 @@ export function MainBanner() {
   const mainBanners = data?.metadata?.data || []
 
   //
+  if (mainBanners.length === 0) return null
+
+  //
   if (mainBanners.length === 1) {
     return (
       <div className="mx-auto">
@@ -25,9 +28,10 @@ export function MainBanner() {
             <Link href={mainBanners[0].slug}>
               <Image
                 fill
+                quality={100}
+                className="object-cover"
                 alt={mainBanners[0].title}
                 src={mainBanners[0].image.url}
-                className="object-cover"
               />
             </Link>
           </CardContent>
@@ -48,6 +52,7 @@ export function MainBanner() {
                   <Link href={banner.slug}>
                     <Image
                       fill
+                      quality={100}
                       alt={banner.title}
                       src={banner.image.url}
                       className="object-cover"

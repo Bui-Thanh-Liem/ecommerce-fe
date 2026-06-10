@@ -26,7 +26,7 @@ export function Header() {
       <div className="col-span-8 flex items-center">
         <Logo />
         <Category />
-        <div className="ml-8 w-100">
+        <div className="ml-4 w-100">
           <Input
             className="bg-white text-black placeholder:text-gray-500"
             placeholder="Tìm kiếm sản phẩm..."
@@ -49,7 +49,10 @@ function Logo() {
       className="flex items-center justify-center gap-x-2 text-yellow-300"
     >
       <ShoppingBag className="size-6!" />
-      <strong className="text-base font-semibold">E-commerce.</strong>
+      <strong className="text-base font-semibold">
+        <span className="text-2xl text-yellow-300 italic">E</span>
+        -commerce.
+      </strong>
     </Link>
   )
 }
@@ -98,40 +101,6 @@ function Category() {
                           {category.name}
                         </DropdownMenuLabel>
                         <div className="flex max-w-190 flex-wrap gap-x-4 gap-y-6">
-                          {children.map((child) => (
-                            <div
-                              key={child.id}
-                              className="flex cursor-pointer flex-col items-center space-y-1 rounded-2xl p-2 hover:bg-slate-100"
-                            >
-                              <Image
-                                src={child.image.url}
-                                alt={child.name}
-                                width={50}
-                                height={50}
-                                className="h-12.5 w-12.5 overflow-hidden rounded-md object-cover"
-                              />
-                              <p className="line-clamp-2 max-w-32">
-                                {child.name}
-                              </p>
-                            </div>
-                          ))}
-                          {children.map((child) => (
-                            <div
-                              key={child.id}
-                              className="flex cursor-pointer flex-col items-center space-y-1 rounded-2xl p-2 hover:bg-slate-100"
-                            >
-                              <Image
-                                src={child.image.url}
-                                alt={child.name}
-                                width={50}
-                                height={50}
-                                className="h-12.5 w-12.5 overflow-hidden rounded-md object-cover"
-                              />
-                              <p className="line-clamp-2 max-w-32">
-                                {child.name}
-                              </p>
-                            </div>
-                          ))}
                           {children.map((child) => (
                             <div
                               key={child.id}

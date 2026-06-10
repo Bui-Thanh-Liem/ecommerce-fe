@@ -37,6 +37,8 @@ import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
 import { useFindOptionsInventories } from "@/hooks/apis/use-inventory"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
+import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
+import { InventorySelectInForm } from "@/components/select-in-form/inventory"
 
 const initFormValue: z.infer<typeof CreateProductItemSchema> = {
   inventory: "",
@@ -162,81 +164,19 @@ export function ProductItemAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] space-y-6 overflow-x-hidden overflow-y-auto px-1"
         >
-          <FieldGroup>
-            <Controller
-              name="inventory"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-inventory">Inventory</FieldLabel>
+          <InventorySelectInForm
+            form={form}
+            name="inventory"
+            label="Inventory"
+            multiple={false}
+          />
 
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        id="form-inventory"
-                      >
-                        <SelectValue placeholder="Select an inventory" />
-                      </SelectTrigger>
-
-                      <SelectContent align="end">
-                        <SelectGroup>
-                          {inventories.map((variant) => (
-                            <SelectItem key={variant.id} value={variant.id}>
-                              {variant.store.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Controller
-              name="productVariant"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-productVariant">
-                      Product Variant
-                    </FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        id="form-productVariant"
-                      >
-                        <SelectValue placeholder="Select a product variant" />
-                      </SelectTrigger>
-
-                      <SelectContent align="end">
-                        <SelectGroup>
-                          {productVariants.map((variant) => (
-                            <SelectItem key={variant.id} value={variant.id}>
-                              {variant.product.name} - {variant.sku}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
+          <ProductVariantSelectInForm
+            form={form}
+            name="productVariant"
+            label="Product variant"
+            multiple={false}
+          />
 
           <div className="grid grid-cols-3 gap-x-4">
             <FieldGroup>

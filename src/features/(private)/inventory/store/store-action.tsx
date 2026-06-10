@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllStaffs, useFindOptionsStaffs } from "@/hooks/apis/use-staff"
 import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
@@ -41,6 +40,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 import { GenerateLocation } from "./generate-location"
+import { useFindOptionsStaffs } from "@/hooks/apis/use-staff"
 
 const initFormValue: z.infer<typeof CreateStoreSchema> = {
   country: "",
@@ -453,7 +453,7 @@ export function StoreAction({
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <FieldGroup>
                 <FieldLabel htmlFor="form-rhf-input-store-image">
                   Store Image

@@ -1,16 +1,8 @@
+import { CampaignSelectInForm } from "@/components/select-in-form/campaign"
+import { LocationRegionSelectInForm } from "@/components/select-in-form/location-region"
+import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
+import { StoreSelectInForm } from "@/components/select-in-form/store"
 import { Button } from "@/components/ui/button"
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -34,14 +26,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindOptionsCampaigns } from "@/hooks/apis/use-campaign"
-import { useFindOptionsLocationRegions } from "@/hooks/apis/use-location-region"
-import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import {
   useCreatePromotion,
   useUpdatePromotion,
 } from "@/hooks/apis/use-promotion"
-import { useFindOptionsStores } from "@/hooks/apis/use-store"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreatePromotionSchema,
@@ -90,22 +78,9 @@ export function PromotionAction({
   initialData?: IPromotion | null
   onOpenChange?: (open: boolean) => void
 }) {
-  const pvAnchor = useComboboxAnchor()
-  const storeAnchor = useComboboxAnchor()
-  const locationAnchor = useComboboxAnchor()
-
   const createApi = useCreatePromotion()
   const updateApi = useUpdatePromotion()
   const uploadApi = useUploadCloudinary()
-
-  const { data: productVariantsData } = useFindOptionsProductVariants()
-  const productVariants = productVariantsData?.metadata?.data || []
-  const { data: campaignsData } = useFindOptionsCampaigns()
-  const campaigns = campaignsData?.metadata?.data || []
-  const { data: storesData } = useFindOptionsStores()
-  const stores = storesData?.metadata?.data || []
-  const { data: locationRegionsData } = useFindOptionsLocationRegions()
-  const locationRegions = locationRegionsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previewUrl, setPreviewUrl] = useState<string>("")
@@ -338,45 +313,11 @@ export function PromotionAction({
               />
             </FieldGroup>
 
-            <FieldGroup>
-              <Controller
-                name="campaign"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-campaign">Campaign</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-campaign"
-                        >
-                          <SelectValue placeholder="Select a campaign" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {campaigns.map((campaign) => (
-                              <SelectItem key={campaign.id} value={campaign.id}>
-                                {campaign.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <CampaignSelectInForm
+              form={form}
+              name="campaign"
+              label="Campaign"
+            />
 
             <div className="grid grid-cols-2 gap-x-4">
               <FieldGroup>
@@ -559,202 +500,26 @@ export function PromotionAction({
               </FieldGroup>
             </div>
 
-            <FieldGroup>
-              <Controller
-                name="productHighlighted"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-product-highlighted">
-                      Highlighted Products
-                    </FieldLabel>
+            <ProductVariantSelectInForm
+              form={form}
+              name="productHighlighted"
+              label="Highlighted Products"
+              multiple={true}
+            />
 
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={productVariants}
-                      id="form-product-highlighted"
-                      value={field.value || []}
-                      onValueChange={(values) => {
-                        if (values.length <= 10) {
-                          field.onChange(values)
-                        }
-                      }}
-                    >
-                      <ComboboxChips ref={pvAnchor} className="w-full">
-                        <ComboboxValue>
-                          {(values: string[]) => (
-                            <>
-                              {values.map((value) => {
-                                const productName = productVariants.find(
-                                  (p) => p.id === value
-                                )?.product?.name
-                                return (
-                                  <ComboboxChip key={value}>
-                                    {productName || "Unknown Product"}
-                                  </ComboboxChip>
-                                )
-                              })}
-                              <ComboboxChipsInput placeholder="Select products..." />
-                            </>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
+            <StoreSelectInForm
+              form={form}
+              name="stores"
+              label="Stores"
+              multiple={true}
+            />
 
-                      <ComboboxContent
-                        anchor={pvAnchor}
-                        className="pointer-events-auto"
-                      >
-                        <ComboboxEmpty>No products found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(
-                            variant // ← dùng render prop
-                          ) => (
-                            <ComboboxItem key={variant.id} value={variant.id}>
-                              {variant.product?.name}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <Controller
-                name="stores"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-stores">Stores</FieldLabel>
-
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={stores}
-                      id="form-stores"
-                      value={field.value || []}
-                      onValueChange={(values) => {
-                        if (values.length <= 10) {
-                          field.onChange(values)
-                        }
-                      }}
-                    >
-                      <ComboboxChips ref={storeAnchor} className="w-full">
-                        <ComboboxValue>
-                          {(values: string[]) => (
-                            <>
-                              {values.map((value) => {
-                                const storeName = stores.find(
-                                  (s) => s.id === value
-                                )?.name
-                                return (
-                                  <ComboboxChip key={value}>
-                                    {storeName || "Unknown Store"}
-                                  </ComboboxChip>
-                                )
-                              })}
-                              <ComboboxChipsInput placeholder="Select stores..." />
-                            </>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-
-                      <ComboboxContent
-                        anchor={storeAnchor}
-                        className="pointer-events-auto"
-                      >
-                        <ComboboxEmpty>No stores found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(
-                            variant // ← dùng render prop
-                          ) => (
-                            <ComboboxItem key={variant.id} value={variant.id}>
-                              {variant?.name}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <Controller
-                name="locations"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-locations">Locations</FieldLabel>
-
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={locationRegions}
-                      id="form-locations"
-                      value={field.value || []}
-                      onValueChange={(values) => {
-                        if (values.length <= 10) {
-                          field.onChange(values)
-                        }
-                      }}
-                    >
-                      <ComboboxChips ref={locationAnchor} className="w-full">
-                        <ComboboxValue>
-                          {(values: string[]) => (
-                            <>
-                              {values.map((value) => {
-                                const locationName = locationRegions.find(
-                                  (l) => l.id === value
-                                )?.name
-                                return (
-                                  <ComboboxChip key={value}>
-                                    {locationName || "Unknown Location"}
-                                  </ComboboxChip>
-                                )
-                              })}
-                              <ComboboxChipsInput placeholder="Select locations..." />
-                            </>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-
-                      <ComboboxContent
-                        anchor={locationAnchor}
-                        className="pointer-events-auto"
-                      >
-                        <ComboboxEmpty>No locations found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(
-                            variant // ← dùng render prop
-                          ) => (
-                            <ComboboxItem key={variant.id} value={variant.id}>
-                              {variant?.name}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
+            <LocationRegionSelectInForm
+              form={form}
+              name="locations"
+              label="Locations"
+              multiple={true}
+            />
           </div>
           <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>

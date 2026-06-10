@@ -27,6 +27,7 @@ export const useCreateBrand = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] })
+      queryClient.invalidateQueries({ queryKey: ["brands-options"] })
     },
   })
 }
@@ -42,6 +43,7 @@ export const useUpdateBrand = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] })
+      queryClient.invalidateQueries({ queryKey: ["brands-options"] })
     },
   })
 }
@@ -56,6 +58,7 @@ export const useDeleteBrand = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] })
+      queryClient.invalidateQueries({ queryKey: ["brands-options"] })
     },
   })
 }

@@ -1,15 +1,5 @@
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
+import { StaffSelectInForm } from "@/components/select-in-form/staff"
+import { StoreSelectInForm } from "@/components/select-in-form/store"
 import {
   Dialog,
   DialogContent,
@@ -33,15 +23,13 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useFindAllStaffs, useFindOptionsStaffs } from "@/hooks/apis/use-staff"
-import { useFindAllStores, useFindOptionsStores } from "@/hooks/apis/use-store"
 import { useCreateTeam, useUpdateTeam } from "@/hooks/apis/use-team"
 import { useFindAllTeamCategories } from "@/hooks/apis/use-team-category"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
 import { CreateTeamSchema, UpdateTeamSchema } from "@/shared/dtos/req/team.dto"
 import { ITeam } from "@/shared/interfaces/models/team.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 
@@ -71,17 +59,8 @@ export function TeamAction({
   selectedParent: Pick<ITeam, "id" | "name"> | null
 }) {
   //
-  const anchor = useComboboxAnchor()
   const createApi = useCreateTeam()
   const updateApi = useUpdateTeam()
-
-  //
-  const { data: staffData } = useFindOptionsStaffs()
-  const staffs = staffData?.metadata?.data || []
-
-  //
-  const { data: storeData } = useFindOptionsStores()
-  const stores = storeData?.metadata?.data || []
 
   //
   const { data: teamCategoriesData } = useFindAllTeamCategories()
@@ -241,42 +220,12 @@ export function TeamAction({
             />
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="store"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-store">Store</FieldLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {stores.map((store) => (
-                            <SelectItem key={store.id} value={store.id}>
-                              {store.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
+          <StoreSelectInForm
+            form={form}
+            name="store"
+            label="Store"
+            multiple={false}
+          />
 
           <FieldGroup>
             <Controller
@@ -315,108 +264,19 @@ export function TeamAction({
             />
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="leader"
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-leader">Leader</FieldLabel>
+          <StaffSelectInForm
+            form={form}
+            name="leader"
+            label="Leader"
+            multiple={false}
+          />
 
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                        size="sm"
-                        id="form-leader"
-                      >
-                        <SelectValue placeholder="Select a leader" />
-                      </SelectTrigger>
-                      <SelectContent align="end" className="z-3000">
-                        <SelectGroup>
-                          {staffs.map((staff) => (
-                            <SelectItem key={staff.id} value={staff.id}>
-                              {staff.fullName}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Controller
-              name="members" // Tên field trong Zod schema (nên là z.array(z.string()))
-              control={form.control}
-              render={({ field, fieldState }) => {
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Members</FieldLabel>
-
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      // Chuyển danh sách staff từ API thành mảng string hoặc object tùy component yêu cầu
-                      items={staffs.map((s) => s.id)}
-                      value={field.value} // Gán giá trị từ RHF
-                      onValueChange={field.onChange} // Cập nhật lại RHF khi chọn
-                    >
-                      <ComboboxChips ref={anchor} className="w-full">
-                        <ComboboxValue>
-                          {(values: string[]) => (
-                            <React.Fragment>
-                              {values.map((value) => {
-                                const staffName = staffs.find(
-                                  (s) => s.id === value
-                                )?.fullName
-                                return (
-                                  <ComboboxChip key={value}>
-                                    {staffName || value}
-                                  </ComboboxChip>
-                                )
-                              })}
-                              <ComboboxChipsInput placeholder="Select staff..." />
-                            </React.Fragment>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-
-                      <ComboboxContent
-                        anchor={anchor}
-                        className="pointer-events-auto"
-                      >
-                        <ComboboxEmpty>No staff found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(id: string) => {
-                            const staffName = staffs.find(
-                              (s) => s.id === id
-                            )?.fullName
-                            return (
-                              <ComboboxItem key={id} value={id}>
-                                {staffName}
-                              </ComboboxItem>
-                            )
-                          }}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
+          <StaffSelectInForm
+            form={form}
+            name="members"
+            label="Members"
+            multiple={true}
+          />
 
           <DialogFooterAction
             onClose={onClose}

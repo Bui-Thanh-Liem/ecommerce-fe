@@ -1,5 +1,4 @@
 import { REGEX_PASSWORD, REGEX_PHONE } from "@/shared/constants/regex.constant"
-import { MAX_ROLES_IN_STAFF } from "@/shared/constants/staff.constant"
 import z from "zod"
 import { imageDtoSchema } from "../common/image.dto"
 
@@ -39,10 +38,7 @@ export const StaffBaseSchema = z.object({
 
   roles: z
     .array(z.uuidv4())
-    .max(
-      MAX_ROLES_IN_STAFF,
-      `You can select at most ${MAX_ROLES_IN_STAFF} roles.`
-    )
+    .max(5, `You can select at most 5 roles.`)
     .optional(),
 
   store: z.uuidv4().optional(),

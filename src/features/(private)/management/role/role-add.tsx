@@ -1,16 +1,4 @@
 import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
-import {
   Dialog,
   DialogContent,
   DialogFooterAction,
@@ -27,14 +15,13 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useFindAllPermissions } from "@/hooks/apis/use-permission"
 import { useCreateRole } from "@/hooks/apis/use-role"
-import { useFindAllStores } from "@/hooks/apis/use-store"
 import { cn } from "@/lib/utils"
 import { CreateRoleSchema } from "@/shared/dtos/req/role.dto"
 import { zodResolver } from "@hookform/resolvers/zod"
-import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 import { groupByKeyGroup } from "../permission/permission-page"
+import { StoreSelectInForm } from "@/components/select-in-form/store"
 
 export function RoleAdd({
   open,
@@ -45,16 +32,10 @@ export function RoleAdd({
   onClose?: () => void
   onOpenChange?: (open: boolean) => void
 }) {
-  const anchor = useComboboxAnchor()
-
   //
   const { data } = useFindAllPermissions()
   const permissions = data?.metadata || []
   const groupedPermissions = groupByKeyGroup(permissions)
-
-  //
-  const { data: rolesData } = useFindAllStores()
-  const stores = rolesData?.metadata?.data || []
 
   //
   const createApi = useCreateRole()
@@ -128,71 +109,12 @@ export function RoleAdd({
                 />
               </FieldGroup>
 
-              <FieldGroup>
-                <Controller
-                  name="stores" // Tên field trong Zod schema (nên là z.array(z.string()))
-                  control={form.control}
-                  render={({ field, fieldState }) => {
-                    return (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel>Stores</FieldLabel>
-
-                        <Combobox
-                          multiple
-                          autoHighlight
-                          // Chuyển danh sách store từ API thành mảng string hoặc object tùy component yêu cầu
-                          items={stores.map((s) => s.id)}
-                          value={field.value} // Gán giá trị từ RHF
-                          onValueChange={field.onChange} // Cập nhật lại RHF khi chọn
-                        >
-                          <ComboboxChips ref={anchor} className="w-full">
-                            <ComboboxValue>
-                              {(values: string[]) => (
-                                <React.Fragment>
-                                  {values.map((value) => {
-                                    const storeName = stores.find(
-                                      (s) => s.id === value
-                                    )?.name
-                                    return (
-                                      <ComboboxChip key={value}>
-                                        {storeName || value}
-                                      </ComboboxChip>
-                                    )
-                                  })}
-                                  <ComboboxChipsInput placeholder="Select stores..." />
-                                </React.Fragment>
-                              )}
-                            </ComboboxValue>
-                          </ComboboxChips>
-
-                          <ComboboxContent
-                            anchor={anchor}
-                            className="pointer-events-auto"
-                          >
-                            <ComboboxEmpty>No stores found.</ComboboxEmpty>
-                            <ComboboxList>
-                              {(id: string) => {
-                                const storeName = stores.find(
-                                  (s) => s.id === id
-                                )?.name
-                                return (
-                                  <ComboboxItem key={id} value={id}>
-                                    {storeName}
-                                  </ComboboxItem>
-                                )
-                              }}
-                            </ComboboxList>
-                          </ComboboxContent>
-                        </Combobox>
-
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )
-                  }}
-                />
-              </FieldGroup>
+              <StoreSelectInForm
+                form={form}
+                name="stores"
+                label="Stores"
+                multiple={true}
+              />
 
               <FieldGroup>
                 <Controller

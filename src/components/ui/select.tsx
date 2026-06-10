@@ -5,7 +5,6 @@ import { Select as SelectPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
 
 function Select({
   ...props
@@ -53,34 +52,6 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon asChild>
         <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4" />
-      </SelectPrimitive.Icon>
-    </SelectPrimitive.Trigger>
-  )
-}
-
-function SelectTriggerStaff({
-  className,
-  children,
-  size = "default",
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
-}) {
-  return (
-    <SelectPrimitive.Trigger
-      data-slot="select-trigger-staff"
-      data-size={size}
-      className={cn(
-        "bg-input/50 focus-visible:border-ring focus-visible:ring-ring/30 flex min-h-11 w-full items-center justify-between gap-2 rounded-3xl border border-transparent px-3 py-1.5 text-sm transition-all outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50",
-        // CSS để xử lý phần Value hiển thị bên trong
-        "*:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="text-muted-foreground size-4 shrink-0" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -161,42 +132,6 @@ function SelectItem({
   )
 }
 
-function SelectItemStaff({
-  className,
-  avatarUrl,
-  fullName,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item> & {
-  avatarUrl?: string
-  fullName: string
-}) {
-  return (
-    <SelectPrimitive.Item
-      data-slot="select-item-staff"
-      className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center gap-2.5 rounded-2xl py-2 pr-8 pl-2 text-sm font-medium outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50",
-        className
-      )}
-      {...props}
-    >
-      <SelectPrimitive.ItemText>
-        <div className="flex items-center gap-2">
-          <Avatar className="size-8 shrink-0 rounded-full">
-            <AvatarImage src={avatarUrl} alt={fullName} />
-            <AvatarFallback className="text-[10px]">AV</AvatarFallback>
-          </Avatar>
-          <span className="truncate">{fullName}</span>
-        </div>
-      </SelectPrimitive.ItemText>
-      <span className="absolute right-2 flex size-4 items-center justify-center">
-        <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
-        </SelectPrimitive.ItemIndicator>
-      </span>
-    </SelectPrimitive.Item>
-  )
-}
-
 function SelectSeparator({
   className,
   ...props
@@ -260,6 +195,4 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-  SelectItemStaff,
-  SelectTriggerStaff,
 }

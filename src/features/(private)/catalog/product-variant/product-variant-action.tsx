@@ -1,3 +1,4 @@
+import { ProductSelectInForm } from "@/components/select-in-form/product-SPU"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,7 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useFindOptionsProducts } from "@/hooks/apis/use-product"
 import {
   useCreateProductVariant,
   useUpdateProductVariant,
@@ -74,9 +74,6 @@ export function ProductVariantAction({
   const createApi = useCreateProductVariant()
   const updateApi = useUpdateProductVariant()
   const uploadApi = useUploadCloudinary()
-
-  const { data: productsData } = useFindOptionsProducts()
-  const products = productsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previews, setPreviews] = useState<PreviewImage[]>([])
@@ -349,45 +346,12 @@ export function ProductVariantAction({
             </FieldGroup>
 
             {/* */}
-            <FieldGroup>
-              <Controller
-                name="product"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-product">Product</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-product"
-                        >
-                          <SelectValue placeholder="Select a product" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {products.map((product) => (
-                              <SelectItem key={product.id} value={product.id}>
-                                {product.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <ProductSelectInForm
+              form={form}
+              name="product"
+              label="Product"
+              multiple={false}
+            />
 
             {/* */}
             <div className="grid grid-cols-2 gap-x-4">

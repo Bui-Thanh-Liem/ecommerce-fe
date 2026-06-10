@@ -1,3 +1,5 @@
+import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
+import { PromotionSelectInForm } from "@/components/select-in-form/promotion"
 import {
   Dialog,
   DialogContent,
@@ -13,19 +15,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   useCreateProductPromotion,
   useUpdateProductPromotion,
 } from "@/hooks/apis/use-product-promotion"
-import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
-import { useFindOptionsPromotions } from "@/hooks/apis/use-promotion"
 import {
   CreateProductPromotionSchema,
   UpdateProductPromotionSchema,
@@ -59,11 +51,6 @@ export function ProductPromotionAction({
 }) {
   const createApi = useCreateProductPromotion()
   const updateApi = useUpdateProductPromotion()
-
-  const { data: productVariantsData } = useFindOptionsProductVariants()
-  const productVariants = productVariantsData?.metadata?.data || []
-  const { data: promotionsData } = useFindOptionsPromotions()
-  const promotions = promotionsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [isPending, setIsPending] = useState(false)
@@ -151,92 +138,17 @@ export function ProductPromotionAction({
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
           <div className="col-span-1 mb-2 space-y-6">
-            <FieldGroup>
-              <Controller
-                name="promotion"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-promotion">
-                        Promotion
-                      </FieldLabel>
+            <PromotionSelectInForm
+              form={form}
+              name="promotion"
+              label="Promotion"
+            />
 
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-promotion"
-                        >
-                          <SelectValue placeholder="Select a promotion" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {promotions.map((promotion) => (
-                              <SelectItem
-                                key={promotion.id}
-                                value={promotion.id}
-                              >
-                                {promotion.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <Controller
-                name="productVariant"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-productVariant">
-                        Product Variant
-                      </FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-productVariant"
-                        >
-                          <SelectValue placeholder="Select a product variant" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {productVariants.map((variant) => (
-                              <SelectItem key={variant.id} value={variant.id}>
-                                {variant.sku}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <ProductVariantSelectInForm
+              form={form}
+              name="productVariant"
+              label="Product Variant"
+            />
 
             <div className="grid grid-cols-2 gap-x-4">
               <FieldGroup>

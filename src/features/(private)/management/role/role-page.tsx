@@ -228,7 +228,7 @@ function ActionPermissionToRole({
 
 function RoleCard({ role }: { role: IRole }) {
   const groupedPermissions = groupByKeyGroup(role.permissions)
-  const store = role?.store
+  const stores = role?.stores
 
   const [openInputName, setOpenInputName] = useState(false)
 
@@ -316,13 +316,13 @@ function RoleCard({ role }: { role: IRole }) {
   return (
     <Card className="@container/card" key={role.id}>
       <CardHeader>
-        <Badge variant="outline">{role.permissions.length} permissions</Badge>
-        {store && (
-          <Badge variant="outline" className="ml-2">
-            {store.name}
-          </Badge>
-        )}
-        <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-3xl">
+        {stores &&
+          stores.map((store) => (
+            <Badge key={store.id} variant="outline">
+              {store.name}
+            </Badge>
+          ))}
+        <CardTitle className="py-2 text-xl font-semibold">
           {openInputName ? (
             <form onSubmit={form.handleSubmit(onSubmitName)} ref={formRef}>
               <FieldGroup>
@@ -368,7 +368,11 @@ function RoleCard({ role }: { role: IRole }) {
             <Active isActive={role.isActive} />
           </span>
         </CardAction>
+        <Badge variant="outline" className="mb-4">
+          {role.permissions.length} permissions
+        </Badge>
       </CardHeader>
+
       <CardContent className="max-h-[calc(100vh-440px)] flex-col items-start gap-1.5 overflow-y-auto text-sm">
         {Object.entries(groupedPermissions).map(([keyGroup, perms]) => (
           <div key={keyGroup} className="w-full">

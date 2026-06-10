@@ -23,7 +23,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   CreateInventorySchema,
@@ -34,8 +33,9 @@ import {
   useCreateInventory,
   useUpdateInventory,
 } from "@/hooks/apis/use-inventory"
-import { useFindOptionsStores } from "@/hooks/apis/use-store"
 import { IInventory } from "@/shared/interfaces/models/inventory.interface"
+import { StoreSelectInForm } from "@/components/select-in-form/store"
+import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
 
 const initFormValue: z.infer<typeof CreateInventorySchema> = {
   store: "",
@@ -61,11 +61,6 @@ export function InventoryAction({
 }) {
   const createApi = useCreateInventory()
   const updateApi = useUpdateInventory()
-
-  const { data: storesData } = useFindOptionsStores()
-  const stores = storesData?.metadata?.data || []
-  const { data: productVariantsData } = useFindOptionsProductVariants()
-  const productVariants = productVariantsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [isPending, setIsPending] = useState(false)
@@ -161,88 +156,20 @@ export function InventoryAction({
         >
           <div className="col-span-1 mb-2 space-y-6">
             {/* */}
-            <FieldGroup>
-              <Controller
-                name="store"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-store">Store</FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-store"
-                        >
-                          <SelectValue placeholder="Select a store" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {stores.map((store) => (
-                              <SelectItem key={store.id} value={store.id}>
-                                {store.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <StoreSelectInForm
+              form={form}
+              name="store"
+              label="Store"
+              multiple={false}
+            />
 
             {/*  */}
-            <FieldGroup>
-              <Controller
-                name="productVariant"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-productVariant">
-                        Product Variant
-                      </FieldLabel>
-
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                          id="form-productVariant"
-                        >
-                          <SelectValue placeholder="Select a product variant" />
-                        </SelectTrigger>
-
-                        <SelectContent align="end">
-                          <SelectGroup>
-                            {productVariants.map((variant) => (
-                              <SelectItem key={variant.id} value={variant.id}>
-                                {variant.sku}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )
-                }}
-              />
-            </FieldGroup>
+            <ProductVariantSelectInForm
+              form={form}
+              name="productVariant"
+              label="Product variant"
+              multiple={false}
+            />
 
             {/*  */}
             <FieldGroup>

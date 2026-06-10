@@ -159,12 +159,14 @@ export function CategoryPage() {
           />
         }
       />
-      <CategoryAction
-        open={open}
-        dataEdit={dataEdit}
-        initialData={initialData}
-        onClose={handleClose}
-      />
+      {open && (
+        <CategoryAction
+          open={open}
+          dataEdit={dataEdit}
+          initialData={initialData}
+          onClose={handleClose}
+        />
+      )}
     </>
   )
 }

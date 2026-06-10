@@ -1,16 +1,5 @@
+import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
 import { Button } from "@/components/ui/button"
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
 import { DatePickerTime } from "@/components/ui/date-time-picker"
 import {
   Dialog,
@@ -28,7 +17,6 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateCampaign, useUpdateCampaign } from "@/hooks/apis/use-campaign"
-import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateCampaignSchema,
@@ -72,13 +60,9 @@ export function CampaignAction({
   initialData?: ICampaign | null
   onOpenChange?: (open: boolean) => void
 }) {
-  const anchor = useComboboxAnchor()
   const createApi = useCreateCampaign()
   const updateApi = useUpdateCampaign()
   const uploadApi = useUploadCloudinary()
-
-  const { data: productVariantsData } = useFindOptionsProductVariants()
-  const productVariants = productVariantsData?.metadata?.data || []
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [previews, setPreviews] = useState<PreviewImage[]>([])
@@ -521,72 +505,12 @@ export function CampaignAction({
               />
             </FieldGroup>
 
-            <FieldGroup>
-              <Controller
-                name="productHighlighted"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-product-highlighted">
-                      Highlighted Products
-                    </FieldLabel>
-
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={productVariants}
-                      id="form-product-highlighted"
-                      value={field.value || []}
-                      onValueChange={(values) => {
-                        if (values.length <= 10) {
-                          field.onChange(values)
-                        }
-                      }}
-                    >
-                      <ComboboxChips ref={anchor} className="w-full">
-                        <ComboboxValue>
-                          {(values: string[]) => (
-                            <>
-                              {values.map((value) => {
-                                const productName = productVariants.find(
-                                  (p) => p.id === value
-                                )?.product?.name
-                                return (
-                                  <ComboboxChip key={value}>
-                                    {productName || "Unknown Product"}
-                                  </ComboboxChip>
-                                )
-                              })}
-                              <ComboboxChipsInput placeholder="Select products..." />
-                            </>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-
-                      <ComboboxContent
-                        anchor={anchor}
-                        className="pointer-events-auto"
-                      >
-                        <ComboboxEmpty>No products found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(
-                            variant // ← dùng render prop
-                          ) => (
-                            <ComboboxItem key={variant.id} value={variant.id}>
-                              {variant.product?.name}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
+            <ProductVariantSelectInForm
+              form={form}
+              name="productHighlighted"
+              label="Highlighted Products"
+              multiple={true}
+            />
 
             <FieldGroup>
               <Controller

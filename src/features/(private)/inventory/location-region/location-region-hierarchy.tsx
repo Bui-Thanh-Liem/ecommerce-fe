@@ -20,7 +20,6 @@ import {
   Earth,
   MoreHorizontal,
   Navigation2,
-  Maximize2,
 } from "lucide-react"
 import { useFindTreeDataLocationRegions } from "@/hooks/apis/use-location-region"
 import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
@@ -32,12 +31,12 @@ const ContextMenu = ({ id, type, data, top, left, onClick, onClose }: any) => {
   return (
     <div
       style={{ top: `${top}px`, left: `${left}px` }}
-      className="animate-in fade-in zoom-in absolute z-[100] min-w-[180px] overflow-hidden rounded-xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-md duration-200"
+      className="animate-in fade-in zoom-in absolute z-100 min-w-45 overflow-hidden rounded-xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-md duration-200"
       onMouseLeave={onClose}
     >
       <div className="border-b border-slate-200/50 bg-slate-900/5 px-3 py-2">
         <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-          Thao tác khu vực
+          Action
         </p>
       </div>
       <div className="p-1.5">
@@ -50,21 +49,21 @@ const ContextMenu = ({ id, type, data, top, left, onClick, onClose }: any) => {
               size={14}
               className="transition-transform group-hover:scale-110"
             />
-            <span>Thêm cấp con</span>
+            <span>Add Child</span>
           </button>
         )}
         <button
           onClick={() => onClick("edit", data)}
           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 transition-all hover:bg-slate-100"
         >
-          <Pencil size={14} /> <span>Chỉnh sửa</span>
+          <Pencil size={14} /> <span>Edit</span>
         </button>
         <div className="my-1 border-t border-slate-200/50" />
         <button
           onClick={() => onClick("delete", data)}
           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 transition-all hover:bg-red-50"
         >
-          <Trash2 size={14} /> <span>Xóa khu vực</span>
+          <Trash2 size={14} /> <span>Delete Region</span>
         </button>
       </div>
     </div>
@@ -77,27 +76,27 @@ const LocationNode = ({ data }: { data: ILocationRegion }) => {
     [LocationRegionType.ROOT]: {
       icon: Earth,
       color: "from-emerald-400 to-teal-600",
-      label: "Toàn cầu",
+      label: "World",
     },
     [LocationRegionType.COUNTRY]: {
       icon: Navigation2,
       color: "from-blue-500 to-indigo-600",
-      label: "Quốc gia",
+      label: "Country",
     },
     [LocationRegionType.PROVINCE_CITY]: {
       icon: Map,
       color: "from-amber-400 to-orange-500",
-      label: "Tỉnh / Thành",
+      label: "Province / City",
     },
     [LocationRegionType.DISTRICT_TOWN]: {
       icon: MapPin,
       color: "from-purple-500 to-pink-600",
-      label: "Quận / Huyện",
+      label: "District / Town",
     },
     [LocationRegionType.WARD_COMMUNE]: {
       icon: MapPin,
       color: "from-slate-400 to-slate-600",
-      label: "Phường / Xã",
+      label: "Ward / Commune",
     },
   }
 
@@ -139,12 +138,12 @@ const LocationNode = ({ data }: { data: ILocationRegion }) => {
         <Handle
           type="target"
           position={Position.Top}
-          className="!h-3 !w-3 !border-2 !border-white !bg-blue-500"
+          className="h-3! w-3! border-2! border-white! bg-blue-500!"
         />
         <Handle
           type="source"
           position={Position.Bottom}
-          className="!h-3 !w-3 !border-2 !border-white !bg-blue-500"
+          className="h-3! w-3! border-2! border-white! bg-blue-500!"
         />
       </div>
     </div>
@@ -248,9 +247,9 @@ export function LocationRegionHierarchy({
           position="top-left"
           className="m-4 flex flex-col gap-1 rounded-xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm"
         >
-          <h3 className="text-sm font-bold text-slate-800">Phân cấp khu vực</h3>
+          <h3 className="text-sm font-bold text-slate-800">Region Hierarchy</h3>
           <p className="text-[11px] leading-relaxed text-slate-500">
-            Chuột phải vào từng thẻ để quản lý
+            Right-click on each node to manage
           </p>
         </Panel>
 
