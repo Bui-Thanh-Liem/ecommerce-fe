@@ -77,13 +77,15 @@ export function Address() {
   return (
     <>
       <Button
-        className="ml-4 flex-1 cursor-pointer text-white"
-        variant="ghost"
         size="lg"
+        variant="ghost"
         onClick={() => setOpen(true)}
+        className="ml-4 flex-1 cursor-pointer bg-sky-50/20 text-white hover:bg-sky-50/30 hover:text-white data-[state=open]:bg-sky-50/30"
       >
         <MapPin />
-        <p className="max-w-32 line-clamp-1">{location || "Địa chỉ"}</p>
+        <p className="line-clamp-1 max-w-44">
+          {location || "Vui lòng chọn địa chỉ giao hàng"}
+        </p>
       </Button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>

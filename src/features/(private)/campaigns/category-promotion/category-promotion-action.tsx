@@ -34,6 +34,7 @@ const initFormValue: z.infer<typeof CreateCategoryPromotionSchema> = {
   category: "",
   customDiscount: 0,
   priority: 0,
+  limitQuantity: 0,
 }
 
 export function CategoryPromotionAction({
@@ -71,6 +72,7 @@ export function CategoryPromotionAction({
         category: dataEdit.category.id,
         promotion: dataEdit.promotion.id,
         customDiscount: dataEdit.customDiscount,
+        limitQuantity: dataEdit.limitQuantity,
       })
     }
   }, [dataEdit, form])
@@ -151,7 +153,7 @@ export function CategoryPromotionAction({
               label="Category"
             />
 
-            <div className="grid grid-cols-2 gap-x-4">
+            <div className="grid grid-cols-3 gap-x-4">
               <FieldGroup>
                 <Controller
                   name="customDiscount"
@@ -223,6 +225,50 @@ export function CategoryPromotionAction({
                             }
                           }}
                           id="form-rhf-input-priority"
+                        />
+
+                        <InputGroupAddon align="inline-end">
+                          <ArrowBigUp />
+                        </InputGroupAddon>
+                      </InputGroup>
+
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+
+              <FieldGroup>
+                <Controller
+                  name="limitQuantity"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="form-rhf-input-limitQuantity">
+                        Limit Quantity
+                      </FieldLabel>
+
+                      <InputGroup>
+                        <Input
+                          {...field}
+                          type="number"
+                          aria-invalid={fieldState.invalid}
+                          autoComplete="name"
+                          placeholder="Limit Quantity"
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber
+
+                            if (isNaN(value)) {
+                              field.onChange(0) // Nếu không phải số, đặt về 0
+                            } else if (value < 0) {
+                              field.onChange(0) // Không cho nhập số âm
+                            } else {
+                              field.onChange(value)
+                            }
+                          }}
+                          id="form-rhf-input-limitQuantity"
                         />
 
                         <InputGroupAddon align="inline-end">

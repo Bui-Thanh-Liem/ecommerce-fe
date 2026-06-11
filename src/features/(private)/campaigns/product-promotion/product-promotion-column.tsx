@@ -61,4 +61,11 @@ export const productPromotionColumns: ColumnDef<IProductPromotion>[] = [
       return <p>{row.original.priority || "-"}</p>
     },
   },
+  {
+    accessorKey: "limitQuantity",
+    header: "Limit Quantity",
+    cell: ({ row }) => {
+      return <p>{row.original.limitQuantity || "-"}</p>
+    },
+  },
 ]

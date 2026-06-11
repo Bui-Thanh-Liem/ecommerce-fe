@@ -8,7 +8,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { BellIcon, LayoutDashboardIcon, LayoutGrid } from "lucide-react"
+import {
+  BellIcon,
+  BotMessageSquare,
+  LayoutDashboardIcon,
+  LayoutGrid,
+  SearchIcon,
+} from "lucide-react"
 import Link from "next/link"
 
 export function NavMain() {
@@ -17,6 +23,16 @@ export function NavMain() {
       title: "Dashboard",
       url: "/dashboard",
       icon: <LayoutDashboardIcon />,
+    },
+    {
+      title: "Get help with AI",
+      url: "#",
+      icon: <BotMessageSquare />,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: <SearchIcon />,
     },
   ]
 

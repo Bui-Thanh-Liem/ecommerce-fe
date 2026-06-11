@@ -1,5 +1,11 @@
 import { HomePage } from "@/features/(public)/home/home-page"
 
+export const metadata = {
+  title: "Siêu thị điện máy - mua bán đồ  điện tử, gia dụng chính hãng",
+  description:
+    "Khám phá siêu thị điện máy trực tuyến với đa dạng sản phẩm điện tử, gia dụng chính hãng. Mua sắm tiện lợi, giá tốt, giao hàng nhanh chóng. Đặt hàng ngay hôm nay!",
+}
+
 export default function Page() {
   return (
     <div className="relative min-h-screen">

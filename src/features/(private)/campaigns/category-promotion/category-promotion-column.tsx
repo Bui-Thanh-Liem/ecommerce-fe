@@ -38,4 +38,11 @@ export const categoryPromotionColumns: ColumnDef<ICategoryPromotion>[] = [
       return <p>{row.original.priority || "-"}</p>
     },
   },
+  {
+    accessorKey: "limitQuantity",
+    header: "Limit Quantity",
+    cell: ({ row }) => {
+      return <p>{row.original.limitQuantity || "-"}</p>
+    },
+  },
 ]

@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { useFindAllCategories } from "@/hooks/apis/use-category"
+import { useFindOptionsCategories } from "@/hooks/apis/use-category"
 import { Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,7 +9,7 @@ import Link from "next/link"
 const maxCategoriesToShow = 15
 
 export function CategoryList() {
-  const { data } = useFindAllCategories()
+  const { data } = useFindOptionsCategories()
   const categories = data?.metadata?.data || []
 
   //

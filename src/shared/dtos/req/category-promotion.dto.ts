@@ -12,6 +12,11 @@ export const CreateCategoryPromotionSchema = z.object({
     .min(0, "Priority must be at least 0.")
     .max(100, "Priority must be at most 100."),
 
+  limitQuantity: z
+    .number()
+    .int("Limit quantity must be an integer.")
+    .min(0, "Limit quantity must be at least 0."),
+
   category: z.uuidv4(),
 
   promotion: z.uuidv4(),
