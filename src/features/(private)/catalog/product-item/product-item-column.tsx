@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
-import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
+import { IProductItem } from "@/shared/interfaces/models/catalog/product-item.interface"
 import { ColumnDef } from "@tanstack/table-core"
 
 export const productItemColumns: ColumnDef<IProductItem>[] = [

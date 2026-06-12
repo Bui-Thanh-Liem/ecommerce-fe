@@ -12,7 +12,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import { useFindOptionsCustomerProducts } from "@/hooks/apis/use-customer-product"
+import { useFindOptionsCustomerProducts } from "@/hooks/apis/customer/use-customer-product"
 import { X } from "lucide-react"
 import Image from "next/image"
 

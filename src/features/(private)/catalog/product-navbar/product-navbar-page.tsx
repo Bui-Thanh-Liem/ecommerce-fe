@@ -4,11 +4,11 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteProductNavbar,
   useFindAllProductNavbars,
-} from "@/hooks/apis/use-product-navbar"
+} from "@/hooks/apis/catalog/use-product-navbar"
 import { productNavbarColumns } from "./product-navbar-column"
 import { useState } from "react"
-import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import { ProductNavbarAction } from "./product-navbar-action"
+import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
 
 export function ProductNavbarPage() {
   const { mutateAsync, isPending } = useDeleteProductNavbar()

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { AuditLogStatus } from "@/shared/enums/audit-log-status.enum"
-import { IAuditLog } from "@/shared/interfaces/models/audit-log.interface"
+import { IAuditLog } from "@/shared/interfaces/models/management/audit-log.interface"
 import { ColumnDef } from "@tanstack/react-table"
 
 export const auditLogColumns: ColumnDef<IAuditLog>[] = [

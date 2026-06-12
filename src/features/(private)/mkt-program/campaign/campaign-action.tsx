@@ -16,7 +16,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useCreateCampaign, useUpdateCampaign } from "@/hooks/apis/use-campaign"
+import {
+  useCreateCampaign,
+  useUpdateCampaign,
+} from "@/hooks/apis/mkt-program/use-campaign"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateCampaignSchema,
@@ -25,7 +28,7 @@ import {
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
-import { ICampaign } from "@/shared/interfaces/models/campaign.interface"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

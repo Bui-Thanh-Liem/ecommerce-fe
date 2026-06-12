@@ -6,9 +6,9 @@ import {
   useDeleteTeam,
   useFindAllTeams,
   useUpdateTeam,
-} from "@/hooks/apis/use-team"
+} from "@/hooks/apis/management/use-team"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
-import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { ITeam } from "@/shared/interfaces/models/management/team.interface"
 import { useState } from "react"
 import { StoreSelect } from "./filters/store-select"
 import { TeamAction } from "./team-action"

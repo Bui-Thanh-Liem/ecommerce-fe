@@ -8,8 +8,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useUpdateCampaign } from "@/hooks/apis/use-campaign"
-import { ICampaign } from "@/shared/interfaces/models/campaign.interface"
+import { useUpdateCampaign } from "@/hooks/apis/mkt-program/use-campaign"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 import { format } from "date-fns"
 

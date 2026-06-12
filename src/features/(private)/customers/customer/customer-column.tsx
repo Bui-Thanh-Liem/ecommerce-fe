@@ -1,6 +1,6 @@
 import { Active } from "@/components/active"
-import { useUpdateCustomer } from "@/hooks/apis/use-customer"
-import { ICustomer } from "@/shared/interfaces/models/customer.interface"
+import { useUpdateCustomer } from "@/hooks/apis/customer/use-customer"
+import { ICustomer } from "@/shared/interfaces/models/customer/customer.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 
 //

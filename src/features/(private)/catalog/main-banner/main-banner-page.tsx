@@ -13,12 +13,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DataCard } from "@/components/data-card"
 import { cn } from "@/lib/utils"
-import { IMainBanner } from "@/shared/interfaces/models/main-banner.interface"
 import {
   useDeleteMainBanner,
   useFindAllMainBanners,
-} from "@/hooks/apis/use-main-banner"
+} from "@/hooks/apis/catalog/use-main-banner"
 import { MainBannerAction } from "./main-banner-action"
+import { IMainBanner } from "@/shared/interfaces/models/catalog/main-banner.interface"
 
 function MainBannerCard({
   onEdit,

@@ -1,7 +1,10 @@
 "use client"
 import { DataTable } from "@/components/data-table"
-import { useDeleteStore, useFindAllStores } from "@/hooks/apis/use-store"
-import { IStore } from "@/shared/interfaces/models/store.interface"
+import {
+  useDeleteStore,
+  useFindAllStores,
+} from "@/hooks/apis/inventory/use-store"
+import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
 import dynamic from "next/dynamic"
 import { useState } from "react"
 import { StoreAction } from "./store-action"

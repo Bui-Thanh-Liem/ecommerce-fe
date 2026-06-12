@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useFilters } from "@/hooks/apis/use-filters"
-import { useFindAllStores } from "@/hooks/apis/use-store"
+import { useFindAllStores } from "@/hooks/apis/inventory/use-store"
 import {
   LABEL_HEADQUARTER,
   VALUE_HEADQUARTER,

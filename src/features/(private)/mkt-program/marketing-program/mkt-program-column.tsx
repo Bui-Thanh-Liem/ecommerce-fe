@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { IMarketingProgram } from "@/shared/interfaces/models/marketing-program.interface"
+import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { ColumnDef } from "@tanstack/table-core"
 import { format } from "date-fns"
 

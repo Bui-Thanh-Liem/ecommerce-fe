@@ -7,9 +7,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useUpdateTeam } from "@/hooks/apis/use-team"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
-import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { useUpdateTeam } from "@/hooks/apis/management/use-team"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
+import { ITeam } from "@/shared/interfaces/models/management/team.interface"
 import { Row, type ColumnDef } from "@tanstack/react-table"
 
 //

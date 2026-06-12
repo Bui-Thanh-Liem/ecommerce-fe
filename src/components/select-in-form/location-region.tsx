@@ -3,8 +3,8 @@ import { Controller } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field"
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
-import { useFindOptionsLocationRegions } from "@/hooks/apis/use-location-region"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
+import { useFindOptionsLocationRegions } from "@/hooks/apis/inventory/use-location-region"
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 
 export function LocationRegionSelectInForm({
   form,

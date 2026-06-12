@@ -24,13 +24,16 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useCreateStaff, useUpdateStaff } from "@/hooks/apis/use-staff"
+import {
+  useCreateStaff,
+  useUpdateStaff,
+} from "@/hooks/apis/management/use-staff"
 import {
   CreateStaffSchema,
   UpdateStaffSchema,
 } from "@/shared/dtos/req/staff.dto"
 import { StaffWorkLocationID } from "@/shared/enums/staff-work-location-id.enum"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"

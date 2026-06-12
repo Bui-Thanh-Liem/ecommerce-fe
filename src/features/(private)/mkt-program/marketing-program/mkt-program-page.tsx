@@ -5,11 +5,11 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteMktProgram,
   useFindAllMktPrograms,
-} from "@/hooks/apis/use-mkt-program"
-import { IMarketingProgram } from "@/shared/interfaces/models/marketing-program.interface"
+} from "@/hooks/apis/mkt-program/use-mkt-program"
 import { mktProgramColumns } from "./mkt-program-column"
 import { MktProgramAction } from "./mkt-program-action"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 
 export function MktProgramPage() {
   const { mutateAsync, isPending } = useDeleteMktProgram()

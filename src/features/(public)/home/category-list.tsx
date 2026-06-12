@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { useFindOptionsCategories } from "@/hooks/apis/use-category"
+import { useFindOptionsCategories } from "@/hooks/apis/catalog/use-category"
 import { Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"

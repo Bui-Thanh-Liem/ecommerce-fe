@@ -3,11 +3,11 @@ import { DataTable } from "@/components/data-table"
 import { useState } from "react"
 import { productVariantColumns } from "./product-variant-column"
 import { ProductVariantAction } from "./product-variant-action"
-import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
+import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import {
   useDeleteProductVariant,
   useFindAllProductVariants,
-} from "@/hooks/apis/use-product-variant"
+} from "@/hooks/apis/catalog/use-product-variant"
 import { useRouter, useSearchParams } from "next/navigation"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 

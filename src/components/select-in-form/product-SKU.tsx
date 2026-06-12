@@ -5,8 +5,8 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { ScanBarcode } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { useFindOptionsProductVariants } from "@/hooks/apis/use-product-variant"
-import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
+import { useFindOptionsProductVariants } from "@/hooks/apis/catalog/use-product-variant"
+import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 
 export function ProductVariantSelectInForm({
   form,

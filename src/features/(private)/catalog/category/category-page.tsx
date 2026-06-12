@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button"
 import {
   useDeleteCategory,
   useFindAllCategories,
-} from "@/hooks/apis/use-category"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+} from "@/hooks/apis/catalog/use-category"
+import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
 import { Badge } from "@/components/ui/badge"
 import { DataCard } from "@/components/data-card"
 import { CategoryHierarchy } from "./category-hierarchy"

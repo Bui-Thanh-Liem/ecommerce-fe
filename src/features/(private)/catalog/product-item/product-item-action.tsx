@@ -31,8 +31,8 @@ import { ProductItemStatus } from "@/shared/enums/product-item-status.enum"
 import {
   useCreateProductItem,
   useUpdateProductItem,
-} from "@/hooks/apis/use-product-item"
-import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
+} from "@/hooks/apis/catalog/use-product-item"
+import { IProductItem } from "@/shared/interfaces/models/catalog/product-item.interface"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
 import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"

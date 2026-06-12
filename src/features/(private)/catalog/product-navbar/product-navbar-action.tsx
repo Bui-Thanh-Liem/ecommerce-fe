@@ -19,13 +19,13 @@ import {
   CreateProductNavbarSchema,
   UpdateProductNavbarSchema,
 } from "@/shared/dtos/req/product-navbar.dto"
-import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
 import {
   useCreateProductNavbar,
   useUpdateProductNavbar,
-} from "@/hooks/apis/use-product-navbar"
+} from "@/hooks/apis/catalog/use-product-navbar"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
 
 const initFormValue: z.infer<typeof CreateProductNavbarSchema> = {
   name: "",

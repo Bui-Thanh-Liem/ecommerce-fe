@@ -3,12 +3,12 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteInventory,
   useFindAllInventories,
-} from "@/hooks/apis/use-inventory"
+} from "@/hooks/apis/inventory/use-inventory"
 import { inventoryColumns } from "./inventory-column"
 import { useState } from "react"
-import { IInventory } from "@/shared/interfaces/models/inventory.interface"
 import { InventoryAction } from "./inventory-action"
 import { useRouter, useSearchParams } from "next/navigation"
+import { IInventory } from "@/shared/interfaces/models/inventory/inventory.interface"
 
 export function InventoryPage() {
   const router = useRouter()

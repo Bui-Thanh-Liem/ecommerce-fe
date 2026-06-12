@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { IProductImage } from "@/shared/interfaces/models/product-image.interface"
+import { IProductImage } from "@/shared/interfaces/models/catalog/product-image.interface"
 
 export function ProductImages({ images }: { images: IProductImage[] }) {
   return (

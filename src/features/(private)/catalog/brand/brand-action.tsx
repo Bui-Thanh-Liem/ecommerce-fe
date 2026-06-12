@@ -12,7 +12,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useCreateBrand, useUpdateBrand } from "@/hooks/apis/use-brand"
+import { useCreateBrand, useUpdateBrand } from "@/hooks/apis/catalog/use-brand"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateBrandSchema,
@@ -20,7 +20,7 @@ import {
 } from "@/shared/dtos/req/brand.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IBrand } from "@/shared/interfaces/models/brand.interface"
+import { IBrand } from "@/shared/interfaces/models/catalog/brand.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

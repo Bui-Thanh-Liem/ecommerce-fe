@@ -32,10 +32,10 @@ import { InventoryStockType } from "@/shared/enums/inventory-stock-type.enum"
 import {
   useCreateInventory,
   useUpdateInventory,
-} from "@/hooks/apis/use-inventory"
-import { IInventory } from "@/shared/interfaces/models/inventory.interface"
+} from "@/hooks/apis/inventory/use-inventory"
 import { StoreSelectInForm } from "@/components/select-in-form/store"
 import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
+import { IInventory } from "@/shared/interfaces/models/inventory/inventory.interface"
 
 const initFormValue: z.infer<typeof CreateInventorySchema> = {
   store: "",

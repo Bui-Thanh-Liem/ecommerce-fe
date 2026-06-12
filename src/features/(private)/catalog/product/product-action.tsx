@@ -25,7 +25,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useCreateProduct, useUpdateProduct } from "@/hooks/apis/use-product"
+import {
+  useCreateProduct,
+  useUpdateProduct,
+} from "@/hooks/apis/catalog/use-product"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateProductSchema,
@@ -35,7 +38,7 @@ import { ProductStatus } from "@/shared/enums/product-status.enum"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
-import { IProduct } from "@/shared/interfaces/models/product.interface"
+import { IProduct } from "@/shared/interfaces/models/catalog/product.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"

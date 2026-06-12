@@ -22,12 +22,12 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
-import { useFindAllStaffs } from "@/hooks/apis/use-staff"
-import { useFindAllStores } from "@/hooks/apis/use-store"
-import { useCreateTeam, useUpdateTeam } from "@/hooks/apis/use-team"
-import { useFindAllTeamCategories } from "@/hooks/apis/use-team-category"
+import { useFindAllStaffs } from "@/hooks/apis/management/use-staff"
+import { useFindAllStores } from "@/hooks/apis/inventory/use-store"
+import { useCreateTeam, useUpdateTeam } from "@/hooks/apis/management/use-team"
+import { useFindAllTeamCategories } from "@/hooks/apis/management/use-team-category"
 import { UpdateTeamSchema } from "@/shared/dtos/req/team.dto"
-import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { ITeam } from "@/shared/interfaces/models/management/team.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"

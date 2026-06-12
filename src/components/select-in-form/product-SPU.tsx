@@ -5,8 +5,8 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { Package } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { useFindOptionsProducts } from "@/hooks/apis/use-product"
-import { IProduct } from "@/shared/interfaces/models/product.interface"
+import { useFindOptionsProducts } from "@/hooks/apis/catalog/use-product"
+import { IProduct } from "@/shared/interfaces/models/catalog/product.interface"
 
 export function ProductSelectInForm({
   form,

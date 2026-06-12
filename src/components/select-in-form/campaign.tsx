@@ -5,8 +5,8 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { Target } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { useFindOptionsCampaigns } from "@/hooks/apis/use-campaign"
-import { ICampaign } from "@/shared/interfaces/models/campaign.interface"
+import { useFindOptionsCampaigns } from "@/hooks/apis/mkt-program/use-campaign"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 
 export function CampaignSelectInForm({
   form,

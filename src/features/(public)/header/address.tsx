@@ -18,7 +18,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea"
-import { useSelectionLocationRegion } from "@/hooks/apis/use-location-region"
+import { useSelectionLocationRegion } from "@/hooks/apis/inventory/use-location-region"
 import { useRLCustomerContext } from "@/context/region-location-customer.context"
 
 export function Address() {

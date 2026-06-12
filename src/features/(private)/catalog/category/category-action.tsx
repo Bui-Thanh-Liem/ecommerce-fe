@@ -14,20 +14,12 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import {
   useCreateCategory,
   useFindOptionsCategories,
   useUpdateCategory,
-} from "@/hooks/apis/use-category"
+} from "@/hooks/apis/catalog/use-category"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateCategorySchema,
@@ -35,7 +27,7 @@ import {
 } from "@/shared/dtos/req/category.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

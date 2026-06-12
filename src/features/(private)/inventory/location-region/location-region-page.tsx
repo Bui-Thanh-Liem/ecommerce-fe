@@ -3,13 +3,13 @@
 import {
   useDeleteLocationRegions,
   useFindAllLocationRegions,
-} from "@/hooks/apis/use-location-region"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
+} from "@/hooks/apis/inventory/use-location-region"
 import { useState } from "react"
 import { locationRegionColumns } from "./location-region-column"
 import { LocationRegionAction } from "./location-region-action"
 import { LocationRegionHierarchy } from "./location-region-hierarchy"
 import { DataTable } from "@/components/data-table"
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 
 export function LocationRegionPage() {
   const { mutateAsync } = useDeleteLocationRegions()

@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   useCreateMainBanner,
   useUpdateMainBanner,
-} from "@/hooks/apis/use-main-banner"
+} from "@/hooks/apis/catalog/use-main-banner"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateMainBannerSchema,
@@ -25,7 +25,7 @@ import {
 } from "@/shared/dtos/req/main-banner.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IMainBanner } from "@/shared/interfaces/models/main-banner.interface"
+import { IMainBanner } from "@/shared/interfaces/models/catalog/main-banner.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

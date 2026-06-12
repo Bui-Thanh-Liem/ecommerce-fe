@@ -17,12 +17,12 @@ import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   useCreateProductPromotion,
   useUpdateProductPromotion,
-} from "@/hooks/apis/use-product-promotion"
+} from "@/hooks/apis/mkt-program/use-product-promotion"
 import {
   CreateProductPromotionSchema,
   UpdateProductPromotionSchema,
 } from "@/shared/dtos/req/product-promotion.dto"
-import { IProductPromotion } from "@/shared/interfaces/models/product-promotion.interface"
+import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowBigUp } from "lucide-react"
 import { useEffect, useState } from "react"

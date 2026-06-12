@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTable } from "@/components/data-table"
-import { useFindAllAuditLogs } from "@/hooks/apis/use-audit-log"
+import { useFindAllAuditLogs } from "@/hooks/apis/management/use-audit-log"
 import { auditLogColumns } from "./audit-log-column"
 import { useUrlParams } from "@/hooks/use-url-params"
 

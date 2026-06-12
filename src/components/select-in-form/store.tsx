@@ -1,10 +1,10 @@
 import { Controller } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field" // Giữ nguyên UI field của bạn
-import { useFindOptionsStores } from "@/hooks/apis/use-store"
+import { useFindOptionsStores } from "@/hooks/apis/inventory/use-store"
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
 import { Store } from "lucide-react"
-import { IStore } from "@/shared/interfaces/models/store.interface"
+import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
 import Image from "next/image"
 
 export function StoreSelectInForm({

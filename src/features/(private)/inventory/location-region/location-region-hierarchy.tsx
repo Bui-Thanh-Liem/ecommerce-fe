@@ -21,10 +21,10 @@ import {
   MoreHorizontal,
   Navigation2,
 } from "lucide-react"
-import { useFindTreeDataLocationRegions } from "@/hooks/apis/use-location-region"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
+import { useFindTreeDataLocationRegions } from "@/hooks/apis/inventory/use-location-region"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
 import { getLayoutElements } from "@/utils/diagram.util"
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 
 // --- CONTEXT MENU (Modern Glassmorphism) ---
 const ContextMenu = ({ id, type, data, top, left, onClick, onClose }: any) => {

@@ -3,8 +3,8 @@ import { Controller } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field"
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
-import { useFindOptionsInventories } from "@/hooks/apis/use-inventory"
-import { IInventory } from "@/shared/interfaces/models/inventory.interface"
+import { useFindOptionsInventories } from "@/hooks/apis/inventory/use-inventory"
+import { IInventory } from "@/shared/interfaces/models/inventory/inventory.interface"
 
 export function InventorySelectInForm({
   form,

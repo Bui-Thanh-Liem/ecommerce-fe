@@ -26,7 +26,7 @@ import { Switch } from "@/components/ui/switch"
 import {
   useCreateProductVariant,
   useUpdateProductVariant,
-} from "@/hooks/apis/use-product-variant"
+} from "@/hooks/apis/catalog/use-product-variant"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateProductVariantSchema,
@@ -36,7 +36,7 @@ import { ProductVariantCondition } from "@/shared/enums/product-variant-conditio
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
-import { IProductVariant } from "@/shared/interfaces/models/product-variant.interface"
+import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"

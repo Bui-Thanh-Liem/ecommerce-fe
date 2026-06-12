@@ -5,10 +5,10 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteTeamCategory,
   useFindAllTeamCategories,
-} from "@/hooks/apis/use-team-category"
+} from "@/hooks/apis/management/use-team-category"
 import { teamCategoryColumns } from "./team-category-column"
-import { ITeamCategory } from "@/shared/interfaces/models/team-category.interface"
 import { TeamCategoryAction } from "./team-category-action"
+import { ITeamCategory } from "@/shared/interfaces/models/management/team-category.interface"
 
 export function TeamCategoryPage() {
   const { mutateAsync } = useDeleteTeamCategory()

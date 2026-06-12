@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTable } from "@/components/data-table"
-import { useFindAllCustomers } from "@/hooks/apis/use-customer"
+import { useFindAllCustomers } from "@/hooks/apis/customer/use-customer"
 import { useUrlParams } from "@/hooks/use-url-params"
 import { customerColumns } from "./customer-column"
 

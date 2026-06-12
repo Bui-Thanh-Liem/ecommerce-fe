@@ -17,7 +17,7 @@ import {
 import {
   IProduct,
   ISpecification,
-} from "@/shared/interfaces/models/product.interface"
+} from "@/shared/interfaces/models/catalog/product.interface"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 import { ChevronDownIcon } from "lucide-react"
@@ -161,7 +161,7 @@ function SpecificationsCell({
         </DialogHeader>
 
         {/* Đặt chiều cao cố định và thanh cuộn mượt nếu danh sách quá dài */}
-        <div className="scrollbar-thin max-h-[60vh] space-y-3 overflow-y-auto pr-1">
+        <div className="max-h-[60vh] scrollbar-thin space-y-3 overflow-y-auto pr-1">
           {specifications.map((spec, idx) => (
             <Collapsible
               key={`${spec.title}-${idx}`}

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge"
-import { IProductPromotion } from "@/shared/interfaces/models/product-promotion.interface"
+import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 import { ColumnDef } from "@tanstack/table-core"
 
 export const productPromotionColumns: ColumnDef<IProductPromotion>[] = [

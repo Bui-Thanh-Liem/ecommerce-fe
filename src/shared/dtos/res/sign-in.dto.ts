@@ -1,5 +1,5 @@
-import { ICustomer } from "@/shared/interfaces/models/customer.interface"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { ICustomer } from "@/shared/interfaces/models/customer/customer.interface"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 
 export interface ResSignInStaffDto {
   staff: IStaff

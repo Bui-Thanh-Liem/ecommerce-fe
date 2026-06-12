@@ -23,9 +23,9 @@ import {
   Trash2,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { getLayoutElements } from "@/utils/diagram.util"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 
 interface StaffHierarchyProps {
   dataSource: ResMetadataDto<IStaff>

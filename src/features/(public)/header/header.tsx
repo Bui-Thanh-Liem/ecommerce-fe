@@ -15,7 +15,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useFindTreeDataCategories } from "@/hooks/apis/use-category"
+import { useFindTreeDataCategories } from "@/hooks/apis/catalog/use-category"
 import Image from "next/image"
 import { Address } from "./address"
 

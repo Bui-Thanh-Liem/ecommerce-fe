@@ -3,9 +3,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { VALUE_HEADQUARTER } from "@/shared/constants/team.constant"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
-import { IStore } from "@/shared/interfaces/models/store.interface"
-import { ITeam } from "@/shared/interfaces/models/team.interface"
+import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
+import { ITeam } from "@/shared/interfaces/models/management/team.interface"
 import { getLayoutElements } from "@/utils/diagram.util"
 import {
   Background,

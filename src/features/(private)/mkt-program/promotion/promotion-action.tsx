@@ -29,7 +29,7 @@ import { Switch } from "@/components/ui/switch"
 import {
   useCreatePromotion,
   useUpdatePromotion,
-} from "@/hooks/apis/use-promotion"
+} from "@/hooks/apis/mkt-program/use-promotion"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreatePromotionSchema,
@@ -39,7 +39,7 @@ import { PromotionApplyScope } from "@/shared/enums/promotion-apply-scope.enum"
 import { PromotionApplyType } from "@/shared/enums/promotion-apply-type.enum"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
+import { IPromotion } from "@/shared/interfaces/models/mkt-program/promotion.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

@@ -17,12 +17,12 @@ import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import {
   useCreateCategoryPromotion,
   useUpdateCategoryPromotion,
-} from "@/hooks/apis/use-category-promotion"
+} from "@/hooks/apis/mkt-program/use-category-promotion"
 import {
   CreateCategoryPromotionSchema,
   UpdateCategoryPromotionSchema,
 } from "@/shared/dtos/req/category-promotion.dto"
-import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
+import { ICategoryPromotion } from "@/shared/interfaces/models/mkt-program/category-promotion.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowBigUp } from "lucide-react"
 import { useEffect, useState } from "react"

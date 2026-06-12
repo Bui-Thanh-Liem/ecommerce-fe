@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   useCreateMktProgram,
   useUpdateMktProgram,
-} from "@/hooks/apis/use-mkt-program"
+} from "@/hooks/apis/mkt-program/use-mkt-program"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateMktProgramSchema,
@@ -34,7 +34,7 @@ import {
 import { MarketingProgramStatus } from "@/shared/enums/marketing-program-status.enum"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IMarketingProgram } from "@/shared/interfaces/models/marketing-program.interface"
+import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"

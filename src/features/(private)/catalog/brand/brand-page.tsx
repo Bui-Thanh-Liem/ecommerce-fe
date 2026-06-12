@@ -7,8 +7,10 @@ import {
   CardAction,
   CardDescription,
 } from "@/components/ui/card"
-import { useDeleteBrand, useFindAllBrands } from "@/hooks/apis/use-brand"
-import { IBrand } from "@/shared/interfaces/models/brand.interface"
+import {
+  useDeleteBrand,
+  useFindAllBrands,
+} from "@/hooks/apis/catalog/use-brand"
 import { Pencil, Trash } from "lucide-react"
 import Image from "next/image"
 import { BrandAction } from "./brand-action"
@@ -17,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DataCard } from "@/components/data-card"
 import { cn } from "@/lib/utils"
+import { IBrand } from "@/shared/interfaces/models/catalog/brand.interface"
 
 function BrandCard({
   brand,

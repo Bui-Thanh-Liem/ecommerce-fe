@@ -3,13 +3,13 @@
 import {
   useDeleteProductPromotion,
   useFindAllProductPromotions,
-} from "@/hooks/apis/use-product-promotion"
-import { IProductPromotion } from "@/shared/interfaces/models/product-promotion.interface"
+} from "@/hooks/apis/mkt-program/use-product-promotion"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { productPromotionColumns } from "./product-promotion-column"
 import { DataTable } from "@/components/data-table"
 import { ProductPromotionAction } from "./product-promotion-action"
+import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 
 export function ProductPromotionPage() {
   const router = useRouter()

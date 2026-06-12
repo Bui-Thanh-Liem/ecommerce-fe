@@ -1,7 +1,7 @@
 import { Active } from "@/components/active"
 import { Textarea } from "@/components/ui/textarea"
-import { useUpdateProductNavbar } from "@/hooks/apis/use-product-navbar"
-import { IProductNavbar } from "@/shared/interfaces/models/product-navbar.interface"
+import { useUpdateProductNavbar } from "@/hooks/apis/catalog/use-product-navbar"
+import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 
 //

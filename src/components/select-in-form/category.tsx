@@ -3,8 +3,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field" // Giữ
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
 import { LayoutGrid } from "lucide-react"
-import { useFindOptionsCategories } from "@/hooks/apis/use-category"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+import { useFindOptionsCategories } from "@/hooks/apis/catalog/use-category"
+import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 

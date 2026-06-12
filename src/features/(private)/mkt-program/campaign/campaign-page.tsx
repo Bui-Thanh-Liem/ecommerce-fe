@@ -3,14 +3,14 @@
 import {
   useDeleteCampaign,
   useFindAllCampaigns,
-} from "@/hooks/apis/use-campaign"
-import { ICampaign } from "@/shared/interfaces/models/campaign.interface"
+} from "@/hooks/apis/mkt-program/use-campaign"
 import { useState } from "react"
 import { campaignColumns } from "./campaign-column"
 import { DataTable } from "@/components/data-table"
 import { CampaignAction } from "./campaign-action"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 
 export function CampaignPage() {
   const router = useRouter()

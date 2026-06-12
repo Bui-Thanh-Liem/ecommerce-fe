@@ -5,8 +5,8 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { Proportions } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { useFindOptionsPromotions } from "@/hooks/apis/use-promotion"
-import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
+import { useFindOptionsPromotions } from "@/hooks/apis/mkt-program/use-promotion"
+import { IPromotion } from "@/shared/interfaces/models/mkt-program/promotion.interface"
 
 export function PromotionSelectInForm({
   form,

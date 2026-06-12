@@ -19,9 +19,9 @@ import {
 import {
   useFindAllPermissions,
   useUpdatePermission,
-} from "@/hooks/apis/use-permission"
+} from "@/hooks/apis/management/use-permission"
 import { UpdatePermissionSchema } from "@/shared/dtos/req/permission.dto"
-import { IPermission } from "@/shared/interfaces/models/permission.interface"
+import { IPermission } from "@/shared/interfaces/models/management/permission.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"

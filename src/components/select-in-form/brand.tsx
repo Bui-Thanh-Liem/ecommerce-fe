@@ -5,8 +5,8 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { BadgeIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { useFindOptionsBrands } from "@/hooks/apis/use-brand"
-import { IBrand } from "@/shared/interfaces/models/brand.interface"
+import { useFindOptionsBrands } from "@/hooks/apis/catalog/use-brand"
+import { IBrand } from "@/shared/interfaces/models/catalog/brand.interface"
 
 export function BrandSelectInForm({
   form,

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 import {
   IProductVariant,
   IVariantAttribute,
-} from "@/shared/interfaces/models/product-variant.interface"
+} from "@/shared/interfaces/models/catalog/product-variant.interface"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 import Barcode from "react-barcode"

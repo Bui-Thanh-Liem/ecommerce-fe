@@ -4,10 +4,10 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeletePromotion,
   useFindAllPromotions,
-} from "@/hooks/apis/use-promotion"
+} from "@/hooks/apis/mkt-program/use-promotion"
 import { promotionColumns } from "./promotion-column"
 import { useState } from "react"
-import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
+import { IPromotion } from "@/shared/interfaces/models/mkt-program/promotion.interface"
 import { PromotionAction } from "./promotion-action"
 import { useRouter, useSearchParams } from "next/navigation"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"

@@ -1,7 +1,10 @@
 "use client"
 import { DataTable } from "@/components/data-table"
-import { useDeleteProduct, useFindAllProducts } from "@/hooks/apis/use-product"
-import { IProduct } from "@/shared/interfaces/models/product.interface"
+import {
+  useDeleteProduct,
+  useFindAllProducts,
+} from "@/hooks/apis/catalog/use-product"
+import { IProduct } from "@/shared/interfaces/models/catalog/product.interface"
 import { useState } from "react"
 import { productColumns } from "./product-column"
 import { ProductAction } from "./product-action"

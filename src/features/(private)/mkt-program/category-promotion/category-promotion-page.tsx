@@ -4,12 +4,12 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteCategoryPromotion,
   useFindAllCategoryPromotions,
-} from "@/hooks/apis/use-category-promotion"
-import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
+} from "@/hooks/apis/mkt-program/use-category-promotion"
 import { useState } from "react"
 import { categoryPromotionColumns } from "./category-promotion-column"
 import { CategoryPromotionAction } from "./category-promotion-action"
 import { useRouter, useSearchParams } from "next/navigation"
+import { ICategoryPromotion } from "@/shared/interfaces/models/mkt-program/category-promotion.interface"
 
 export function CategoryPromotionPage() {
   const router = useRouter()

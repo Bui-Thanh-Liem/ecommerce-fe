@@ -1,5 +1,5 @@
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 import { type ColumnDef } from "@tanstack/react-table"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
 
 export const locationRegionColumns: ColumnDef<ILocationRegion>[] = [
   {

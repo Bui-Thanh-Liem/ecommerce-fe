@@ -23,7 +23,10 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useCreateStore, useUpdateStore } from "@/hooks/apis/use-store"
+import {
+  useCreateStore,
+  useUpdateStore,
+} from "@/hooks/apis/inventory/use-store"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateStoreSchema,
@@ -31,7 +34,7 @@ import {
 } from "@/shared/dtos/req/store.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IStore } from "@/shared/interfaces/models/store.interface"
+import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
@@ -40,7 +43,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 import { GenerateLocation } from "./generate-location"
-import { useFindOptionsStaffs } from "@/hooks/apis/use-staff"
+import { useFindOptionsStaffs } from "@/hooks/apis/management/use-staff"
 
 const initFormValue: z.infer<typeof CreateStoreSchema> = {
   country: "",

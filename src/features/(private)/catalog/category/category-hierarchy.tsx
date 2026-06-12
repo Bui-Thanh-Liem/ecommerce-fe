@@ -20,9 +20,9 @@ import {
   ChevronRight,
   MoreHorizontal,
 } from "lucide-react"
-import { useFindTreeDataCategories } from "@/hooks/apis/use-category"
+import { useFindTreeDataCategories } from "@/hooks/apis/catalog/use-category"
 import { getLayoutElements } from "@/utils/diagram.util"
-import { ICategory } from "@/shared/interfaces/models/category.interface"
+import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
 
 // --- STYLES & CONFIG ---
 const nodeColorGradient = "from-[#0ea5e9] to-[#2563eb]" // Blue Sky to Royal Blue

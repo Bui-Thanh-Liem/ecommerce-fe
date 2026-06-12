@@ -2,10 +2,10 @@ import { Controller } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field" // Giữ nguyên UI field của bạn
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
-import { useFindOptionsStaffs } from "@/hooks/apis/use-staff"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { useFindOptionsStaffs } from "@/hooks/apis/management/use-staff"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useEffect, useRef, useState } from "react"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 
 export function StaffSelectInForm({
   form,

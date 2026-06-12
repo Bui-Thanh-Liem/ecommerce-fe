@@ -4,9 +4,9 @@ import { DataTable } from "@/components/data-table"
 import {
   useDeleteProductItem,
   useFindAllProductItems,
-} from "@/hooks/apis/use-product-item"
+} from "@/hooks/apis/catalog/use-product-item"
 import { productItemColumns } from "./product-item-column"
-import { IProductItem } from "@/shared/interfaces/models/product-item.interface"
+import { IProductItem } from "@/shared/interfaces/models/catalog/product-item.interface"
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductItemAction } from "./product-item-action"

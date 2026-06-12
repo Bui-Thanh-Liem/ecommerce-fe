@@ -1,12 +1,15 @@
 "use client"
 
 import { DataTable } from "@/components/data-table"
-import { useDeleteStaff, useFindAllStaffs } from "@/hooks/apis/use-staff"
+import {
+  useDeleteStaff,
+  useFindAllStaffs,
+} from "@/hooks/apis/management/use-staff"
 import { staffColumns } from "./staff-column"
 import { StaffAction } from "./staff-action"
 import { useState } from "react"
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { StaffHierarchy } from "./staff-hierarchy"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 
 export function StaffPage() {
   const { mutateAsync } = useDeleteStaff()

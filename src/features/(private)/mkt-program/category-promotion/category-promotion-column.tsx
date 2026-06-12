@@ -1,4 +1,4 @@
-import { ICategoryPromotion } from "@/shared/interfaces/models/category-promotion.interface"
+import { ICategoryPromotion } from "@/shared/interfaces/models/mkt-program/category-promotion.interface"
 import { ColumnDef } from "@tanstack/table-core"
 
 export const categoryPromotionColumns: ColumnDef<ICategoryPromotion>[] = [

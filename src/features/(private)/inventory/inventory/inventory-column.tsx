@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { IInventory } from "@/shared/interfaces/models/inventory.interface"
+import { IInventory } from "@/shared/interfaces/models/inventory/inventory.interface"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 

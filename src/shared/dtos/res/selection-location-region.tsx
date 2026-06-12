@@ -1,4 +1,4 @@
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 
 export interface ISelectLocationRegion {
   wardCommune: ILocationRegion

@@ -23,13 +23,13 @@ import {
   useCreateLocationRegion,
   useFindOptionsLocationRegions,
   useUpdateLocationRegion,
-} from "@/hooks/apis/use-location-region"
+} from "@/hooks/apis/inventory/use-location-region"
 import {
   CreateLocationRegionSchema,
   UpdateLocationRegionSchema,
 } from "@/shared/dtos/req/location-region.dto"
 import { LocationRegionType } from "@/shared/enums/location-region-type.enum"
-import { ILocationRegion } from "@/shared/interfaces/models/location-region.interface"
+import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-region.interface"
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"

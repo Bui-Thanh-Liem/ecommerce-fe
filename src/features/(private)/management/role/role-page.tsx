@@ -34,12 +34,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useFindAllPermissions } from "@/hooks/apis/use-permission"
-import { useFindAllRoles, useUpdateRole } from "@/hooks/apis/use-role"
+import { useFindAllPermissions } from "@/hooks/apis/management/use-permission"
+import {
+  useFindAllRoles,
+  useUpdateRole,
+} from "@/hooks/apis/management/use-role"
 import { cn } from "@/lib/utils"
 import { UpdateRoleSchema } from "@/shared/dtos/req/role.dto"
-import { IPermission } from "@/shared/interfaces/models/permission.interface"
-import { IRole } from "@/shared/interfaces/models/role.interface"
+import { IRole } from "@/shared/interfaces/models/management/role.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Minus, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
@@ -49,6 +51,7 @@ import z from "zod"
 import { groupByKeyGroup } from "../permission/permission-page"
 import { DataCard } from "@/components/data-card"
 import { RoleAdd } from "./role-add"
+import { IPermission } from "@/shared/interfaces/models/management/permission.interface"
 
 function PermissionItem({
   permission,

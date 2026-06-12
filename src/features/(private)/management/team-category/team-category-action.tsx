@@ -22,14 +22,14 @@ import {
 import {
   useCreateTeamCategory,
   useUpdateTeamCategory,
-} from "@/hooks/apis/use-team-category"
+} from "@/hooks/apis/management/use-team-category"
 import {
   CreateTeamCategorySchema,
   UpdateTeamCategorySchema,
 } from "@/shared/dtos/req/team-category.dto"
 import { TeamCategoryCode } from "@/shared/enums/team-category-code.enum"
 import { TeamType } from "@/shared/enums/team-type.enum"
-import { ITeamCategory } from "@/shared/interfaces/models/team-category.interface"
+import { ITeamCategory } from "@/shared/interfaces/models/management/team-category.interface"
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"

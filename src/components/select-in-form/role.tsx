@@ -3,8 +3,8 @@ import { Controller } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field"
 import { CustomCombobox } from "../ui/custom-combobox"
 import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-form.interface"
-import { useFindOptionsRoles } from "@/hooks/apis/use-role"
-import { IRole } from "@/shared/interfaces/models/role.interface"
+import { useFindOptionsRoles } from "@/hooks/apis/management/use-role"
+import { IRole } from "@/shared/interfaces/models/management/role.interface"
 
 export function RoleSelectInForm({
   form,

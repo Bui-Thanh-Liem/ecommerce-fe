@@ -1,7 +1,7 @@
 "use client"
 import { Active } from "@/components/active"
 import { Button } from "@/components/ui/button"
-import { IStore } from "@/shared/interfaces/models/store.interface"
+import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
 import L, { LatLngExpression } from "leaflet"
 import { Clock, MapPin, PencilIcon, Phone, Trash2, User, X } from "lucide-react"
 import Image from "next/image"

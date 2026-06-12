@@ -1,6 +1,6 @@
 "use client"
 
-import { useFindOptionsProductNavbars } from "@/hooks/apis/use-product-navbar"
+import { useFindOptionsProductNavbars } from "@/hooks/apis/catalog/use-product-navbar"
 import Link from "next/link"
 
 export function Navbar() {

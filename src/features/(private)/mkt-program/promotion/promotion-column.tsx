@@ -1,9 +1,9 @@
 import { Active } from "@/components/active"
 import { ImagesCell } from "@/components/cell-in-table/images"
 import { Badge } from "@/components/ui/badge"
-import { useUpdatePromotion } from "@/hooks/apis/use-promotion"
+import { useUpdatePromotion } from "@/hooks/apis/mkt-program/use-promotion"
 import { PromotionApplyScope } from "@/shared/enums/promotion-apply-scope.enum"
-import { IPromotion } from "@/shared/interfaces/models/promotion.interface"
+import { IPromotion } from "@/shared/interfaces/models/mkt-program/promotion.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 
 //

@@ -1,4 +1,4 @@
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 

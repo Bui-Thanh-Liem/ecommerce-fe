@@ -1,4 +1,3 @@
-import { IStaff } from "@/shared/interfaces/models/staff.interface"
 import { Row, type ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/apis/use-mobile"
@@ -14,9 +13,10 @@ import {
 } from "@/components/ui/drawer"
 import { Active } from "@/components/active"
 import { Badge } from "@/components/ui/badge"
-import { useUpdateStaff } from "@/hooks/apis/use-staff"
+import { useUpdateStaff } from "@/hooks/apis/management/use-staff"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { IStaff } from "@/shared/interfaces/models/management/staff.interface"
 
 //
 const StatusCell = ({ row }: { row: Row<IStaff> }) => {
