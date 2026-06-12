@@ -38,7 +38,7 @@ export function CategoryList() {
             {Boolean(category?.minPrice && category?.minPrice > 0) && (
               <Badge
                 variant="destructive"
-                className="absolute top-2 right-0 bg-red-50"
+                className="absolute top-4 right-0 bg-red-50"
               >
                 ${category?.minPrice?.toFixed(2)}
               </Badge>

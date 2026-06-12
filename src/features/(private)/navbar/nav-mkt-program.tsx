@@ -14,38 +14,48 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { MoreHorizontalIcon, Target, Proportions } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  Target,
+  Proportions,
+  BadgeDollarSign,
+} from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../../components/ui/badge"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-export function NavCampaign() {
+export function NavMktProgram() {
   const { isMobile } = useSidebar()
   const pathname = usePathname()
 
   const mainItems = [
     {
-      title: "campaigns",
-      url: "/campaigns",
-      icon: <Target />,
+      title: "marketing programs",
+      url: "/marketing-programs",
+      icon: <BadgeDollarSign />,
     },
   ]
 
   const secondaryItems = [
     {
+      title: "campaigns",
+      url: "/marketing-programs/campaigns",
+      icon: <Target />,
+    },
+    {
       title: "Promotions",
-      url: "/campaigns/promotions",
+      url: "/marketing-programs/promotions",
       icon: <Proportions />,
     },
     {
       title: "Category Promotions",
-      url: "/campaigns/category-promotions",
+      url: "/marketing-programs/category-promotions",
       icon: <Proportions />,
     },
     {
       title: "Product Promotions",
-      url: "/campaigns/product-promotions",
+      url: "/marketing-programs/product-promotions",
       icon: <Proportions />,
     },
   ]
@@ -53,7 +63,7 @@ export function NavCampaign() {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        CAMPAIGN
+        MARKETING PROGRAMS
         <Badge className="mb-3 bg-green-50 text-green-700">low</Badge>
       </SidebarGroupLabel>
       <SidebarMenu>

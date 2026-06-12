@@ -26,11 +26,10 @@ export function Header() {
       <div className="col-span-8 flex items-center">
         <Logo />
         <Category />
-        <div className="ml-4 w-100">
+        <div className="ml-4 w-96">
           <Input
             className="bg-white text-black placeholder:text-gray-500"
             placeholder="Tìm kiếm sản phẩm..."
-            size={122}
           />
         </div>
         <Login />

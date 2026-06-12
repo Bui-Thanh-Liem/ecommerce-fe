@@ -71,11 +71,11 @@ export const apiCall = async <T>(
         deleteStorage()
       }
     } else if ([401].includes(result.statusCode)) {
-      deleteStorage()
       await fetch("/api/auth/signout", {
         ...config,
         method: "POST",
       })
+      deleteStorage()
     }
 
     return result

@@ -1,11 +1,11 @@
-import { CategoryPromotionPage } from "@/features/(private)/campaigns/category-promotion/category-promotion-page"
+import { ProductPromotionPage } from "@/features/(private)/mkt-program/product-promotion/product-promotion-page"
 
 export default function Page() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 md:gap-6">
-          <CategoryPromotionPage />
+          <ProductPromotionPage />
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ import { ShoppingBag } from "lucide-react"
 import { NavCatalog } from "./nav-catalog"
 import { NavManagement } from "./nav-management"
 import { NavInventory } from "./nav-inventory"
-import { NavCampaign } from "./nav-campaign"
+import { NavMktProgram } from "./nav-mkt-program"
 import { NavCustomer } from "./nav-customer"
 import Link from "next/link"
 
@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavManagement />
         <NavCatalog />
         <NavInventory />
-        <NavCampaign />
+        <NavMktProgram />
         <NavCustomer />
       </SidebarContent>
       <SidebarFooter>
