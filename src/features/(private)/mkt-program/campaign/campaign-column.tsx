@@ -1,5 +1,6 @@
 import { Active } from "@/components/active"
 import { ImagesCell } from "@/components/cell-in-table/images"
+import { MktProgramCell } from "@/components/cell-in-table/mkt-program-cell"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,6 +35,15 @@ const StatusCell = ({ row }: { row: Row<ICampaign> }) => {
 }
 
 export const campaignColumns: ColumnDef<ICampaign>[] = [
+  {
+    accessorKey: "marketingProgram",
+    header: "Marketing Program",
+    cell: ({ row }) => {
+      const marketingProgram = row.original.marketingProgram
+      if (!marketingProgram) return <span>-</span>
+      return <MktProgramCell mktProgram={marketingProgram} />
+    },
+  },
   {
     accessorKey: "name",
     header: "Name",

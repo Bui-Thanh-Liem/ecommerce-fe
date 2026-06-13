@@ -27,7 +27,7 @@ export function PromotionPage() {
 
   //
   function handleClose() {
-    if (campaignId) router.push("/promotions")
+    if (campaignId) router.push("/marketing-programs/promotions")
     setOpen(false)
     const id = setTimeout(() => {
       setDataEdit(null)
@@ -51,12 +51,12 @@ export function PromotionPage() {
 
   //
   function handleCreateCatePromotion(campaign: IPromotion) {
-    router.push(`/category-promotions?p=${campaign.id}`)
+    router.push(`/marketing-programs/category-promotions?p=${campaign.id}`)
   }
 
   //
   function handleCreateProdPromotion(campaign: IPromotion) {
-    router.push(`/product-promotions?p=${campaign.id}`)
+    router.push(`/marketing-programs/product-promotions?p=${campaign.id}`)
   }
 
   //

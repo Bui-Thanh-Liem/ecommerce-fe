@@ -6,6 +6,7 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { XIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 function Dialog({
   ...props
@@ -166,20 +167,32 @@ function DialogHeaderAction({
 }
 
 function DialogFooterAction({
+  isBack,
   onClose,
   isPending,
+  extraAction,
   contentOk = "Save changes",
   contentCancel = "Cancel",
   contentPending = "Saving...",
 }: {
-  onClose?: () => void
-  isPending?: boolean
-  contentCancel?: string
+  isBack?: boolean
   contentOk?: string
+  isPending?: boolean
+  onClose?: () => void
+  contentCancel?: string
   contentPending?: string
+  extraAction?: () => React.ReactNode
 }) {
+  const router = useRouter()
+
   return (
     <DialogFooter>
+      {isBack && (
+        <Button type="button" onClick={() => router.back()}>
+          Back
+        </Button>
+      )}
+      {extraAction && extraAction()}
       <DialogClose asChild>
         <Button variant="outline" onClick={onClose} disabled={isPending}>
           {contentCancel}

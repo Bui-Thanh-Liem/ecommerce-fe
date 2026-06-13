@@ -26,7 +26,7 @@ export function ProductVariantPage() {
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
   function handleClose() {
-    if (productId) router.push("/product-variants") // Xóa query parameter khi đóng dialog
+    if (productId) router.push("/catalog/product-variants") // Xóa query parameter khi đóng dialog
     setOpen(false)
     const id = setTimeout(() => {
       setDataEdit(null)

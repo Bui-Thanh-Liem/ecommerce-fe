@@ -26,7 +26,7 @@ export function ProductPromotionPage() {
 
   //
   function handleClose() {
-    if (promotionId) router.push("/category-promotions")
+    if (promotionId) router.push("/marketing-programs/category-promotions")
     setOpen(false)
     const id = setTimeout(() => {
       setDataEdit(null)

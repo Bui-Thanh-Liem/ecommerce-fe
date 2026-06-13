@@ -24,7 +24,7 @@ export function CustomerHistory() {
   if (customerProducts.length === 0) return null
 
   return (
-    <div className="mx-auto space-y-3 overflow-hidden rounded-4xl border-2 border-sky-700 bg-white p-4 px-8">
+    <div className="mx-auto space-y-3 overflow-hidden rounded-4xl border-2 border-sky-700 bg-white p-4 px-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
           <span className="text-2xl">🌞</span>

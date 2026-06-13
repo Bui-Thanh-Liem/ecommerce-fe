@@ -4,7 +4,7 @@ const legacyPrefixes = ["/docs", "/blog"]
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
-  const token = req.cookies.get("token")?.value || ""
+  const token = req.cookies.get("e_token")?.value || ""
 
   if (legacyPrefixes.some((prefix) => pathname.startsWith(prefix))) {
     return NextResponse.next()

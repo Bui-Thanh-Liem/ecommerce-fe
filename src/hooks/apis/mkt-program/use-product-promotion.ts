@@ -4,6 +4,7 @@ import {
   CreateProductPromotionDto,
   UpdateProductPromotionDto,
 } from "@/shared/dtos/req/product-promotion.dto"
+import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllProductPromotions = (query?: QueryDto) => {
@@ -13,7 +14,9 @@ export const useFindAllProductPromotions = (query?: QueryDto) => {
   })
 }
 
-export const useFindOptionsProductPromotions = (query?: QueryDto) => {
+export const useFindOptionsProductPromotions = (
+  query?: QueryDto<IProductPromotion>
+) => {
   return useQuery({
     queryKey: ["product-promotions-options", JSON.stringify(query)],
     queryFn: () => productPromotionServices.findOptions(query),

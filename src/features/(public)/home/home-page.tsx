@@ -1,6 +1,7 @@
 import { CategoryList } from "./category-list"
 import { CustomerHistory } from "./customer-history"
 import { MainBanner } from "./main-banner"
+import { OnlinePromotion } from "./online-promotion/online-promotion"
 
 export function HomePage() {
   return (
@@ -8,13 +9,7 @@ export function HomePage() {
       <MainBanner />
       <CategoryList />
       <CustomerHistory />
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
-      <div className="h-96 rounded-xl bg-white shadow-sm"></div>
+      <OnlinePromotion />
     </div>
   )
 }

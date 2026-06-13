@@ -17,7 +17,7 @@ export function CategoryList() {
 
   //
   return (
-    <div className="mx-auto overflow-hidden rounded-4xl border-2 border-sky-700 bg-white">
+    <div className="mx-auto overflow-hidden rounded-4xl border-2 border-sky-700 bg-white px-1">
       <div className="grid grid-cols-8 gap-4">
         {categories.slice(0, maxCategoriesToShow)?.map((category) => (
           <Link

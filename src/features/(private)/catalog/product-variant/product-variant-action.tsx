@@ -40,6 +40,7 @@ import { IProductVariant } from "@/shared/interfaces/models/catalog/product-vari
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -71,6 +72,9 @@ export function ProductVariantAction({
   initialData?: IProductVariant | null
   onOpenChange?: (open: boolean) => void
 }) {
+  const router = useRouter()
+
+  //
   const createApi = useCreateProductVariant()
   const updateApi = useUpdateProductVariant()
   const uploadApi = useUploadCloudinary()
@@ -282,7 +286,7 @@ export function ProductVariantAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
-          <div className="col-span-1 mb-2 space-y-6">
+          <div className="col-span-1 mb-4 space-y-6">
             {/* */}
             <FieldGroup className="gap-y-3">
               <FieldLabel htmlFor="form-rhf-input-store-image">
@@ -747,7 +751,7 @@ export function ProductVariantAction({
             </div>
           </div>
 
-          <DialogFooterAction onClose={onClose} isPending={isPending} />
+          <DialogFooterAction onClose={onClose} isPending={isPending} isBack />
         </form>
       </DialogContent>
     </Dialog>

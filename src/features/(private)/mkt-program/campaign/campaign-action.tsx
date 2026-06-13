@@ -1,3 +1,4 @@
+import { MktProgramSelectInForm } from "@/components/select-in-form/mkt-program"
 import { ProductVariantSelectInForm } from "@/components/select-in-form/product-SKU"
 import { Button } from "@/components/ui/button"
 import { DatePickerTime } from "@/components/ui/date-time-picker"
@@ -32,6 +33,7 @@ import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.inter
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -43,9 +45,10 @@ const initFormValue: z.infer<typeof CreateCampaignSchema> = {
   images: [],
   isActive: false,
   promotions: [],
-  startDate: new Date(),
   endDate: new Date(),
+  marketingProgram: "",
   mainImage: undefined,
+  startDate: new Date(),
   productHighlighted: [],
 }
 
@@ -63,6 +66,9 @@ export function CampaignAction({
   initialData?: ICampaign | null
   onOpenChange?: (open: boolean) => void
 }) {
+  const router = useRouter()
+
+  //
   const createApi = useCreateCampaign()
   const updateApi = useUpdateCampaign()
   const uploadApi = useUploadCloudinary()
@@ -119,7 +125,8 @@ export function CampaignAction({
     if (initialData) {
       form.reset({
         ...initFormValue,
-        promotions: initialData.promotions.map((promo) => promo.id),
+        marketingProgram: initialData?.marketingProgram?.id,
+        // promotions: initialData?.promotions.map((promo) => promo.id),
       })
     }
   }, [form, initialData])
@@ -304,7 +311,7 @@ export function CampaignAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
-          <div className="col-span-1 mb-2 space-y-6">
+          <div className="col-span-1 mb-4 space-y-6">
             <FieldGroup>
               <Controller
                 name="isActive"
@@ -508,6 +515,13 @@ export function CampaignAction({
               />
             </FieldGroup>
 
+            <MktProgramSelectInForm
+              form={form}
+              multiple={false}
+              name="marketingProgram"
+              label="Marketing Program"
+            />
+
             <ProductVariantSelectInForm
               form={form}
               name="productHighlighted"
@@ -540,7 +554,7 @@ export function CampaignAction({
               />
             </FieldGroup>
           </div>
-          <DialogFooterAction onClose={onClose} isPending={isPending} />
+          <DialogFooterAction onClose={onClose} isPending={isPending} isBack />
         </form>
       </DialogContent>
     </Dialog>

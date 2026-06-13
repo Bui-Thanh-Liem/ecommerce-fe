@@ -10,6 +10,7 @@ import { mktProgramColumns } from "./mkt-program-column"
 import { MktProgramAction } from "./mkt-program-action"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
+import { MktProgramAddCampaigns } from "./mkt-program-add-campaigns"
 
 export function MktProgramPage() {
   const { mutateAsync, isPending } = useDeleteMktProgram()
@@ -18,6 +19,7 @@ export function MktProgramPage() {
 
   //
   const [open, setOpen] = useState(false)
+  const [openAddCampaign, setOpenAddCampaign] = useState(false)
   const [dataEdit, setDataEdit] = useState<IMarketingProgram | null>(null)
 
   //
@@ -41,6 +43,8 @@ export function MktProgramPage() {
   //
   function handleAddCampaign(mktProgram: IMarketingProgram) {
     console.log("Adding campaign for program:", mktProgram)
+    setDataEdit(mktProgram)
+    setOpenAddCampaign(true)
   }
 
   //
@@ -65,7 +69,7 @@ export function MktProgramPage() {
           return (
             <>
               <DropdownMenuItem onClick={() => handleAddCampaign(row.original)}>
-                Add Campaign
+                Add campaign
               </DropdownMenuItem>
             </>
           )
@@ -77,6 +81,14 @@ export function MktProgramPage() {
           open={open}
           dataEdit={dataEdit}
           onClose={handleClose}
+        />
+      )}
+
+      {openAddCampaign && (
+        <MktProgramAddCampaigns
+          open={openAddCampaign}
+          mktProgram={dataEdit!}
+          onClose={() => setOpenAddCampaign(false)}
         />
       )}
     </>

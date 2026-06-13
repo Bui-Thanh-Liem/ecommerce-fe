@@ -207,7 +207,7 @@ export function MktProgramAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
-          <div className="col-span-1 mb-2 space-y-6">
+          <div className="col-span-1 mb-4 space-y-6">
             {/* Main Image */}
             <FieldGroup className="gap-y-3">
               <FieldLabel htmlFor="form-rhf-input-main-image">

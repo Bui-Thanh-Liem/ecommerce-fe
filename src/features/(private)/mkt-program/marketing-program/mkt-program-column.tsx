@@ -115,6 +115,19 @@ export const mktProgramColumns: ColumnDef<IMarketingProgram>[] = [
     },
   },
   {
+    accessorKey: "campaign",
+    header: "Campaign",
+    cell: ({ row }) => {
+      const campaign = row.original.campaigns
+      if (!campaign?.length) return <p>-</p>
+      return (
+        <p className="max-w-60 overflow-auto whitespace-normal">
+          {campaign.map((c) => c.name).join(", ")}
+        </p>
+      )
+    },
+  },
+  {
     accessorKey: "desc",
     header: "Description",
     cell: ({ row }) => {

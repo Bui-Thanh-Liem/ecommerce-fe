@@ -114,13 +114,21 @@ export function CustomCombobox({
                       className="flex h-7 items-center gap-1 py-0.5 pr-1 pl-2"
                     >
                       {renderSelected ? renderSelected(option) : option.label}
-                      <button
-                        type="button"
-                        className="ring-offset-background focus:ring-ring ml-1 rounded-full outline-none focus:ring-2"
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className="ring-offset-background focus:ring-ring ml-1 inline-flex cursor-pointer items-center justify-center rounded-full outline-none focus:ring-2"
                         onMouseDown={(e) => handleRemove(e, val)}
+                        onKeyDown={(e) => {
+                          // Cho phép ấn Enter hoặc Space để xóa (tốt cho accessibility)
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            handleRemove(e as any, val)
+                          }
+                        }}
                       >
                         <X className="text-muted-foreground hover:text-foreground h-3 w-3" />
-                      </button>
+                      </span>
                     </Badge>
                   )
                 })

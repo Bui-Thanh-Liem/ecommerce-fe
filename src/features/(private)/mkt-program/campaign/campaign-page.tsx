@@ -9,11 +9,14 @@ import { campaignColumns } from "./campaign-column"
 import { DataTable } from "@/components/data-table"
 import { CampaignAction } from "./campaign-action"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 
 export function CampaignPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const mktProgramId = searchParams.get("m")
+
   const { mutateAsync, isPending } = useDeleteCampaign()
   const { data } = useFindAllCampaigns()
   const metadataCampaigns = data?.metadata
@@ -24,6 +27,7 @@ export function CampaignPage() {
 
   //
   function handleClose() {
+    if (mktProgramId) router.push("/marketing-programs/campaigns")
     setOpen(false)
     const id = setTimeout(() => {
       setDataEdit(null)
@@ -41,8 +45,14 @@ export function CampaignPage() {
   }
 
   //
+  const initialData = mktProgramId
+    ? ({ marketingProgram: { id: mktProgramId } } as ICampaign)
+    : null
+  const dialogOpen = open || !!mktProgramId
+
+  //
   function handleCreatePromotion(campaign: ICampaign) {
-    router.push(`/promotions?c=${campaign.id}`)
+    router.push(`/marketing-programs/promotions?c=${campaign.id}`)
   }
 
   //
@@ -76,8 +86,13 @@ export function CampaignPage() {
         }}
       />
 
-      {open && (
-        <CampaignAction open={open} dataEdit={dataEdit} onClose={handleClose} />
+      {dialogOpen && (
+        <CampaignAction
+          open={dialogOpen}
+          dataEdit={dataEdit}
+          onClose={handleClose}
+          initialData={initialData}
+        />
       )}
     </>
   )

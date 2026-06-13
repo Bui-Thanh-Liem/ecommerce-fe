@@ -221,7 +221,7 @@ export function PromotionAction({
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-1"
         >
-          <div className="col-span-1 mb-2 space-y-6">
+          <div className="col-span-1 mb-4 space-y-6">
             <FieldGroup>
               <Controller
                 name="isActive"

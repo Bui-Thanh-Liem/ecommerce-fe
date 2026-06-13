@@ -41,7 +41,7 @@ export function ProductPage() {
 
   //
   function handleCreateVariant(product: IProduct) {
-    router.push(`/product-variants?p=${product.id}`)
+    router.push(`/catalog/product-variants?p=${product.id}`)
   }
 
   if (!metadataProducts) return null
