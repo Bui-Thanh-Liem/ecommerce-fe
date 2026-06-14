@@ -11,9 +11,9 @@ import Image from "next/image"
 export function CategorySelectInForm({
   form,
   max = 5,
+  multiple = false,
   name = "categories",
   label = "Categories",
-  multiple = false,
 }: SelectInFormProps) {
   //
   const [searchTerm, setSearchTerm] = useState("")
@@ -71,13 +71,18 @@ export function CategorySelectInForm({
               //
               renderItem={(option) => (
                 <div className="flex items-center gap-3 py-0.5 text-left">
-                  <Image
-                    src={option.image?.url}
-                    alt={option.label}
-                    width={40}
-                    height={40}
-                    className="rounded-lg"
-                  />
+                  {option.image ? (
+                    <div className="relative h-10 w-10">
+                      <Image
+                        src={option.image.url}
+                        alt={option.label}
+                        fill
+                        className="rounded-sm object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <LayoutGrid size={16} className="text-muted-foreground" />
+                  )}
                   <div className="flex min-w-0 flex-col">
                     <span className="truncate text-sm font-medium">
                       {option.label}

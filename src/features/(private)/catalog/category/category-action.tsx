@@ -17,7 +17,6 @@ import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
 import {
   useCreateCategory,
-  useFindOptionsCategories,
   useUpdateCategory,
 } from "@/hooks/apis/catalog/use-category"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
@@ -33,14 +32,13 @@ import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
 import z from "zod"
 
 const initFormValue: z.infer<typeof CreateCategorySchema> = {
   name: "",
   desc: "",
   minPrice: 0,
-  parent: "",
+  parent: undefined,
   image: undefined,
 }
 
@@ -63,10 +61,6 @@ export function CategoryAction({
   const uploadApi = useUploadCloudinary()
 
   //
-  const { data: categoryData } = useFindOptionsCategories()
-  const categories = categoryData?.metadata?.data || []
-
-  //
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string>("")
   const [isPending, setIsPending] = useState(false)
@@ -86,6 +80,13 @@ export function CategoryAction({
       const url = URL.createObjectURL(file) // Tạo link preview tạm thời
       setPreviewUrl(url)
     }
+    console.log("handleFileChange :::", e.target.files)
+  }
+
+  //
+  const handleRemoveImage = () => {
+    setSelectedFile(null)
+    setPreviewUrl("")
   }
 
   //
@@ -128,7 +129,7 @@ export function CategoryAction({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsPending(true)
     try {
-      let image: IImage | undefined = dataEdit?.image
+      let image: IImage | undefined | null = previewUrl ? dataEdit?.image : null
 
       // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
@@ -144,11 +145,6 @@ export function CategoryAction({
             provider: Provider.CLOUDINARY,
           }
         }
-      }
-
-      if (!image) {
-        toast.error("Image is required. Please select an image to upload.")
-        return
       }
 
       let res = null
@@ -198,10 +194,7 @@ export function CategoryAction({
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2 h-7 w-7"
-                    onClick={() => {
-                      setSelectedFile(null)
-                      setPreviewUrl("")
-                    }}
+                    onClick={handleRemoveImage}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -211,6 +204,8 @@ export function CategoryAction({
                   <ImageIcon className="text-muted-foreground/50 h-10 w-10" />
                   <p className="text-muted-foreground mt-2 text-sm">
                     Click or drag to select image
+                    <br />
+                    (The image has no border, and the subject is in the center.)
                   </p>
                 </div>
               )}

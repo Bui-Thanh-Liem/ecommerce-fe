@@ -23,6 +23,7 @@ import {
 import { useFindTreeDataCategories } from "@/hooks/apis/catalog/use-category"
 import { getLayoutElements } from "@/utils/diagram.util"
 import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
+import Image from "next/image"
 
 // --- STYLES & CONFIG ---
 const nodeColorGradient = "from-[#0ea5e9] to-[#2563eb]" // Blue Sky to Royal Blue
@@ -68,6 +69,15 @@ const ContextMenu = ({ id, top, left, data, onClick, onClose }: any) => {
 // --- CUSTOM CATEGORY NODE (Modern Card style) ---
 const CategoryNode = ({ data }: { data: ICategory }) => {
   const isRoot = !data.parent
+  const imageElement = data.image ? (
+    <div className="relative h-full w-full">
+      <Image src={data.image.url} alt={data.name} fill />
+    </div>
+  ) : isRoot ? (
+    <LayoutGrid size={22} className="text-white" />
+  ) : (
+    <Tag size={20} className="text-slate-400" />
+  )
 
   return (
     <div className={`group relative min-w-60 transition-all duration-300`}>
@@ -77,10 +87,10 @@ const CategoryNode = ({ data }: { data: ICategory }) => {
       <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all group-hover:border-blue-400 group-hover:shadow-md">
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white shadow-lg shadow-blue-200 ${
-            isRoot ? `bg-linear-to-br ${nodeColorGradient}` : "bg-slate-800"
+            isRoot ? `bg-linear-to-br ${nodeColorGradient}` : "bg-slate-200"
           }`}
         >
-          {isRoot ? <LayoutGrid size={22} /> : <Tag size={20} />}
+          {imageElement}
         </div>
 
         <div className="ml-4 flex-1 overflow-hidden">

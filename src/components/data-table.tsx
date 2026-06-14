@@ -180,7 +180,7 @@ export function DataTable<T extends IBase>({
   // Đồng bộ pagination state nội bộ dựa trên dữ liệu API truyền xuống ban đầu
   const { params: urlParams, setParams: setUrlParams } = useUrlParams({
     page: 1,
-    limit: 20,
+    limit: 10,
   })
 
   // Định nghĩa state pagination để truyền vào React Table (Sync từ URL xuống)

@@ -150,7 +150,7 @@ export function CustomCombobox({
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
+        className="w-(--radix-popover-trigger-width) p-0"
         align="start"
       >
         <Command
@@ -171,7 +171,7 @@ export function CustomCombobox({
             ) : (
               <>
                 <CommandEmpty>{emptyMessage}</CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-64 overflow-y-auto">
                   {options.map((option) => {
                     const isSelected = selectedValues.includes(option.value)
                     return (

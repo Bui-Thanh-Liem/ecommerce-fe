@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { DataCard } from "@/components/data-card"
 import { CategoryHierarchy } from "./category-hierarchy"
 import { cn } from "@/lib/utils"
+import { useUrlParams } from "@/hooks/use-url-params"
 
 function CategoryCard({
   onEdit,
@@ -34,14 +35,20 @@ function CategoryCard({
   onDelete?: (category: ICategory) => void
 }) {
   return (
-    <Card className="relative py-0">
+    <Card className="group relative py-0">
       <div className="relative h-24">
-        <Image
-          fill // có abs sẵn
-          alt={category.name}
-          src={category.image?.url || "/placeholder-image.png"}
-          className="object-cover"
-        />
+        {category.image?.url ? (
+          <Image
+            fill // có abs sẵn
+            alt={category.name}
+            src={category.image?.url}
+            className="mt-3 object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+            <span className="text-gray-400">No Image</span>
+          </div>
+        )}
       </div>
       <CardHeader>
         <CardAction className="space-x-2">
@@ -93,14 +100,17 @@ function CategoryCard({
 
 export function CategoryPage() {
   //
+  const { params, setParams } = useUrlParams({ page: 1, limit: 10 })
+
+  //
   const { mutateAsync, isPending } = useDeleteCategory()
-  const { data } = useFindAllCategories()
+  const { data } = useFindAllCategories(params)
   const metadataCategories = data?.metadata
 
   //
   const [open, setOpen] = useState(false)
-  const [initialData, setInitialData] = useState<ICategory | null>(null)
   const [dataEdit, setDataEdit] = useState<ICategory | null>(null)
+  const [initialData, setInitialData] = useState<ICategory | null>(null)
 
   // Hàm này sẽ được gọi khi dialog đóng, giúp reset dataEdit sau khi đóng dialog
   function handleClose() {
@@ -158,7 +168,14 @@ export function CategoryPage() {
             }}
           />
         }
+        onPaginationChange={(paginationState) => {
+          setParams({
+            page: paginationState.pageIndex + 1,
+            limit: paginationState.pageSize,
+          })
+        }}
       />
+
       {open && (
         <CategoryAction
           open={open}

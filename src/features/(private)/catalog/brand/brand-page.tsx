@@ -33,14 +33,20 @@ function BrandCard({
   onDelete?: (brand: IBrand) => void
 }) {
   return (
-    <Card className="pt-0">
+    <Card className="group pt-0">
       <div className="relative h-24">
-        <Image
-          fill // có abs sẵn
-          alt={brand.name}
-          src={brand.image?.url || "/placeholder-image.png"}
-          className="object-cover"
-        />
+        {brand.image?.url ? (
+          <Image
+            fill // có abs sẵn
+            alt={brand.name}
+            src={brand.image?.url}
+            className="mt-3 object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+            <span className="text-gray-400">No Image</span>
+          </div>
+        )}
       </div>
       <CardHeader>
         <CardAction className="space-x-2">

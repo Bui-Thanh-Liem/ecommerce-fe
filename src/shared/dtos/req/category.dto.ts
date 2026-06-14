@@ -6,11 +6,14 @@ export const CreateCategorySchema = z.object({
     .string()
     .min(1, "Name is required.")
     .max(50, "Name must be at most 50 characters."),
-  image: imageDtoSchema.optional(),
+
+  image: imageDtoSchema.nullable().optional(),
+
   desc: z
     .string()
     .min(1, "Description is required.")
     .max(200, "Description must be at most 200 characters."),
+
   parent: z.uuidv4().optional(),
 
   minPrice: z.number().optional(),

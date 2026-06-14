@@ -39,6 +39,7 @@ export const useCreateCategory = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
       queryClient.invalidateQueries({ queryKey: ["categories-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["categories-options"] })
     },
   })
 }
@@ -55,6 +56,7 @@ export const useUpdateCategory = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
       queryClient.invalidateQueries({ queryKey: ["categories-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["categories-options"] })
     },
   })
 }
@@ -70,6 +72,7 @@ export const useDeleteCategory = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
       queryClient.invalidateQueries({ queryKey: ["categories-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["categories-options"] })
     },
   })
 }
