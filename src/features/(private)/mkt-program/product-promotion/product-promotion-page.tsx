@@ -51,7 +51,6 @@ export function ProductPromotionPage() {
 
   //
   if (!metadataProdPromotions) return null
-  console.log("metadataProdPromotions :>> ", metadataProdPromotions)
 
   return (
     <>

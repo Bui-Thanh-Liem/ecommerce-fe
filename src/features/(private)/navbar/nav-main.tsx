@@ -13,6 +13,7 @@ import {
   BotMessageSquare,
   LayoutDashboardIcon,
   LayoutGrid,
+  PanelsTopLeft,
   SearchIcon,
 } from "lucide-react"
 import Link from "next/link"
@@ -42,11 +43,14 @@ export function NavMain() {
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
-              tooltip="Customer overview"
+              asChild
+              tooltip="Storefront"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
             >
-              <LayoutGrid />
-              <span>Customer overview</span>
+              <Link href="/store-front">
+                <PanelsTopLeft />
+                <span>Storefront</span>
+              </Link>
             </SidebarMenuButton>
             <Button
               size="icon"

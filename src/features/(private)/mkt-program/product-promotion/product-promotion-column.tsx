@@ -1,3 +1,4 @@
+import { PromotionCell } from "@/components/cell-in-table/promotion-cell copy"
 import { Badge } from "@/components/ui/badge"
 import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 import { ColumnDef } from "@tanstack/table-core"
@@ -7,11 +8,9 @@ export const productPromotionColumns: ColumnDef<IProductPromotion>[] = [
     accessorKey: "promotion",
     header: "Promotion",
     cell: ({ row }) => {
-      return (
-        <p className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.promotion?.name || "-"}
-        </p>
-      )
+      const promotion = row.original.promotion
+      if (!promotion) return <span>-</span>
+      return <PromotionCell promotion={promotion} />
     },
   },
   {

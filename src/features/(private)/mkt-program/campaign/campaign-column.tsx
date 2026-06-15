@@ -108,7 +108,7 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
       const formattedEnd = `${format(end, "MMM do, yyyy")} ${format(end, "hh:mm:ss a")}`
 
       return (
-        <div className="w-[180px] space-y-2 py-1">
+        <div className="w-45 space-y-2 py-1">
           {/* Phần Text hiển thị % hoặc Trạng thái ngắn gọn */}
           <div className="text-muted-foreground flex justify-between text-xs font-medium">
             <span>
@@ -157,7 +157,7 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
         <div className="space-y-1">
           {productHighlighted.map((p) => (
             <Tooltip key={p.id}>
-              <TooltipTrigger asChild>
+              <TooltipTrigger asChild className="block">
                 <Badge className="cursor-help">{p.sku}</Badge>
               </TooltipTrigger>
               <TooltipContent>
