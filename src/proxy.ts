@@ -15,7 +15,7 @@ export function proxy(req: NextRequest) {
   }
 
   if (token && pathname === "/auth") {
-    return NextResponse.redirect(new URL(`/staff/account?t=1`, req.url))
+    return NextResponse.redirect(new URL(`/staffs/account?t=1`, req.url))
   }
 
   return NextResponse.next()
@@ -30,6 +30,6 @@ export const config = {
     "/management/:path*",
     "/products/:path*",
     "/inventories/:path*",
-    "/staff/:path*",
+    "/staffs/:path*",
   ],
 }

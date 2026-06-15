@@ -13,7 +13,7 @@ export const CreateMktProgramSchema = z.object({
     .min(1, "Description is required.")
     .max(200, "Description must be at most 200 characters."),
 
-  mainImage: imageDtoSchema.optional(),
+  mainImage: imageDtoSchema.nullable().optional(),
 
   status: z.enum(MarketingProgramStatus).optional(),
 

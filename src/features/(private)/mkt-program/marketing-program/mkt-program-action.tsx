@@ -144,7 +144,9 @@ export function MktProgramAction({
 
     try {
       // Lọc ra những img không có key (tức là ảnh preview)
-      let mainImage: IImage | undefined = dataEdit?.mainImage
+      let mainImage: IImage | undefined | null = previewUrl
+        ? dataEdit?.mainImage
+        : null
 
       if (selectedFile) {
         const res = await uploadApi.mutateAsync({

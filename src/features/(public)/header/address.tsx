@@ -20,6 +20,11 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useSelectionLocationRegion } from "@/hooks/apis/inventory/use-location-region"
 import { useRLCustomerContext } from "@/context/region-location-customer.context"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export function Address() {
   //
@@ -76,17 +81,24 @@ export function Address() {
 
   return (
     <>
-      <Button
-        size="lg"
-        variant="ghost"
-        onClick={() => setOpen(true)}
-        className="ml-4 flex-1 cursor-pointer bg-sky-50/20 text-white hover:bg-sky-50/30 hover:text-white data-[state=open]:bg-sky-50/30"
-      >
-        <MapPin />
-        <p className="line-clamp-1 max-w-44">
-          {location || "Vui lòng chọn địa chỉ giao hàng"}
-        </p>
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            size="lg"
+            variant="ghost"
+            onClick={() => setOpen(true)}
+            className="ml-4 flex-1 cursor-pointer bg-sky-50/20 text-white hover:bg-sky-50/30 hover:text-white data-[state=open]:bg-sky-50/30"
+          >
+            <MapPin />
+            <p className="line-clamp-1 max-w-42">
+              {location || "Vui lòng chọn địa chỉ giao hàng"}
+            </p>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{location}</p>
+        </TooltipContent>
+      </Tooltip>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent>

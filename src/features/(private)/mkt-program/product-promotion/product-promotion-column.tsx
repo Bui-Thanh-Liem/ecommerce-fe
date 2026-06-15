@@ -9,7 +9,7 @@ export const productPromotionColumns: ColumnDef<IProductPromotion>[] = [
     cell: ({ row }) => {
       return (
         <p className="max-w-60 overflow-auto whitespace-normal">
-          {row.original.promotion.name || "-"}
+          {row.original.promotion?.name || "-"}
         </p>
       )
     },

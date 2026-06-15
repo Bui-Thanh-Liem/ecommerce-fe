@@ -110,12 +110,13 @@ export const promotionColumns: ColumnDef<IPromotion>[] = [
   },
   {
     accessorKey: "limitQuantity",
-    header: "Quantity",
+    header: "Limit / Sold / Discount",
     cell: ({ row }) => {
       return (
         <div className="space-y-1">
           <p>Limit: {row.original.limitQuantity || 0}</p>
           <p>Sold: {row.original.totalSoldQuantity || 0}</p>
+          <p>Discount percentage: <strong>{row.original.discountPercentage}%</strong></p>
         </div>
       )
     },

@@ -1,109 +1,77 @@
 "use client"
 
-import { useFindOptionsProducts } from "@/hooks/apis/catalog/use-product"
-import { useFindOptionsCategoryPromotions } from "@/hooks/apis/mkt-program/use-category-promotion"
-import { useFindOptionsProductPromotions } from "@/hooks/apis/mkt-program/use-product-promotion"
-// Giả định đường dẫn hook lấy product theo filter của bạn, hãy điều chỉnh cho đúng thực tế
+import { useFindOptionsPromotions } from "@/hooks/apis/mkt-program/use-promotion"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
+import { PromotionContent } from "./promotion-content"
+import Image from "next/image"
 
-interface CampaignContentProps {
-  campaignId: string
-  name: string
-  desc?: string
-}
+export function CampaignContent({ campaign }: { campaign: ICampaign }) {
+  const { id: campaignId, name, desc, mainImage } = campaign
 
-export function CampaignContent({
-  campaignId,
-  name,
-  desc,
-}: CampaignContentProps) {
-  // 1. Fetch khuyến mãi theo sản phẩm trực tiếp
-  const { data: productPromotionsRes, isLoading: loadingProdPromo } =
-    useFindOptionsProductPromotions({
-      filters: { promotion: campaignId as any },
-    })
-  const productPromotions = productPromotionsRes?.metadata?.data || []
+  // Fetch danh sách các promotions thuộc Campaign
+  const { data: promotionsRes, isLoading } = useFindOptionsPromotions({
+    filters: { campaign: campaignId },
+  })
+  const promotions = promotionsRes?.metadata?.data || []
 
-  // 2. Fetch khuyến mãi theo danh mục
-  const { data: categoryPromotionsRes, isLoading: loadingCatePromo } =
-    useFindOptionsCategoryPromotions({
-      filters: { promotion: campaignId as any },
-    })
-  const categoryPromotions = categoryPromotionsRes?.metadata?.data || []
-
-  // Lấy ra danh sách các categoryId có trong khuyến mãi này
-  const categoryIds = categoryPromotions
-    .map((cp) => cp.category)
-    .filter(Boolean)
-
-  // 3. Nếu có khuyến mãi theo danh mục, fetch danh sách sản phẩm của các danh mục đó
-  // Lưu ý: Cần tùy biến hook của bạn để nhận mảng ID hoặc xử lý vòng lặp nếu hook chỉ nhận 1 ID.
-  // Dưới đây truyền theo mảng, nếu hook chỉ nhận string, bạn truyền categoryIds[0] hoặc tùy biến map.
-  const { data: productsByCateRes, isLoading: loadingProdByCate } =
-    useFindOptionsProducts({
-      filters: { category: categoryIds as any },
-      // enabled: categoryIds.length > 0 // Mở ra nếu hook có hỗ trợ cấu hình hoãn fetch khi mảng rỗng
-    })
-  const productsFromCategories = productsByCateRes?.metadata?.data || []
-
-  const isLoading = loadingProdPromo || loadingCatePromo || loadingProdByCate
-
+  // Trạng thái Loading với Skeleton bám sát cấu trúc UI mới
   if (isLoading) {
     return (
-      <p className="animate-pulse text-sm text-gray-500">
-        Đang tải sản phẩm...
-      </p>
+      <div className="mt-4 space-y-6">
+        {/* Skeleton Header */}
+        <div className="space-y-2 border-b pb-2">
+          <div className="h-6 w-48 animate-pulse rounded bg-gray-200" />
+          <div className="h-4 w-96 animate-pulse rounded bg-gray-100" />
+        </div>
+        {/* Skeleton Khối Promotion cụm */}
+        <div className="space-y-4 rounded-2xl border border-gray-100 p-4">
+          <div className="h-5 w-32 animate-pulse rounded bg-gray-200" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="h-44 animate-pulse rounded-xl bg-gray-100"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="mt-4 space-y-4">
-      <div className="border-b pb-2">
-        <h3 className="text-lg font-semibold text-sky-800">{name}</h3>
-        {desc && <p className="text-sm text-gray-500">{desc}</p>}
-      </div>
-
-      {/* KHU VỰC RENDER SẢN PHẨM */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {/* Trường hợp 1: Có sản phẩm khuyến mãi trực tiếp */}
-        {productPromotions.length > 0 &&
-          productPromotions.map((pp) => (
-            <div
-              key={pp.id}
-              className="rounded-xl border bg-gray-50 p-3 shadow-sm"
-            >
-              {/* Thay các trường hiển thị pp.product.name, pp.product.image... đúng với cấu trúc data của bạn */}
-              <p className="line-clamp-2 text-sm font-medium">
-                {pp.productVariant?.sku || "Sản phẩm khuyến mãi"}
-              </p>
-              <span className="text-xs font-bold text-red-500">
-                Giá KM: {pp.customDiscount?.toLocaleString()}đ
-              </span>
+    <div className="mt-6 space-y-6">
+      {/* Header chiến dịch */}
+      <div className="border-b pb-3">
+        <div className="flex items-center">
+          {mainImage?.url && (
+            <div className="h-6 w-12 overflow-hidden">
+              <Image
+                width={48}
+                height={24}
+                alt={name}
+                src={mainImage.url}
+                className="h-full w-full object-contain"
+              />
             </div>
-          ))}
-
-        {/* Trường hợp 2: Có sản phẩm lấy được từ Khuyến mãi Danh mục */}
-        {productsFromCategories.length > 0 &&
-          productsFromCategories.map((product) => (
-            <div
-              key={product.id}
-              className="rounded-xl border bg-gray-50 p-3 shadow-sm"
-            >
-              {/* Render thông tin product trực tiếp */}
-              <p className="line-clamp-2 text-sm font-medium">{product.name}</p>
-              <span className="text-xs font-medium text-sky-600">
-                Theo danh mục
-              </span>
-            </div>
-          ))}
-
-        {/* Trường hợp cả 2 đều trống */}
-        {productPromotions.length === 0 &&
-          productsFromCategories.length === 0 && (
-            <p className="col-span-full text-sm text-gray-400 italic">
-              Chưa có sản phẩm nào trong chiến dịch này.
-            </p>
           )}
+          <h3 className="text-xl font-bold text-sky-900">{name}</h3>
+        </div>
+        {desc && <p className="mt-1 text-sm text-gray-500">{desc}</p>}
       </div>
+
+      {/* Danh sách các cụm chương trình khuyến mãi */}
+      {promotions.length === 0 ? (
+        <p className="py-4 text-sm text-gray-400 italic">
+          Chưa có chương trình ưu đãi nào diễn ra trong chiến dịch này.
+        </p>
+      ) : (
+        <div className="space-y-6">
+          {promotions.map((promo) => (
+            <PromotionContent key={promo.id} promotion={promo} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

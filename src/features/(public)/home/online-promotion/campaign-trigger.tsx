@@ -2,14 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { TabsTrigger } from "@/components/ui/tabs"
+import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 
 interface CampaignTriggerProps {
-  campaign: {
-    id: string
-    name: string
-    startDate: string // Định dạng chuẩn ISO hoặc string convert được sang Date
-    endDate: string
-  }
+  campaign: ICampaign
   isActive: boolean
 }
 
@@ -28,11 +24,16 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
     const start = new Date(campaign.startDate).getTime()
     const end = new Date(campaign.endDate).getTime()
 
-    // Định dạng giờ bắt đầu hiển thị cho các campaign sắp diễn ra (VD: 18:00)
+    // Định dạng ngày giờ bắt đầu cho campaign sắp diễn ra (VD: 18:00 25/12)
     const startDateObj = new Date(campaign.startDate)
     const hoursStr = String(startDateObj.getHours()).padStart(2, "0")
     const minutesStr = String(startDateObj.getMinutes()).padStart(2, "0")
-    setStartTimeStr(`${hoursStr}:${minutesStr}`)
+    const dateStr = String(startDateObj.getDate()).padStart(2, "0")
+    const monthStr = String(startDateObj.getMonth() + 1).padStart(2, "0")
+
+    // Bạn có thể tùy biến format hiển thị ở đây (VD: chỉ hiện giờ "18:00" hoặc cả ngày "18:00 - 25/12")
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStartTimeStr(`${hoursStr}:${minutesStr} - ${dateStr}/${monthStr}`)
 
     const calculateTime = () => {
       const now = new Date().getTime()
@@ -57,56 +58,67 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
       }
     }
 
-    calculateTime() // Chạy ngay lập tức lần đầu
-    const timer = setInterval(calculateTime, 1000) // Cập nhật mỗi giây
+    calculateTime()
+    const timer = setInterval(calculateTime, 1000)
 
     return () => clearInterval(timer)
   }, [campaign.startDate, campaign.endDate])
 
-  if (status === "ENDED") return null // Ẩn đi nếu campaign đã kết thúc
+  // 1. Nếu campaign đã kết thúc thì ẩn hoàn toàn
+  if (status === "ENDED") return null
+
+  // Định nghĩa CSS background & text color động theo trạng thái và việc tab có được chọn (isActive) hay không
+  let dynamicStyles = ""
+  if (status === "LIVE") {
+    dynamicStyles = isActive
+      ? "bg-sky-200! text-white"
+      : "bg-sky-50 text-sky-700 border-sky-200"
+  } else if (status === "UPCOMING") {
+    dynamicStyles = isActive
+      ? "bg-amber-200! text-white"
+      : "bg-amber-50 text-amber-700 border-amber-200"
+  }
 
   return (
     <TabsTrigger
       value={campaign.id}
-      className={`flex w-60 items-center justify-between overflow-hidden rounded-2xl border p-0 text-sm transition-all data-[state=active]:border-sky-600 data-[state=active]:bg-sky-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=inactive]:border-transparent data-[state=inactive]:bg-gray-100 data-[state=inactive]:text-gray-500`}
+      className={`flex flex-col items-center justify-center rounded-2xl py-6 transition-all ${dynamicStyles}`}
     >
-      {/* KHỐI TRÁI: ĐANG DIỄN RA (CHỈ CÒN) */}
-      <div
-        className={`flex h-full flex-1 items-center justify-center px-3 transition-colors ${status === "LIVE" && isActive ? "bg-sky-500" : ""} ${status === "LIVE" && !isActive ? "bg-sky-100 text-sky-700" : ""} `}
-      >
-        <span className="text-xs font-medium opacity-90">Chỉ còn:</span>
-        {status === "LIVE" ? (
-          <div className="mt-1 flex items-center gap-1 text-xs font-bold">
+      {/* 2. Trạng thái ĐANG DIỄN RA */}
+      {status === "LIVE" && (
+        <div className="flex items-center gap-x-2">
+          <span className="tracking-wider uppercase opacity-80">Chỉ còn:</span>
+          <div className="flex items-center gap-1 text-xs font-bold">
             <span
-              className={`rounded px-1 py-0.5 ${isActive ? "bg-white text-sky-600" : "bg-sky-600 text-white"}`}
+              className={`flex h-5 w-6 items-center justify-center rounded bg-sky-600 text-white`}
             >
-              {timeLeft.hours}
+              <span>{timeLeft.hours}</span>
             </span>
             <span>:</span>
             <span
-              className={`rounded px-1 py-0.5 ${isActive ? "bg-white text-sky-600" : "bg-sky-600 text-white"}`}
+              className={`flex h-5 w-6 items-center justify-center rounded bg-sky-600 text-white`}
             >
-              {timeLeft.minutes}
+              <span>{timeLeft.minutes}</span>
             </span>
             <span>:</span>
             <span
-              className={`rounded px-1 py-0.5 ${isActive ? "bg-white text-sky-600" : "bg-sky-600 text-white"}`}
+              className={`flex h-5 w-6 items-center justify-center rounded bg-sky-600 text-white`}
             >
-              {timeLeft.seconds}
+              <span>{timeLeft.seconds}</span>
             </span>
           </div>
-        ) : (
-          <span className="mt-1 text-xs font-semibold opacity-60">Chờ mở</span>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* KHỐI PHẢI: SẮP DIỄN RA */}
-      <div
-        className={`flex h-full flex-1 items-center justify-center px-3 transition-colors ${status === "UPCOMING" && isActive ? "bg-amber-500" : ""} ${status === "UPCOMING" && !isActive ? "bg-amber-50 text-amber-700" : ""} `}
-      >
-        <span className="text-xs font-medium opacity-90">Sắp diễn ra</span>
-        <span className="mt-0.5 text-base font-bold">{startTimeStr}</span>
-      </div>
+      {/* 3. Trạng thái SẮP DIỄN RA */}
+      {status === "UPCOMING" && (
+        <div className="flex items-center gap-x-2">
+          <span className="tracking-wider uppercase opacity-80">
+            Sắp diễn ra:
+          </span>
+          <span className="text-sm font-bold">{startTimeStr}</span>
+        </div>
+      )}
     </TabsTrigger>
   )
 }

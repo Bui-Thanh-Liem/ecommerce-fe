@@ -14,7 +14,7 @@ export const useFindAllCampaigns = (query?: QueryDto<ICampaign>) => {
   })
 }
 
-export const useFindOptionsCampaigns = (query?: QueryDto<ICampaign>) => {
+export const useFindOptionsCampaigns = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["campaigns", "options", query ? JSON.stringify(query) : null],
     queryFn: () => campaignServices.findOptions(query),

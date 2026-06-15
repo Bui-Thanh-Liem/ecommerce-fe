@@ -4,6 +4,7 @@ import {
   UpdateCategoryPromotionDto,
 } from "@/shared/dtos/req/category-promotion.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
+import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import { ICategoryPromotion } from "@/shared/interfaces/models/mkt-program/category-promotion.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { generateQueryParams } from "@/utils/generate-query-params.util"
@@ -55,6 +56,20 @@ export const categoryPromotionServices = {
     )
 
     return handleResponse<ResMetadataDto<ICategoryPromotion>>(res)
+  },
+
+  findVariantByPromotion: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams(query)
+
+    const res = await apiCall<
+      ResMetadataDto<ICategoryPromotion & { productVariant: IProductVariant }>
+    >(`/category-promotions/variants?${queryParams}`, {
+      method: "GET",
+    })
+
+    return handleResponse<
+      ResMetadataDto<ICategoryPromotion & { productVariant: IProductVariant }>
+    >(res)
   },
 
   getTreeData: async (query?: QueryDto) => {

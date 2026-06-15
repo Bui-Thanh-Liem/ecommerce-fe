@@ -69,7 +69,7 @@ export function ProductPromotionAction({
     if (dataEdit) {
       form.reset({
         priority: dataEdit.priority,
-        promotion: dataEdit.promotion.id,
+        promotion: dataEdit.promotion?.id,
         productVariant: dataEdit.productVariant.id,
         customDiscount: dataEdit.customDiscount,
         limitQuantity: dataEdit.limitQuantity,

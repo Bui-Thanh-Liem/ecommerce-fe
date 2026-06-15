@@ -69,8 +69,8 @@ export function CategoryPromotionAction({
     if (dataEdit) {
       form.reset({
         priority: dataEdit.priority,
-        category: dataEdit.category.id,
-        promotion: dataEdit.promotion.id,
+        category: dataEdit.category?.id,
+        promotion: dataEdit.promotion?.id,
         customDiscount: dataEdit.customDiscount,
         limitQuantity: dataEdit.limitQuantity,
       })
@@ -82,7 +82,7 @@ export function CategoryPromotionAction({
     if (initialData) {
       form.reset({
         ...initFormValue,
-        promotion: initialData.promotion.id,
+        promotion: initialData.promotion?.id,
       })
     }
   }, [form, initialData])

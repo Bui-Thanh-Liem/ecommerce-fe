@@ -10,6 +10,7 @@ import {
 import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { ColumnDef } from "@tanstack/table-core"
 import { format } from "date-fns"
+import Link from "next/link"
 
 export const mktProgramColumns: ColumnDef<IMarketingProgram>[] = [
   {
@@ -118,12 +119,22 @@ export const mktProgramColumns: ColumnDef<IMarketingProgram>[] = [
     accessorKey: "campaign",
     header: "Campaign",
     cell: ({ row }) => {
-      const campaign = row.original.campaigns
-      if (!campaign?.length) return <p>-</p>
+      const campaigns = row.original.campaigns
+      if (!campaigns?.length) return <p>-</p>
       return (
-        <p className="max-w-60 overflow-auto whitespace-normal">
-          {campaign.map((c) => c.name).join(", ")}
-        </p>
+        <>
+          {campaigns.map((c) => (
+            <Link
+              key={c.id}
+              href={`/marketing-programs/campaigns/?id=${c.id}`}
+              className="hover:underline"
+            >
+              <p className="max-w-60 overflow-auto whitespace-normal">
+                {c.name}
+              </p>
+            </Link>
+          ))}
+        </>
       )
     },
   },

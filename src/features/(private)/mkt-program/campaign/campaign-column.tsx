@@ -13,6 +13,7 @@ import { useUpdateCampaign } from "@/hooks/apis/mkt-program/use-campaign"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 import { format } from "date-fns"
+import Link from "next/link"
 
 //
 const StatusCell = ({ row }: { row: Row<ICampaign> }) => {
@@ -173,6 +174,29 @@ export const campaignColumns: ColumnDef<ICampaign>[] = [
     header: "Active",
     cell: ({ row }) => <StatusCell row={row} />,
     enableHiding: false,
+  },
+  {
+    accessorKey: "promotions",
+    header: "Promotions",
+    cell: ({ row }) => {
+      const promotions = row.original.promotions
+      if (!promotions?.length) return <p>-</p>
+      return (
+        <>
+          {promotions.map((c) => (
+            <Link
+              key={c.id}
+              href={`/marketing-programs/promotions/?id=${c.id}`}
+              className="hover:underline"
+            >
+              <p className="max-w-60 overflow-auto whitespace-normal">
+                {c.name}
+              </p>
+            </Link>
+          ))}
+        </>
+      )
+    },
   },
   {
     accessorKey: "desc",

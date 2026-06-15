@@ -4,7 +4,6 @@ import {
   CreateProductPromotionDto,
   UpdateProductPromotionDto,
 } from "@/shared/dtos/req/product-promotion.dto"
-import { IProductPromotion } from "@/shared/interfaces/models/mkt-program/product-promotion.interface"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllProductPromotions = (query?: QueryDto) => {
@@ -14,9 +13,7 @@ export const useFindAllProductPromotions = (query?: QueryDto) => {
   })
 }
 
-export const useFindOptionsProductPromotions = (
-  query?: QueryDto<IProductPromotion>
-) => {
+export const useFindOptionsProductPromotions = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["product-promotions-options", JSON.stringify(query)],
     queryFn: () => productPromotionServices.findOptions(query),
@@ -41,6 +38,8 @@ export const useCreateProductPromotion = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-promotions"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-options"] })
     },
   })
 }
@@ -61,6 +60,8 @@ export const useUpdateProductPromotion = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-promotions"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-options"] })
     },
   })
 }
@@ -75,6 +76,8 @@ export const useDeleteProductPromotion = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-promotions"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-tree"] })
+      queryClient.invalidateQueries({ queryKey: ["product-promotions-options"] })
     },
   })
 }

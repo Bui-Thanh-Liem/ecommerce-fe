@@ -20,6 +20,13 @@ export const useFindOptionsCategoryPromotions = (query?: QueryDto) => {
   })
 }
 
+export const useFindVariantByPromotion = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["category-promotions-variants", JSON.stringify(query)],
+    queryFn: () => categoryPromotionServices.findVariantByPromotion(query),
+  })
+}
+
 export const useFindTreeDataCategoryPromotions = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["category-promotions-tree"],

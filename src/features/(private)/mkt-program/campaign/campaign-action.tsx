@@ -97,6 +97,7 @@ export function CampaignAction({
         mainImage: dataEdit.mainImage,
         startDate: new Date(dataEdit.startDate),
         endDate: new Date(dataEdit.endDate),
+        marketingProgram: dataEdit.marketingProgram?.id,
         promotions: dataEdit?.promotions?.map((promo) => promo.id),
         productHighlighted:
           dataEdit?.productHighlighted?.map((pv) => pv.id) || [],
@@ -126,7 +127,6 @@ export function CampaignAction({
       form.reset({
         ...initFormValue,
         marketingProgram: initialData?.marketingProgram?.id,
-        // promotions: initialData?.promotions.map((promo) => promo.id),
       })
     }
   }, [form, initialData])
