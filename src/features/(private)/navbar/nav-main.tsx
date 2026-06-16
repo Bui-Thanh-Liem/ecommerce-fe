@@ -11,9 +11,8 @@ import {
 import {
   BellIcon,
   BotMessageSquare,
+  ClipboardCheck,
   LayoutDashboardIcon,
-  LayoutGrid,
-  PanelsTopLeft,
   SearchIcon,
 } from "lucide-react"
 import Link from "next/link"
@@ -44,12 +43,12 @@ export function NavMain() {
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               asChild
-              tooltip="Storefront"
+              tooltip="Tasks & Note"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
             >
-              <Link href="/store-front">
-                <PanelsTopLeft />
-                <span>Storefront</span>
+              <Link href="/">
+                <ClipboardCheck />
+                <span>Tasks & Note</span>
               </Link>
             </SidebarMenuButton>
             <Button

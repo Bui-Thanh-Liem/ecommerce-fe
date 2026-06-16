@@ -6,4 +6,5 @@ export interface SelectInFormProps {
   label?: string
   multiple?: boolean
   max?: number
+  enabled?: boolean
 }

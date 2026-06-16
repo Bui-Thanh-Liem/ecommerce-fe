@@ -1,4 +1,4 @@
-import { MainBannerPage } from "@/features/(private)/catalog/main-banner/main-banner-page"
+import { MainBannerPage } from "@/features/(private)/store-front/main-banner/main-banner-page"
 
 export default function Page() {
   return (

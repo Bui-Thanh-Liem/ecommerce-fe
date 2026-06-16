@@ -1,12 +1,12 @@
 import { Active } from "@/components/active"
 import { Textarea } from "@/components/ui/textarea"
-import { useUpdateProductNavbar } from "@/hooks/apis/catalog/use-product-navbar"
-import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
+import { useUpdateMenu } from "@/hooks/apis/store-front/use-menu"
+import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 import { ColumnDef, Row } from "@tanstack/table-core"
 
 //
-const StatusCell = ({ row }: { row: Row<IProductNavbar> }) => {
-  const { mutate } = useUpdateProductNavbar()
+const StatusCell = ({ row }: { row: Row<IMenu> }) => {
+  const { mutate } = useUpdateMenu()
 
   function toggleActiveStatus() {
     mutate({
@@ -24,7 +24,7 @@ const StatusCell = ({ row }: { row: Row<IProductNavbar> }) => {
   )
 }
 
-export const productNavbarColumns: ColumnDef<IProductNavbar>[] = [
+export const menuColumns: ColumnDef<IMenu>[] = [
   {
     accessorKey: "name",
     header: "Name",

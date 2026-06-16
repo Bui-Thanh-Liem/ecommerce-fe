@@ -33,9 +33,11 @@ import {
   useReactTable,
   type PaginationState,
 } from "@tanstack/react-table"
+import { cn } from "@/lib/utils"
 
 interface DataCardProps<T extends IBase> {
   tabHeader?: string
+  className?: string
   onAddCard?: () => void
   tabContent?: React.ReactNode
   dataSource: ResMetadataDto<T>
@@ -46,6 +48,7 @@ interface DataCardProps<T extends IBase> {
 export function DataCard<T extends IBase>({
   tabHeader,
   onAddCard,
+  className,
   dataSource,
   tabContent,
   renderCard, // Nhận renderCard từ props
@@ -163,7 +166,12 @@ export function DataCard<T extends IBase>({
           <Nothing />
         ) : (
           <>
-            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid max-h-[calc(100vh-220px)] grid-cols-1 gap-4 overflow-y-auto p-1 *:data-[slot=card]:shadow-sm @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+            <div
+              className={cn(
+                "*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid max-h-[calc(100vh-220px)] grid-cols-1 gap-4 overflow-y-auto p-1 *:data-[slot=card]:shadow-sm @xl/main:grid-cols-2 @5xl/main:grid-cols-4",
+                className
+              )}
+            >
               {cardData.map((item) => (
                 <div key={item.id}>
                   {/* Gọi hàm renderCard và truyền dữ liệu vào */}
@@ -171,6 +179,7 @@ export function DataCard<T extends IBase>({
                 </div>
               ))}
             </div>
+
             {/* ----------------- PHẦN PAGINATION ĐÃ HOÀN THIỆN LOGIC ----------------- */}
             <div className="flex w-full justify-end">
               <div className="flex w-full items-center gap-8 lg:w-fit">

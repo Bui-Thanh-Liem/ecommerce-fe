@@ -4,7 +4,7 @@ import {
   UpdateMainBannerDto,
 } from "@/shared/dtos/req/main-banner.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
-import { IMainBanner } from "@/shared/interfaces/models/catalog/main-banner.interface"
+import { IMainBanner } from "@/shared/interfaces/models/store-front/main-banner.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"

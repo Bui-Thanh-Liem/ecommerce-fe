@@ -2,22 +2,22 @@
 
 import { DataTable } from "@/components/data-table"
 import {
-  useDeleteProductNavbar,
-  useFindAllProductNavbars,
-} from "@/hooks/apis/catalog/use-product-navbar"
-import { productNavbarColumns } from "./product-navbar-column"
+  useDeleteMenu,
+  useFindAllMenus,
+} from "@/hooks/apis/store-front/use-menu"
+import { menuColumns } from "./menu-column"
 import { useState } from "react"
-import { ProductNavbarAction } from "./product-navbar-action"
-import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
+import { ProductNavbarAction } from "./menu-action"
+import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 
-export function ProductNavbarPage() {
-  const { mutateAsync, isPending } = useDeleteProductNavbar()
-  const { data } = useFindAllProductNavbars()
-  const metadataProductNavbars = data?.metadata
+export function MenuPage() {
+  const { mutateAsync, isPending } = useDeleteMenu()
+  const { data } = useFindAllMenus()
+  const metadataMenus = data?.metadata
 
   //
   const [open, setOpen] = useState(false)
-  const [dataEdit, setDataEdit] = useState<IProductNavbar | null>(null)
+  const [dataEdit, setDataEdit] = useState<IMenu | null>(null)
 
   //
   function handleClose() {
@@ -30,7 +30,7 @@ export function ProductNavbarPage() {
   }
 
   //
-  async function handleDeleteRow(row: IProductNavbar) {
+  async function handleDeleteRow(row: IMenu) {
     const res = await mutateAsync(row.id)
     if (res?.statusCode === 200) {
       setOpen(false)
@@ -38,13 +38,13 @@ export function ProductNavbarPage() {
   }
 
   //
-  if (!metadataProductNavbars) return null
+  if (!metadataMenus) return null
 
   return (
     <>
       <DataTable
-        dataSource={metadataProductNavbars}
-        columns={productNavbarColumns}
+        dataSource={metadataMenus}
+        columns={menuColumns}
         //
         onAddRow={() => setOpen(true)}
         onEditRow={(row) => {

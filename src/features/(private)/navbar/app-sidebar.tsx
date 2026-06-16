@@ -21,6 +21,7 @@ import { NavCustomer } from "./nav-customer"
 import Link from "next/link"
 import { NavOrder } from "./nav-order"
 import { NavReport } from "./nav-report"
+import { NavStoreFront } from "./nav-store-front"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -42,6 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
+        <NavStoreFront />
         <NavManagement />
         <NavCatalog />
         <NavInventory />

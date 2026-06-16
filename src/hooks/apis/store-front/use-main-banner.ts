@@ -1,4 +1,4 @@
-import { mainBannerServices } from "@/services/catalog/main-banner.service"
+import { mainBannerServices } from "@/services/store-front/main-banner.service"
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateMainBannerDto,

@@ -15,57 +15,52 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import {
+  AppWindow,
   MoreHorizontalIcon,
-  Package,
-  LayoutGrid,
-  Badge as BadgeIcon,
-  ScanBarcode,
+  PanelBottomDashed,
+  PanelsTopLeft,
+  PanelTopDashed,
 } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../../../components/ui/badge"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-export function NavCatalog() {
+export function NavStoreFront() {
   const { isMobile } = useSidebar()
   const pathname = usePathname()
 
   const mainItems = [
     {
-      title: "Products (SPU)",
-      url: "/products",
-      icon: <Package />,
+      title: "Store Front",
+      url: "/store-front",
+      icon: <PanelsTopLeft />,
     },
   ]
 
   const secondaryItems = [
     {
-      title: "Product variants (SKU)",
-      url: "/catalog/product-variants",
-      icon: <ScanBarcode />,
+      title: "Top banner",
+      url: "/store-front/top-banners",
+      icon: <PanelTopDashed />,
     },
     {
-      title: "Product items (SERIAL)",
-      url: "/catalog/product-items",
-      icon: <Package />,
+      title: "Main banner",
+      url: "/store-front/main-banners",
+      icon: <PanelBottomDashed />,
     },
     {
-      title: "Brands",
-      url: "/catalog/brands",
-      icon: <BadgeIcon />,
-    },
-    {
-      title: "Categories",
-      url: "/catalog/categories",
-      icon: <LayoutGrid />,
+      title: "Menu",
+      url: "/store-front/menu",
+      icon: <AppWindow />,
     },
   ]
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
-        CATALOG
-        <Badge className="mb-3 bg-yellow-50 text-yellow-700">medium</Badge>
+        STORE FRONT
+        <Badge className="mb-3 bg-green-50 text-green-700">Low</Badge>
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (

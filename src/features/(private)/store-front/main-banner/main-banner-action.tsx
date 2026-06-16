@@ -1,4 +1,3 @@
-import { CategorySelectInForm } from "@/components/select-in-form/category"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,37 +12,36 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  useCreateCategory,
-  useUpdateCategory,
-} from "@/hooks/apis/catalog/use-category"
+  useCreateMainBanner,
+  useUpdateMainBanner,
+} from "@/hooks/apis/store-front/use-main-banner"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
-  CreateCategorySchema,
-  UpdateCategorySchema,
-} from "@/shared/dtos/req/category.dto"
+  CreateMainBannerSchema,
+  UpdateMainBannerSchema,
+} from "@/shared/dtos/req/main-banner.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
+import { IMainBanner } from "@/shared/interfaces/models/store-front/main-banner.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateCategorySchema> = {
-  name: "",
+const initFormValue: z.infer<typeof CreateMainBannerSchema> = {
+  title: "",
   desc: "",
-  minPrice: 0,
-  parent: undefined,
   image: undefined,
-  imageInPage: undefined,
+  isActive: true,
 }
 
-export function CategoryAction({
+export function MainBannerAction({
   open,
   onClose,
   dataEdit,
@@ -52,13 +50,13 @@ export function CategoryAction({
 }: {
   open: boolean
   onClose?: () => void
-  dataEdit: ICategory | null
-  initialData?: ICategory | null
+  initialData?: IMainBanner | null
+  dataEdit: IMainBanner | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
-  const createApi = useCreateCategory()
-  const updateApi = useUpdateCategory()
+  const createApi = useCreateMainBanner()
+  const updateApi = useUpdateMainBanner()
   const uploadApi = useUploadCloudinary()
 
   //
@@ -67,7 +65,9 @@ export function CategoryAction({
   const [isPending, setIsPending] = useState(false)
 
   //
-  const formSchema = !!dataEdit ? UpdateCategorySchema : CreateCategorySchema
+  const formSchema = !!dataEdit
+    ? UpdateMainBannerSchema
+    : CreateMainBannerSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -81,25 +81,16 @@ export function CategoryAction({
       const url = URL.createObjectURL(file) // Tạo link preview tạm thời
       setPreviewUrl(url)
     }
-    console.log("handleFileChange :::", e.target.files)
-  }
-
-  //
-  const handleRemoveImage = () => {
-    setSelectedFile(null)
-    setPreviewUrl("")
   }
 
   //
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        name: dataEdit.name,
-        image: dataEdit.image,
+        title: dataEdit.title,
         desc: dataEdit.desc || "",
-        minPrice: dataEdit.minPrice,
-        parent: dataEdit.parent?.id,
-        imageInPage: dataEdit.imageInPage,
+        image: dataEdit.image,
+        isActive: dataEdit.isActive,
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
@@ -111,7 +102,6 @@ export function CategoryAction({
     if (initialData) {
       form.reset({
         ...initFormValue,
-        parent: initialData?.id,
       })
     }
   }, [form, initialData])
@@ -131,12 +121,12 @@ export function CategoryAction({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsPending(true)
     try {
-      let image: IImage | undefined | null = previewUrl ? dataEdit?.image : null
+      let image: IImage | undefined = dataEdit?.image
 
       // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
         const res = await uploadApi.mutateAsync({
-          payload: { folder: "category" },
+          payload: { folder: "main-banner" },
           file: selectedFile,
         })
 
@@ -149,6 +139,11 @@ export function CategoryAction({
         }
       }
 
+      if (!image) {
+        toast.error("Image is required. Please select an image to upload.")
+        return
+      }
+
       let res = null
       if (dataEdit) {
         res = await updateApi.mutateAsync({
@@ -157,15 +152,16 @@ export function CategoryAction({
         })
       } else {
         res = await createApi.mutateAsync({ ...data, image } as z.infer<
-          typeof CreateCategorySchema
+          typeof CreateMainBannerSchema
         >)
       }
 
       if (res && [200, 201].includes(res?.statusCode)) {
-        handleOpenChange(false)
+        form.reset()
+        onClose?.()
       }
     } catch (error) {
-      console.error("Failed to create category:", error)
+      console.error("Failed to create main banner:", error)
     } finally {
       setIsPending(false)
     }
@@ -175,11 +171,35 @@ export function CategoryAction({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeaderAction
-          title={!!dataEdit ? "Edit Category" : "Add New Category"}
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new category.`}
+          title={!!dataEdit ? "Edit Main Banner" : "Add New Main Banner"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new main banner.`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+          <FieldGroup>
+            <Controller
+              name="isActive"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex items-center justify-between">
+                    <FieldLabel htmlFor="form-isActive">Active</FieldLabel>
+                    <Switch
+                      id="form-isActive"
+                      checked={field.value} // RHF lưu giá trị boolean
+                      onCheckedChange={field.onChange} // Cập nhật lại giá trị vào RHF
+                      aria-invalid={fieldState.invalid}
+                    />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
           <FieldGroup>
             <FieldLabel htmlFor="form-rhf-input-store-image">Image</FieldLabel>
             <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed p-4">
@@ -196,7 +216,10 @@ export function CategoryAction({
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2 h-7 w-7"
-                    onClick={handleRemoveImage}
+                    onClick={() => {
+                      setSelectedFile(null)
+                      setPreviewUrl("")
+                    }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -206,8 +229,6 @@ export function CategoryAction({
                   <ImageIcon className="text-muted-foreground/50 h-10 w-10" />
                   <p className="text-muted-foreground mt-2 text-sm">
                     Click or drag to select image
-                    <br />
-                    (The image has no border, and the subject is in the center.)
                   </p>
                 </div>
               )}
@@ -222,72 +243,28 @@ export function CategoryAction({
             </div>
           </FieldGroup>
 
-          <div className="grid grid-cols-5 gap-4">
-            <FieldGroup className="col-span-3">
-              <Controller
-                name="name"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-name">Name</FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Name"
-                      autoComplete="name"
-                      id="form-rhf-input-name"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <FieldGroup className="col-span-2">
-              <Controller
-                name="minPrice"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-min-price">
-                      Minimum Price
-                    </FieldLabel>
-
-                    <InputGroup>
-                      <Input
-                        {...field}
-                        type="number"
-                        aria-invalid={fieldState.invalid}
-                        autoComplete="name"
-                        placeholder="Minimum Price"
-                        onChange={(e) => {
-                          const value = e.target.valueAsNumber
-
-                          if (isNaN(value)) {
-                            field.onChange(0) // Nếu không phải số, đặt về 0
-                          } else if (value < 0) {
-                            field.onChange(0) // Không cho nhập số âm
-                          } else {
-                            field.onChange(value)
-                          }
-                        }}
-                        id="form-rhf-input-min-price"
-                      />
-
-                      <InputGroupAddon align="inline-end">USD</InputGroupAddon>
-                    </InputGroup>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
+          <FieldGroup>
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-title">Title</FieldLabel>
+                  <Input
+                    {...field}
+                    type="text"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="title"
+                    autoComplete="title"
+                    id="form-rhf-input-title"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
 
           <FieldGroup>
             <Controller
@@ -313,13 +290,6 @@ export function CategoryAction({
               )}
             />
           </FieldGroup>
-
-          <CategorySelectInForm
-            form={form}
-            name="parent"
-            label="Parent Category"
-            multiple={false}
-          />
 
           <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>

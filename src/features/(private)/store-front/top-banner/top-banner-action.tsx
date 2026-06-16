@@ -15,17 +15,18 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  useCreateMainBanner,
-  useUpdateMainBanner,
-} from "@/hooks/apis/catalog/use-main-banner"
+  useCreateTopBanner,
+  useUpdateTopBanner,
+} from "@/hooks/apis/store-front/use-top-banner"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
   CreateMainBannerSchema,
   UpdateMainBannerSchema,
 } from "@/shared/dtos/req/main-banner.dto"
+import { CreateTopBannerSchema } from "@/shared/dtos/req/top-banner.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
-import { IMainBanner } from "@/shared/interfaces/models/catalog/main-banner.interface"
+import { ITopBanner } from "@/shared/interfaces/models/store-front/top-banner.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, X } from "lucide-react"
 import Image from "next/image"
@@ -34,14 +35,14 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 
-const initFormValue: z.infer<typeof CreateMainBannerSchema> = {
+const initFormValue: z.infer<typeof CreateTopBannerSchema> = {
   title: "",
   desc: "",
   image: undefined,
   isActive: true,
 }
 
-export function MainBannerAction({
+export function TopBannerAction({
   open,
   onClose,
   dataEdit,
@@ -50,13 +51,13 @@ export function MainBannerAction({
 }: {
   open: boolean
   onClose?: () => void
-  initialData?: IMainBanner | null
-  dataEdit: IMainBanner | null
+  initialData?: ITopBanner | null
+  dataEdit: ITopBanner | null
   onOpenChange?: (open: boolean) => void
 }) {
   //
-  const createApi = useCreateMainBanner()
-  const updateApi = useUpdateMainBanner()
+  const createApi = useCreateTopBanner()
+  const updateApi = useUpdateTopBanner()
   const uploadApi = useUploadCloudinary()
 
   //
@@ -126,7 +127,7 @@ export function MainBannerAction({
       // 1. Nếu có file được chọn, tiến hành upload lên S3/Cloudinary
       if (selectedFile) {
         const res = await uploadApi.mutateAsync({
-          payload: { folder: "main-banner" },
+          payload: { folder: "top-banner" },
           file: selectedFile,
         })
 
@@ -171,8 +172,8 @@ export function MainBannerAction({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeaderAction
-          title={!!dataEdit ? "Edit Main Banner" : "Add New Main Banner"}
-          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new main banner.`}
+          title={!!dataEdit ? "Edit Top Banner" : "Add New Top Banner"}
+          desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new top banner.`}
         />
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">

@@ -167,8 +167,8 @@ export function PromotionContent({ promotion }: { promotion: IPromotion }) {
                   <div>
                     <div className="relative mb-2 aspect-square w-full overflow-hidden rounded-lg bg-gray-50">
                       <Image
-                        width={40}
-                        height={60}
+                        width={600}
+                        height={600}
                         src={thumb}
                         loading="lazy"
                         alt={variant.sku}

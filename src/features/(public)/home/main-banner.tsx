@@ -8,7 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useFindOptionsMainBanners } from "@/hooks/apis/catalog/use-main-banner"
+import { useFindOptionsMainBanners } from "@/hooks/apis/store-front/use-main-banner"
 import Image from "next/image"
 import Link from "next/link"
 

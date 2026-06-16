@@ -15,19 +15,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import {
-  CreateProductNavbarSchema,
-  UpdateProductNavbarSchema,
-} from "@/shared/dtos/req/product-navbar.dto"
-import {
-  useCreateProductNavbar,
-  useUpdateProductNavbar,
-} from "@/hooks/apis/catalog/use-product-navbar"
+import { CreateMenuSchema, UpdateMenuSchema } from "@/shared/dtos/req/menu.dto"
+import { useCreateMenu, useUpdateMenu } from "@/hooks/apis/store-front/use-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { IProductNavbar } from "@/shared/interfaces/models/catalog/product-navbar.interface"
+import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 
-const initFormValue: z.infer<typeof CreateProductNavbarSchema> = {
+const initFormValue: z.infer<typeof CreateMenuSchema> = {
   name: "",
   desc: "",
   link: "",
@@ -44,19 +38,17 @@ export function ProductNavbarAction({
 }: {
   open?: boolean
   onClose?: () => void
-  dataEdit: IProductNavbar | null
-  initialData?: IProductNavbar | null
+  dataEdit: IMenu | null
+  initialData?: IMenu | null
   onOpenChange?: (open: boolean) => void
 }) {
-  const createApi = useCreateProductNavbar()
-  const updateApi = useUpdateProductNavbar()
+  const createApi = useCreateMenu()
+  const updateApi = useUpdateMenu()
 
   // Quản lý danh sách ảnh hiển thị (bao gồm cả ảnh cũ từ API lẫn ảnh mới upload)
   const [isPending, setIsPending] = useState(false)
 
-  const formSchema = !!dataEdit
-    ? UpdateProductNavbarSchema
-    : CreateProductNavbarSchema
+  const formSchema = !!dataEdit ? UpdateMenuSchema : CreateMenuSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -115,7 +107,7 @@ export function ProductNavbarAction({
         })
       } else {
         res = await createApi.mutateAsync({
-          ...(data as z.infer<typeof CreateProductNavbarSchema>),
+          ...(data as z.infer<typeof CreateMenuSchema>),
         })
       }
 

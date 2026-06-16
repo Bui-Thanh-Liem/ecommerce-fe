@@ -9,6 +9,8 @@ export const CreateCategorySchema = z.object({
 
   image: imageDtoSchema.nullable().optional(),
 
+  imageInPage: imageDtoSchema.nullable().optional(),
+
   desc: z
     .string()
     .min(1, "Description is required.")

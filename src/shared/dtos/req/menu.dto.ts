@@ -1,6 +1,6 @@
 import z from "zod"
 
-export const CreateProductNavbarSchema = z.object({
+export const CreateMenuSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required.")
@@ -15,7 +15,7 @@ export const CreateProductNavbarSchema = z.object({
   isActive: z.boolean().optional(),
 })
 
-export const UpdateProductNavbarSchema = CreateProductNavbarSchema.partial()
+export const UpdateMenuSchema = CreateMenuSchema.partial()
 
-export type CreateProductNavbarDto = z.infer<typeof CreateProductNavbarSchema>
-export type UpdateProductNavbarDto = z.infer<typeof UpdateProductNavbarSchema>
+export type CreateMenuDto = z.infer<typeof CreateMenuSchema>
+export type UpdateMenuDto = z.infer<typeof UpdateMenuSchema>
