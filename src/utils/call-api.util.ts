@@ -31,27 +31,26 @@ export const apiCall = async <T>(
     const { statusCode, message } = result
 
     // 1. Tại đây kiểm tra xem có hết hạn access_token không, có thì refresh lại access_token
-    if (statusCode === 401 && message === ("jwt expired" as const)) {
-      // Gọi API refresh token để lấy access_token mới
-      await apiCall<boolean>("/api/auth/refresh-token", {
+    if (statusCode === 401 && message === ("TokenExpiredError" as const)) {
+      // Gọi API refresh token để  lấy access_token mới
+      await fetch("/api/auth/refresh-token", {
+        ...config,
         method: "POST",
       })
 
       // Sau khi refresh token thành công, gọi lại API ban đầu với access_token mới
       response = await fetch(`/api/${endpoint}`, config)
       result = (await response.json()) as OkResponse<T>
-      const { statusCode, message } = result
-      if (statusCode === 401 && message === ("jwt expired" as const)) {
-        // Trường hợp refresh token cũng hết hạn, xóa storage và cho staff login lại
+      const { statusCode } = result
+
+      // Trường hợp refresh token hết hạn (BE xoa cookie refresh token va access token)
+      if (statusCode === 401) {
         deleteStorage()
-        await apiCall<boolean>("/api/auth/logout", {
-          method: "POST",
-        })
       }
     } else if ([401].includes(statusCode)) {
-      // 2. Nếu 401 mà mesage không phải "jwt expired" là token không hợp lệ, cho staff login lại
+      // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho staff login lại
       deleteStorage()
-      await apiCall<boolean>("/api/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
       })
     }
