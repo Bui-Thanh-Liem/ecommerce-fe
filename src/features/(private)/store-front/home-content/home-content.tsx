@@ -19,46 +19,19 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ArrowRight, GripVertical } from "lucide-react"
-import { useFindOptionsTopBanners } from "@/hooks/apis/store-front/use-top-banner"
+import {
+  ArrowLeft,
+  ArrowRight,
+  GripVertical,
+  Loader2,
+  Save,
+} from "lucide-react"
 import {
   IDetailHomeConfig,
   IStoreFrontConfig,
 } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 import { useUpdateStoreFrontConfig } from "@/hooks/apis/store-front/use-store-front-config"
-import { useForm } from "react-hook-form"
-import { UpdateStoreFrontConfigSchema } from "@/shared/dtos/req/store-front-config.dto"
-import z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { TopBannerSelectInForm } from "@/components/select-in-form/top-banner"
-
-// --- SKELETON COMPONENT với hiệu ứng Fade-out nhẹ ---
-function HomeContentSkeleton() {
-  return (
-    <div className="grid animate-pulse grid-cols-4 gap-x-6 p-6 px-0 transition-all duration-300">
-      <div className="col-span-3 max-h-[calc(100vh-200px)] min-h-100 space-y-2 rounded-2xl bg-slate-100 p-4">
-        {Array.from({ length: 8 }).map((_, idx) => (
-          <div key={idx} className="h-10 w-full rounded-2xl bg-slate-200" />
-        ))}
-      </div>
-      <div className="col-span-1 flex flex-col justify-between rounded-2xl bg-slate-100 p-4">
-        <div className="space-y-4">
-          <div className="h-6 w-32 rounded bg-slate-200" />
-          <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-3">
-            <div className="h-4 w-40 rounded bg-slate-200" />
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <div key={idx} className="h-4 w-3/4 rounded bg-slate-200" />
-            ))}
-          </div>
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-x-3">
-          <div className="h-10 rounded-lg bg-slate-200" />
-          <div className="h-10 rounded-lg bg-slate-200" />
-        </div>
-      </div>
-    </div>
-  )
-}
+import { TopBanner } from "./top-banner"
 
 // --- 1. COMPONENT SORTABLE ITEM ---
 function SortableItem({
@@ -91,7 +64,7 @@ function SortableItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`${className} group mb-2 flex h-10 items-center justify-between rounded-2xl px-4 font-medium text-white shadow-sm select-none`}
+      className={`${className} group mb-2 flex h-10 items-center justify-between rounded-lg px-4 font-medium text-white shadow-sm select-none`}
     >
       <div
         {...attributes}
@@ -130,24 +103,6 @@ function BlockDetailConfig({
   storeFrontConfig: IStoreFrontConfig | null
 }) {
   const isTopBanner = blockId === "topBanner"
-  const { data: topBannerRes } = useFindOptionsTopBanners({
-    enabled: isTopBanner,
-  })
-
-  const form = useForm<z.infer<typeof UpdateStoreFrontConfigSchema>>({
-    resolver: zodResolver(UpdateStoreFrontConfigSchema),
-  })
-
-  //
-  useEffect(() => {
-    if (storeFrontConfig) {
-      form.reset({
-        ...storeFrontConfig,
-      })
-    }
-  }, [form, storeFrontConfig])
-
-  async function onSubmit(data: z.infer<typeof UpdateStoreFrontConfigSchema>) {}
 
   return (
     <div className="animate-in fade-in duration-300">
@@ -158,24 +113,20 @@ function BlockDetailConfig({
       >
         <ArrowLeft size={16} /> back to list
       </Button>
+
       <div className="rounded-xl border bg-white p-5 shadow-sm">
         <h3 className="mb-2 text-lg font-bold text-slate-800">
           Detailed configuration: <span className="text-sky-600">{label}</span>
         </h3>
         <p className="mb-6 text-xs text-slate-400">Block code: {blockId}</p>
 
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          {isTopBanner && (
-            <TopBannerSelectInForm
-              form={form}
-              multiple={false}
-              name="homeConfig.topBanner"
-            />
-          )}
-        </form>
-        <div className="flex min-h-50 flex-col items-center justify-center space-y-4 rounded-lg border border-dashed bg-slate-50 text-slate-400">
-          <p>Nơi fetch dữ liệu cho {blockId}</p>
-        </div>
+        {/* Top Banner */}
+        {isTopBanner && (
+          <TopBanner
+            idConfig={storeFrontConfig?.id || ""}
+            topBanner={storeFrontConfig?.homeConfig?.config.topBanner}
+          />
+        )}
       </div>
     </div>
   )
@@ -189,10 +140,7 @@ export function HomeContent({
   isLoading: boolean
   storeFrontConfig: IStoreFrontConfig | null
 }) {
-  const { mutateAsync } = useUpdateStoreFrontConfig()
-
-  // Trạng thái kiểm soát việc đóng màn hình loading thực tế dựa trên animation
-  const [showRealContent, setShowRealContent] = useState(false)
+  const { mutateAsync, isPending } = useUpdateStoreFrontConfig()
 
   const [blocks, setBlocks] = useState<
     { id: keyof IDetailHomeConfig; label: string; color: string }[]
@@ -215,8 +163,6 @@ export function HomeContent({
   useEffect(() => {
     // 1. Nếu đang API đang load, reset trạng thái hiển thị content thực
     if (isLoading) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShowRealContent(false)
       return
     }
 
@@ -227,6 +173,7 @@ export function HomeContent({
         orderMap[id] = index
       })
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBlocks((prevBlocks) =>
         [...prevBlocks].sort((a, b) => {
           const indexA =
@@ -237,13 +184,6 @@ export function HomeContent({
         })
       )
     }
-
-    // 3. GIẢI PHÁP CHỐNG CHỚP: Ép skeleton chạy tối thiểu 400ms thay vì tắt ngay lập tức
-    const timer = setTimeout(() => {
-      setShowRealContent(true)
-    }, 500) // Bạn có thể chỉnh lên 500ms nếu muốn mượt hơn nữa
-
-    return () => clearTimeout(timer)
   }, [storeFrontConfig, isLoading])
 
   const [activeDetailBlock, setActiveDetailBlock] = useState<
@@ -272,11 +212,6 @@ export function HomeContent({
       id: storeFrontConfig?.id || "",
       payload: { homeConfig: { order: newOrderKeys } },
     })
-  }
-
-  // Nếu chưa hết thời gian timeout tối thiểu, tiếp tục giữ skeleton
-  if (!showRealContent) {
-    return <HomeContentSkeleton />
   }
 
   const selectedBlockInfo = blocks.find((b) => b.id === activeDetailBlock)
@@ -345,8 +280,22 @@ export function HomeContent({
           </div>
         </div>
 
-        <Button className="mt-auto" onClick={handleSaveConfig}>
-          Save Config
+        <Button
+          className="mt-auto"
+          onClick={handleSaveConfig}
+          disabled={activeDetailBlock !== null}
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              Save Config
+            </>
+          )}
         </Button>
       </div>
     </div>

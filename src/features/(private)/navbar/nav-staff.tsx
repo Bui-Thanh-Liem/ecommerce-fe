@@ -36,9 +36,7 @@ export function NavStaff() {
   //
   async function handleLogout() {
     const res = await signOutApi.mutateAsync()
-    if (res?.statusCode === 201) {
-      router.replace("/")
-    }
+    if (res?.statusCode === 201) router.replace("/auth")
   }
 
   return (

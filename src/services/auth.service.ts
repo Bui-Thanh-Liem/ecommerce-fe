@@ -13,6 +13,13 @@ export const authServices = {
     return handleResponse<ResSignInStaffDto>(res)
   },
 
+  refreshToken: async () => {
+    const res = await apiCall<boolean>("/auth/refresh-token", {
+      method: "POST",
+    })
+    return handleResponse<boolean>(res)
+  },
+
   whoami: async () => {
     const res = await apiCall("/auth/whoami", {
       method: "GET",

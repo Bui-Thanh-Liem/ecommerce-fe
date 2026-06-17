@@ -37,7 +37,18 @@ async function handler(
     // Forward tất cả headers từ BE về browser (bao gồm Set-Cookie)
     const responseHeaders = new Headers()
     res.headers.forEach((value, key) => {
-      responseHeaders.set(key, value)
+      const lowerKey = key.toLowerCase()
+
+      // 👇 KHÔNG forward các header liên quan đến mã hóa nội dung và độ dài
+      if (lowerKey === "content-encoding" || lowerKey === "content-length") {
+        return
+      }
+
+      if (lowerKey === "set-cookie") {
+        responseHeaders.append(key, value)
+      } else {
+        responseHeaders.set(key, value)
+      }
     })
 
     return new Response(res.body, {

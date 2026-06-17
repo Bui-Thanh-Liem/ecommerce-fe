@@ -22,6 +22,17 @@ export const useSignIn = () => {
   })
 }
 
+export const useRefreshToken = () => {
+  return useMutation({
+    //
+    mutationFn: () => authServices.refreshToken(),
+
+    //
+    onSuccess: () => {},
+    onError: () => {},
+  })
+}
+
 export const useWhoami = () => {
   return useQuery({
     queryKey: ["whoami"],
