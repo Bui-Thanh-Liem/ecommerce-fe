@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useStaffContext } from "@/context/staff.context"
-import { useSignOut } from "@/hooks/apis/management/use-auth"
+import { useSignOut } from "@/hooks/apis/use-auth"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,

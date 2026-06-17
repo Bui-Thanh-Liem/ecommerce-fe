@@ -1,3 +1,3 @@
 export function deleteStorage() {
-  localStorage.removeItem("staff_storage");
+  localStorage.removeItem("staff_storage")
 }

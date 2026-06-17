@@ -1,4 +1,4 @@
-import { authServices } from "@/services/management/auth.service"
+import { authServices } from "@/services/auth.service"
 import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
 import { useStaffContext } from "@/context/staff.context"
 import { useMutation, useQuery } from "@tanstack/react-query"

@@ -14,6 +14,7 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth", req.url))
   }
 
+  // Trường hợp này staff vào thông qua tự chỉnh URL (hành động bất thường)
   if (token && pathname === "/auth") {
     return NextResponse.redirect(new URL(`/staffs/account?t=1`, req.url))
   }
@@ -23,14 +24,23 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/dashboard/:path*",
+
+    "/store-front/:path*",
+
     "/auth",
     "/staffs/:path*",
-    "/products/:path*",
-    "/dashboard/:path*",
-    "/customers/:path*",
-    "/campaigns/:path*",
     "/management/:path*",
+
+    "/products/:path*",
+    "/catalog/:path*",
+
     "/inventories/:path*",
-    "/store-front/:path*",
+
+    "/marketing-programs/:path*",
+
+    "/customers/:path*",
+
+    "/orders/:path*",
   ],
 }
