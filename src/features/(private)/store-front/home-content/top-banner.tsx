@@ -13,13 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Loader2, Save } from "lucide-react"
 import { Label } from "@/components/ui/label"
+import { TopBannerOption } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 
 interface TopBannerProps {
   idConfig: string
-  topBanner: Partial<ITopBanner> | undefined
+  topBanner: TopBannerOption | null
 }
 
 export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
@@ -31,9 +31,9 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
   const { mutateAsync, isPending } = useUpdateStoreFrontConfig()
 
   // State lưu trữ banner đang được CHỌN trên giao diện (local state)
-  const [selectedBanner, setSelectedBanner] = useState<
-    Partial<ITopBanner> | undefined
-  >(topBanner)
+  const [selectedBanner, setSelectedBanner] = useState<TopBannerOption | null>(
+    topBanner
+  )
 
   // Đồng bộ state nếu dữ liệu truyền từ props cha thay đổi
   useEffect(() => {
@@ -54,14 +54,21 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
     if (!selectedBanner) return
 
     try {
+      const payload = {
+        id: selectedBanner.id,
+        slug: selectedBanner.slug,
+        title: selectedBanner.title,
+        image: selectedBanner.image,
+      }
+
       await mutateAsync({
         id: idConfig,
         payload: {
-          homeConfig: { config: { topBanner: selectedBanner } },
+          homeConfig: { config: { topBanner: payload } },
         },
       })
     } catch (error) {
-      console.error("Lỗi cập nhật:", error)
+      console.error("Error updating top banner:", error)
     }
   }
 
@@ -70,7 +77,7 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
       {/* Dropdown Chọn Banner (Shadcn/ui Select) */}
       <div className="space-y-4">
         <Label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Chọn Banner mẫu
+          Choose a banner at the top of the page.:
         </Label>
         <Select
           value={selectedBanner?.id}
@@ -80,9 +87,7 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
           <SelectTrigger className="w-full">
             <SelectValue
               placeholder={
-                isLoadingOptions
-                  ? "Đang tải danh sách..."
-                  : "Chọn một banner..."
+                isLoadingOptions ? "Loading options..." : "Select a banner..."
               }
             />
           </SelectTrigger>
@@ -99,10 +104,10 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
       {/* Khu vực Xem trước Banner (Preview) */}
       <div className="space-y-4">
         <Label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Xem trước hiển thị:
+          Preview:
         </Label>
         {selectedBanner?.image?.url ? (
-          <div className="bg-muted relative flex h-12 w-full items-center justify-center overflow-hidden rounded-xl border">
+          <div className="bg-muted relative flex h-12 w-full items-center justify-center overflow-hidden rounded-lg">
             <Image
               fill
               priority
@@ -113,7 +118,7 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
           </div>
         ) : (
           <div className="text-muted-foreground bg-muted/50 flex h-24 w-full items-center justify-center rounded-xl border-2 border-dashed text-sm">
-            Chưa có banner nào được chọn
+            No banner selected
           </div>
         )}
       </div>
@@ -128,12 +133,12 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
           {isPending ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Đang lưu...
+              Loading...
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              Lưu thay đổi
+              Save Changes
             </>
           )}
         </Button>

@@ -32,17 +32,25 @@ import {
 } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 import { useUpdateStoreFrontConfig } from "@/hooks/apis/store-front/use-store-front-config"
 import { TopBanner } from "./top-banner"
+import { MainBanner } from "./main-banner"
+import { Menu } from "./menu"
+import { toast } from "sonner"
+import { ListCategories } from "./list-categories"
+import { MarketingProgram01 } from "./marketing-program-01"
+import { MarketingProgram03 } from "./marketing-program-03"
 
 // --- 1. COMPONENT SORTABLE ITEM ---
 function SortableItem({
   id,
   label,
+  disabled,
   className,
   onGoToDetail,
 }: {
   id: string
   label: string
   className: string
+  disabled?: boolean
   onGoToDetail: () => void
 }) {
   const {
@@ -55,9 +63,10 @@ function SortableItem({
   } = useSortable({ id: id })
 
   const style = {
-    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    cursor: disabled ? "not-allowed" : "grab",
+    transform: CSS.Transform.toString(transform),
   }
 
   return (
@@ -69,7 +78,7 @@ function SortableItem({
       <div
         {...attributes}
         {...listeners}
-        className="flex h-full flex-1 cursor-grab items-center gap-x-2 active:cursor-grabbing"
+        className="flex h-full flex-1 items-center gap-x-2 active:cursor-grabbing"
       >
         <GripVertical
           size={18}
@@ -103,6 +112,14 @@ function BlockDetailConfig({
   storeFrontConfig: IStoreFrontConfig | null
 }) {
   const isTopBanner = blockId === "topBanner"
+  const isMenu = blockId === "menu"
+  const isHeader = blockId === "header"
+  const isMainBanner = blockId === "mainBanner"
+  const isListCategories = blockId === "listCategories"
+  const isHistoryProducts = blockId === "historyProducts"
+  const isMarketingProgram01 = blockId === "marketingProgram01"
+  const isMarketingProgram02 = blockId === "marketingProgram02"
+  const isMarketingProgram03 = blockId === "marketingProgram03"
 
   return (
     <div className="animate-in fade-in duration-300">
@@ -124,7 +141,59 @@ function BlockDetailConfig({
         {isTopBanner && (
           <TopBanner
             idConfig={storeFrontConfig?.id || ""}
-            topBanner={storeFrontConfig?.homeConfig?.config.topBanner}
+            topBanner={storeFrontConfig?.homeConfig?.config.topBanner || null}
+          />
+        )}
+
+        {/* Header */}
+        {isHeader && <p>The title is not dynamically updated content.</p>}
+
+        {/* Menu */}
+        {isMenu && (
+          <Menu
+            idConfig={storeFrontConfig?.id || ""}
+            menu={storeFrontConfig?.homeConfig?.config.menu}
+          />
+        )}
+
+        {/* Main Banner */}
+        {isMainBanner && (
+          <MainBanner
+            idConfig={storeFrontConfig?.id || ""}
+            mainBanner={storeFrontConfig?.homeConfig?.config.mainBanner}
+          />
+        )}
+
+        {/* List Categories */}
+        {isListCategories && (
+          <ListCategories
+            idConfig={storeFrontConfig?.id || ""}
+            listCategories={storeFrontConfig?.homeConfig?.config.listCategories}
+          />
+        )}
+
+        {/* History Products */}
+        {isHistoryProducts && (
+          <p>The history products content is not dynamically updated.</p>
+        )}
+
+        {/* Marketing Program 01 */}
+        {isMarketingProgram01 && (
+          <MarketingProgram01
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram01={
+              storeFrontConfig?.homeConfig?.config.marketingProgram01
+            }
+          />
+        )}
+
+        {/* Marketing Program 03 */}
+        {isMarketingProgram03 && (
+          <MarketingProgram03
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram03={
+              storeFrontConfig?.homeConfig?.config.marketingProgram03
+            }
           />
         )}
       </div>
@@ -151,12 +220,32 @@ export function HomeContent({
     { id: "mainBanner", label: "Main banner", color: "bg-sky-700" },
     { id: "listCategories", label: "List categories", color: "bg-sky-800" },
     { id: "historyProducts", label: "History products", color: "bg-sky-900" },
-    { id: "mktSessionOne", label: "Mkt session one", color: "bg-blue-400" },
-    { id: "mktSessionTwo", label: "Mkt session two", color: "bg-blue-500" },
+    {
+      id: "marketingProgram01",
+      label: "Marketing program 01",
+      color: "bg-blue-400",
+    },
+    {
+      id: "marketingProgram02",
+      label: "Marketing program 02",
+      color: "bg-blue-500",
+    },
     { id: "suggestForYou", label: "Suggest for you", color: "bg-blue-600" },
-    { id: "mktSessionThree", label: "Mkt session three", color: "bg-blue-700" },
-    { id: "mktSessionFour", label: "Mkt session four", color: "bg-blue-800" },
-    { id: "mktSessionFive", label: "Mkt session five", color: "bg-blue-900" },
+    {
+      id: "marketingProgram03",
+      label: "Marketing program 03",
+      color: "bg-blue-700",
+    },
+    {
+      id: "marketingProgram04",
+      label: "Marketing program 04",
+      color: "bg-blue-800",
+    },
+    {
+      id: "marketingProgram05",
+      label: "Marketing program 05",
+      color: "bg-blue-900",
+    },
     { id: "topic", label: "Topic", color: "bg-slate-700" },
   ])
 
@@ -201,6 +290,14 @@ export function HomeContent({
       setBlocks((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id)
         const newIndex = items.findIndex((item) => item.id === over.id)
+
+        // KIỂM TRA ĐIỀU KIỆN:
+        // Nếu item đem kéo thuộc top 3 HOẶC vị trí định thả vào thuộc top 3
+        if (oldIndex < 3 || newIndex < 3) {
+          toast.info("The top 3 blocks are fixed and cannot be rearranged.")
+          return items // Trả về mảng cũ, không thay đổi gì cả
+        }
+
         return arrayMove(items, oldIndex, newIndex)
       })
     }
@@ -223,6 +320,7 @@ export function HomeContent({
       <div className="col-span-3 max-h-[calc(100vh-200px)] min-h-100 overflow-x-hidden overflow-y-auto rounded-2xl bg-sky-50 p-4">
         {activeDetailBlock === null ? (
           <DndContext
+            id="homepage-layout-dnd"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
@@ -231,13 +329,14 @@ export function HomeContent({
               items={blocks}
               strategy={verticalListSortingStrategy}
             >
-              {blocks.map((block) => (
+              {blocks.map((block, index) => (
                 <SortableItem
                   key={block.id}
                   id={block.id}
                   label={block.label}
                   className={block.color}
                   onGoToDetail={() => setActiveDetailBlock(block.id)}
+                  disabled={index < 3}
                 />
               ))}
             </SortableContext>

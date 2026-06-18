@@ -3,7 +3,6 @@ import { ITopBanner } from "@/shared/interfaces/models/store-front/top-banner.in
 import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 import { IMainBanner } from "@/shared/interfaces/models/store-front/main-banner.interface"
 import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
-import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 
@@ -16,33 +15,60 @@ export interface IConfigHome {
   config: IDetailHomeConfig // Đối tượng chứa cấu hình chi tiết cho từng block
 }
 
+export type TopBannerOption = Pick<
+  ITopBanner,
+  "id" | "slug" | "title" | "image"
+>
+
+export type CategoryOption = Pick<ICategory, "id" | "slug" | "name" | "image">
+
+export type MainBannerOption = Pick<
+  IMainBanner,
+  "id" | "slug" | "title" | "image"
+>
+
+export type MenuOption = Pick<IMenu, "id" | "slug" | "name" | "link">
+
+export type MktProgramOption = Pick<
+  IMarketingProgram,
+  "id" | "slug" | "name" | "mainImage"
+>
+
+export type CampaignOption = Pick<
+  ICampaign,
+  "id" | "slug" | "name" | "mainImage"
+>
+
 export interface IDetailHomeConfig {
-  topBanner: Partial<ITopBanner>
+  topBanner: TopBannerOption | null
   header: string // Không có đối tượng cấu hình động cho header
-  menu: Partial<IMenu>[]
-  mainBanner: Partial<IMainBanner>[]
-  listCategories: Partial<ICategory>[]
-  historyProducts: Partial<IProductVariant>[]
-  mktSessionOne: {
+  menu: MenuOption[]
+  mainBanner: MainBannerOption[]
+  listCategories: CategoryOption[]
+  historyProducts: string // Không có đối tượng cấu hình động cho historyProducts
+  marketingProgram01: {
     title: string
-    mktPrograms: Partial<IMarketingProgram>[]
+    mktPrograms: MktProgramOption[]
   }
-  mktSessionTwo: {
-    title: string
-    mktPrograms: Partial<IMarketingProgram>[]
+  marketingProgram02: {
+    campaign: CampaignOption[]
   }
-  suggestForYou: Partial<IProductVariant>[]
-  mktSessionThree: {
+  marketingProgram03: {
     title: string
-    campaign: Partial<ICampaign>
+    mktPrograms: MktProgramOption[]
   }
-  mktSessionFour: {
+  suggestForYou: string // Không có đối tượng cấu hình động cho suggestForYou
+  marketingProgram04: {
     title: string
-    campaign: Partial<ICampaign>
+    campaign: CampaignOption | null
   }
-  mktSessionFive: {
+  marketingProgram05: {
     title: string
-    campaigns: Partial<ICampaign>[]
+    campaign: CampaignOption | null
+  }
+  marketingProgram06: {
+    title: string
+    campaigns: CampaignOption[]
   }
   topic: {
     title: string

@@ -6,7 +6,7 @@ import { LayoutGrid, Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
-const maxCategoriesToShow = 15
+export const maxCategoriesToShow = 15
 
 export function CategoryList() {
   const { data } = useFindOptionsCategories({ limit: maxCategoriesToShow })
