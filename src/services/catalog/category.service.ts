@@ -29,7 +29,7 @@ export const categoryServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ICategory>>(
       `/categories?${queryParams}`,
@@ -42,7 +42,7 @@ export const categoryServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ICategory>>(
       `/categories/options?${queryParams}`,
@@ -55,7 +55,7 @@ export const categoryServices = {
   },
 
   getTreeData: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ICategory[]>(
       `/categories/tree?${queryParams.toString()}`,

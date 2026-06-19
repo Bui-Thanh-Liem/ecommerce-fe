@@ -3,10 +3,9 @@
 import { useFindOptionsPromotions } from "@/hooks/apis/mkt-program/use-promotion"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
 import { PromotionContent } from "./promotion-content"
-import Image from "next/image"
 
 export function CampaignContent({ campaign }: { campaign: ICampaign }) {
-  const { id: campaignId, name, desc, mainImage } = campaign
+  const { id: campaignId, name, desc } = campaign
 
   // Fetch danh sách các promotions thuộc Campaign
   const { data: promotionsRes, isLoading } = useFindOptionsPromotions({
@@ -44,17 +43,6 @@ export function CampaignContent({ campaign }: { campaign: ICampaign }) {
       {/* Header chiến dịch */}
       <div className="border-b pb-3">
         <div className="flex items-center">
-          {mainImage?.url && (
-            <div className="h-6 w-12 overflow-hidden">
-              <Image
-                width={48}
-                height={24}
-                alt={name}
-                src={mainImage.url}
-                className="h-full w-full object-contain"
-              />
-            </div>
-          )}
           <h3 className="text-xl font-bold text-sky-900">{name}</h3>
         </div>
         {desc && <p className="mt-1 text-sm text-gray-500">{desc}</p>}
@@ -63,7 +51,8 @@ export function CampaignContent({ campaign }: { campaign: ICampaign }) {
       {/* Danh sách các cụm chương trình khuyến mãi */}
       {promotions.length === 0 ? (
         <p className="py-4 text-sm text-gray-400 italic">
-          Chưa có chương trình ưu đãi nào diễn ra trong chiến dịch này.
+          Chưa có chương trình ưu đãi nào diễn ra trong chiến dịch khuyến mãi
+          này.
         </p>
       ) : (
         <div className="space-y-6">

@@ -17,7 +17,7 @@ export const roleServices = {
   },
 
   findOptions: async (query?: QueryDto<IRole>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<IRole>>(
       `/roles/options?${queryParams}`,
@@ -30,7 +30,7 @@ export const roleServices = {
   },
 
   findAll: async (query?: QueryDto<IRole>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IRole>>(`/roles?${queryParams}`, {
       method: "GET",

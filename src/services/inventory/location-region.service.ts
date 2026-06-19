@@ -31,7 +31,7 @@ export const locationRegionServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ILocationRegion>>(
       `/location-regions?${queryParams.toString()}`,
@@ -44,7 +44,7 @@ export const locationRegionServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ILocationRegion>>(
       `/location-regions/options?${queryParams.toString()}`,
@@ -57,7 +57,7 @@ export const locationRegionServices = {
   },
 
   getTreeData: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ILocationRegion[]>(
       `/location-regions/tree?${queryParams.toString()}`,

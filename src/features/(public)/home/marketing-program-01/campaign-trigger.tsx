@@ -19,6 +19,7 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
     "UPCOMING"
   )
   const [startTimeStr, setStartTimeStr] = useState("")
+  const [endTimeStr, setEndTimeStr] = useState("")
 
   useEffect(() => {
     const start = new Date(campaign.startDate).getTime()
@@ -34,6 +35,16 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
     // Bạn có thể tùy biến format hiển thị ở đây (VD: chỉ hiện giờ "18:00" hoặc cả ngày "18:00 - 25/12")
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setStartTimeStr(`${hoursStr}:${minutesStr} - ${dateStr}/${monthStr}`)
+
+    // Định dạng ngày giờ kết thúc cho campaign đã kết thúc (VD: 20:00 25/12)
+    const endDateObj = new Date(campaign.endDate)
+    const endHoursStr = String(endDateObj.getHours()).padStart(2, "0")
+    const endMinutesStr = String(endDateObj.getMinutes()).padStart(2, "0")
+    const endDateStr = String(endDateObj.getDate()).padStart(2, "0")
+    const endMonthStr = String(endDateObj.getMonth() + 1).padStart(2, "0")
+    setEndTimeStr(
+      `${endHoursStr}:${endMinutesStr} - ${endDateStr}/${endMonthStr}`
+    )
 
     const calculateTime = () => {
       const now = new Date().getTime()
@@ -64,9 +75,6 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
     return () => clearInterval(timer)
   }, [campaign.startDate, campaign.endDate])
 
-  // 1. Nếu campaign đã kết thúc thì ẩn hoàn toàn
-  if (status === "ENDED") return null
-
   // Định nghĩa CSS background & text color động theo trạng thái và việc tab có được chọn (isActive) hay không
   let dynamicStyles = ""
   if (status === "LIVE") {
@@ -77,6 +85,10 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
     dynamicStyles = isActive
       ? "bg-amber-200! text-white"
       : "bg-amber-50 text-amber-700 border-amber-200"
+  } else if (status === "ENDED") {
+    dynamicStyles = isActive
+      ? "bg-gray-200! text-white"
+      : "bg-gray-50 text-gray-700 border-gray-200"
   }
 
   return (
@@ -84,7 +96,7 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
       value={campaign.id}
       className={`flex flex-col items-center justify-center rounded-2xl py-6 transition-all ${dynamicStyles}`}
     >
-      {/* 2. Trạng thái ĐANG DIỄN RA */}
+      {/* 1. Trạng thái ĐANG DIỄN RA */}
       {status === "LIVE" && (
         <div className="flex items-center gap-x-2">
           <span className="tracking-wider uppercase opacity-80">Chỉ còn:</span>
@@ -110,13 +122,23 @@ export function CampaignTrigger({ campaign, isActive }: CampaignTriggerProps) {
         </div>
       )}
 
-      {/* 3. Trạng thái SẮP DIỄN RA */}
+      {/* 2. Trạng thái SẮP DIỄN RA */}
       {status === "UPCOMING" && (
         <div className="flex items-center gap-x-2">
           <span className="tracking-wider uppercase opacity-80">
             Sắp diễn ra:
           </span>
           <span className="text-sm font-bold">{startTimeStr}</span>
+        </div>
+      )}
+
+      {/* 3. Trạng thái ĐÃ KẾT THÚC */}
+      {status === "ENDED" && (
+        <div className="flex items-center gap-x-2">
+          <span className="tracking-wider uppercase opacity-80">
+            Đã kết thúc vào:
+          </span>
+          <span className="text-sm font-bold">{endTimeStr}</span>
         </div>
       )}
     </TabsTrigger>

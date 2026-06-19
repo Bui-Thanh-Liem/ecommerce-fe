@@ -28,6 +28,7 @@ export const useCreateMenu = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["menus"] })
+      queryClient.invalidateQueries({ queryKey: ["menus-options"] })
     },
   })
 }
@@ -43,6 +44,7 @@ export const useUpdateMenu = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["menus"] })
+      queryClient.invalidateQueries({ queryKey: ["menus-options"] })
     },
   })
 }
@@ -57,6 +59,7 @@ export const useDeleteMenu = () => {
     //
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["menus"] })
+      queryClient.invalidateQueries({ queryKey: ["menus-options"] })
     },
   })
 }

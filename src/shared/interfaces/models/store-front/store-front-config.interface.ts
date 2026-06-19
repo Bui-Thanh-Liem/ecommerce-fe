@@ -5,6 +5,7 @@ import { IMainBanner } from "@/shared/interfaces/models/store-front/main-banner.
 import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
 import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
+import { IPopularSearch } from "./popular-search.interface"
 
 export interface IStoreFrontConfig extends IBase {
   homeConfig: IConfigHome
@@ -20,7 +21,10 @@ export type TopBannerOption = Pick<
   "id" | "slug" | "title" | "image"
 >
 
-export type CategoryOption = Pick<ICategory, "id" | "slug" | "name" | "image">
+export type CategoryOption = Pick<
+  ICategory,
+  "id" | "slug" | "name" | "image" | "minPrice"
+>
 
 export type MainBannerOption = Pick<
   IMainBanner,
@@ -38,6 +42,8 @@ export type CampaignOption = Pick<
   ICampaign,
   "id" | "slug" | "name" | "mainImage"
 >
+
+export type PopularSearchOption = Pick<IPopularSearch, "id" | "text">
 
 export interface IDetailHomeConfig {
   topBanner: TopBannerOption | null
@@ -61,17 +67,17 @@ export interface IDetailHomeConfig {
   marketingProgram04: {
     title: string
     campaign: CampaignOption
-  } | null
+  }
   marketingProgram05: {
     title: string
     campaign: CampaignOption
-  } | null
+  }
   marketingProgram06: {
     title: string
     campaigns: CampaignOption[]
   }
-  topic: {
+  popularSearch: {
     title: string
-    topics: string[]
+    searches: PopularSearchOption[]
   }
 }

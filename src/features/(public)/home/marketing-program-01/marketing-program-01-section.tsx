@@ -6,7 +6,7 @@ import { useFindOptionsMktPrograms } from "@/hooks/apis/mkt-program/use-mkt-prog
 import Image from "next/image"
 import { CampaignTabs } from "./campaign-tabs"
 
-export function OnlinePromotion() {
+export function MarketingProgram01Section() {
   // Lấy danh sách Marketing Programs
   const { data: mktRes } = useFindOptionsMktPrograms()
   const mktProgramsData = useMemo(() => mktRes?.metadata?.data || [], [mktRes])

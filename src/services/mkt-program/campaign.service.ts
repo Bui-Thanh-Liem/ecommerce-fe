@@ -20,7 +20,7 @@ export const campaignServices = {
   },
 
   findAll: async (query?: QueryDto<ICampaign>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ICampaign>>(
       `/campaigns?${queryParams}`,
@@ -33,7 +33,7 @@ export const campaignServices = {
   },
 
   findOptions: async (query?: QueryDto<ICampaign>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ICampaign>>(
       `/campaigns/options?${queryParams}`,

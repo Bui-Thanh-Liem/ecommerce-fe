@@ -33,7 +33,7 @@ export const categoryPromotionServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ICategoryPromotion>>(
       `/category-promotions?${queryParams}`,
@@ -46,7 +46,7 @@ export const categoryPromotionServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ICategoryPromotion>>(
       `/category-promotions/options?${queryParams}`,
@@ -59,7 +59,7 @@ export const categoryPromotionServices = {
   },
 
   findVariantByPromotion: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<
       ResMetadataDto<ICategoryPromotion & { productVariant: IProductVariant }>
@@ -73,7 +73,7 @@ export const categoryPromotionServices = {
   },
 
   getTreeData: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ICategoryPromotion[]>(
       `/category-promotions/tree?${queryParams.toString()}`,

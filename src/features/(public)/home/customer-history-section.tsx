@@ -16,7 +16,7 @@ import { useFindOptionsCustomerProducts } from "@/hooks/apis/customer/use-custom
 import { X } from "lucide-react"
 import Image from "next/image"
 
-export function CustomerHistory() {
+export function CustomerHistorySection() {
   const { data } = useFindOptionsCustomerProducts()
   const customerProducts = data?.metadata?.data || []
 

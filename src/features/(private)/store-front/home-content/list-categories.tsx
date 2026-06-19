@@ -8,13 +8,14 @@ import { Loader2, Save, X, ImageIcon } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { CustomCombobox } from "@/components/ui/custom-combobox"
 import { useFindOptionsCategories } from "@/hooks/apis/catalog/use-category"
-import { maxCategoriesToShow } from "@/features/(public)/home/category-list"
 import { CategoryOption } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 
 interface ListCategoriesProps {
   idConfig: string
   listCategories: CategoryOption[] | undefined
 }
+
+const maxCategoriesToShow = 15
 
 export function ListCategories({
   idConfig,
@@ -66,6 +67,7 @@ export function ListCategories({
         slug: c.slug,
         name: c.name,
         image: c.image!,
+        minPrice: c.minPrice,
       }))
 
       await mutateAsync({

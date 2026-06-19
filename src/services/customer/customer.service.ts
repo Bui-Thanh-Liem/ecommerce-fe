@@ -34,7 +34,7 @@ export const customerServices = {
   },
 
   findAll: async (query?: QueryDto<ICustomer>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ICustomer>>(
       `/customers?${queryParams}`,

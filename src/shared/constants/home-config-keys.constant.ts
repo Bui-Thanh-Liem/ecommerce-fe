@@ -13,5 +13,5 @@ export const DETAIL_HOME_CONFIG_KEYS = [
   "marketingProgram03",
   "marketingProgram04",
   "marketingProgram05",
-  "topic",
+  "popularSearch",
 ] as (keyof IDetailHomeConfig)[]

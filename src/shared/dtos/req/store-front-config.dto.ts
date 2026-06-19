@@ -39,12 +39,18 @@ export const CategoryItemSchema = z.object({
   id: z.string().min(1, "ID không được để trống"),
   slug: z.string().min(1, "Slug không được để trống"),
   name: z.string().min(1, "Name không được để trống"),
+  minPrice: z.number().optional(),
   image: ImageSchema,
 })
 
-export const TopicSchema = z.object({
+export const PopularSearchItemSchema = z.object({
+  id: z.string().min(1, "ID không được để trống"),
+  text: z.string().min(1, "Text không được để trống"),
+})
+
+export const PopularSearchSchema = z.object({
   title: z.string().min(1, "Title không được để trống"),
-  topics: z.array(z.string()),
+  searches: z.array(PopularSearchItemSchema),
 })
 
 // --- 2. SCHEMAS CHO CÁC KHỐI MARKETING (MARKETING BLOCKS) ---
@@ -90,7 +96,7 @@ export const DetailHomeConfigSchema = z.object({
   marketingProgram05: MktSessionSingleCampaignSchema.optional(),
   marketingProgram06: MktSessionMultiCampaignsSchema.optional(),
 
-  topic: TopicSchema.optional(),
+  popularSearch: PopularSearchSchema.optional(),
 })
 
 // --- 4. SCHEMA CHO ConfigHome ---

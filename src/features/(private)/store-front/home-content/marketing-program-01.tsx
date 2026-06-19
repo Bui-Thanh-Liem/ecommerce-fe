@@ -6,22 +6,18 @@ import { useUpdateStoreFrontConfig } from "@/hooks/apis/store-front/use-store-fr
 import { Button } from "@/components/ui/button"
 import { Loader2, Save, X, ImageIcon } from "lucide-react"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input" // Import thêm Input cho Title
+import { Input } from "@/components/ui/input"
 import { CustomCombobox } from "@/components/ui/custom-combobox"
-import { maxCategoriesToShow } from "@/features/(public)/home/category-list"
 import { IMarketingProgram } from "@/shared/interfaces/models/mkt-program/marketing-program.interface"
 import { useFindOptionsMktPrograms } from "@/hooks/apis/mkt-program/use-mkt-program"
 import { MktProgramOption } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 
 interface MarketingProgram01Props {
   idConfig: string
-  mktProgram01:
-    | {
-        title: string
-        mktPrograms: MktProgramOption[]
-      }
-    | undefined
+  mktProgram01: { title: string; mktPrograms: MktProgramOption[] } | undefined
 }
+
+const maxMktPrograms = 15
 
 export function MarketingProgram01({
   idConfig,
@@ -114,7 +110,7 @@ export function MarketingProgram01({
       <div className="space-y-4">
         <Label className="text-sm font-medium">
           Choose multiple marketing programs to display on the homepage. (Max{" "}
-          {maxCategoriesToShow})
+          {maxMktPrograms})
         </Label>
         <CustomCombobox
           options={optionsMktPrograms.map((p) => ({
@@ -129,7 +125,7 @@ export function MarketingProgram01({
             }
           }}
           multiple={true}
-          maxItems={maxCategoriesToShow}
+          maxItems={maxMktPrograms}
           placeholder={
             selectedMktPrograms.length > 0
               ? `${selectedMktPrograms.length} selected`

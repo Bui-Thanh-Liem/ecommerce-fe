@@ -54,6 +54,11 @@ export function NavStoreFront() {
       url: "/store-front/menu",
       icon: <AppWindow />,
     },
+    {
+      title: "Popular search",
+      url: "/store-front/popular-searches",
+      icon: <AppWindow />,
+    },
   ]
 
   return (

@@ -105,13 +105,15 @@ function Category() {
                               key={child.id}
                               className="flex cursor-pointer flex-col items-center space-y-1 rounded-2xl p-2 hover:bg-slate-100"
                             >
-                              <Image
-                                src={child.image.url}
-                                alt={child.name}
-                                width={50}
-                                height={50}
-                                className="h-12.5 w-12.5 overflow-hidden rounded-md object-cover"
-                              />
+                              {child?.image && (
+                                <Image
+                                  src={child?.image.url}
+                                  alt={child.name}
+                                  width={50}
+                                  height={50}
+                                  className="h-12.5 w-12.5 overflow-hidden rounded-md object-cover"
+                                />
+                              )}
                               <p className="line-clamp-2 max-w-32">
                                 {child.name}
                               </p>

@@ -29,7 +29,7 @@ export const teamCategoryServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ITeamCategory>>(
       `/team-categories?${queryParams}`,

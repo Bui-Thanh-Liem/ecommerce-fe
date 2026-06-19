@@ -1,25 +1,22 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { useFindOptionsCategories } from "@/hooks/apis/catalog/use-category"
+import { useGetStoreFront } from "@/hooks/use-get-store-front"
 import { LayoutGrid, Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
-export const maxCategoriesToShow = 15
-
-export function CategoryList() {
-  const { data } = useFindOptionsCategories({ limit: maxCategoriesToShow })
-  const categories = data?.metadata?.data || []
+export function CategoryListSection() {
+  const { listCategories } = useGetStoreFront()
 
   //
-  if (categories.length === 0) return null
+  if (listCategories.length === 0) return null
 
   //
   return (
     <div className="mx-auto overflow-hidden rounded-4xl border-2 border-sky-700 bg-white px-1">
       <div className="grid grid-cols-8 gap-4">
-        {categories.map((category) => (
+        {listCategories.map((category) => (
           <Link
             key={category.id}
             href={`/categories/${category.slug}`}

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Loader2, Save, X, ImageIcon } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { CustomCombobox } from "@/components/ui/custom-combobox"
-import { maxCategoriesToShow } from "@/features/(public)/home/category-list"
 import { CampaignOption } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 import { useFindOptionsCampaigns } from "@/hooks/apis/mkt-program/use-campaign"
 import { ICampaign } from "@/shared/interfaces/models/mkt-program/campaign.interface"
@@ -88,16 +87,15 @@ export function MarketingProgram02({
 
   return (
     <div className="space-y-8">
-      {/* Dropdown Chọn Nhiều Marketing Program */}
+      {/* Dropdown Chọn Nhiều Campaign */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">
-          Choose multiple marketing programs to display on the homepage. (Max{" "}
-          {maxCategoriesToShow})
+          Choose multiple campaigns to display on the homepage.
         </Label>
         <CustomCombobox
           options={optionsCampaigns.map((p) => ({
             value: p.id!,
-            label: p.name || "Untitled Program",
+            label: p.name || "Untitled Campaign",
             image: p.mainImage,
           }))}
           value={selectedCampaigns.map((p) => p.id!)}
@@ -107,7 +105,6 @@ export function MarketingProgram02({
             }
           }}
           multiple={true}
-          maxItems={maxCategoriesToShow}
           placeholder={
             selectedCampaigns.length > 0
               ? `${selectedCampaigns.length} selected`

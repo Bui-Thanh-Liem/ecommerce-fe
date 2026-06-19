@@ -7,7 +7,7 @@ import {
 } from "@/hooks/apis/store-front/use-menu"
 import { menuColumns } from "./menu-column"
 import { useState } from "react"
-import { ProductNavbarAction } from "./menu-action"
+import { MenuAction } from "./menu-action"
 import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 
 export function MenuPage() {
@@ -57,11 +57,7 @@ export function MenuPage() {
         isPending={isPending}
       />
 
-      <ProductNavbarAction
-        open={open}
-        dataEdit={dataEdit}
-        onClose={handleClose}
-      />
+      <MenuAction open={open} dataEdit={dataEdit} onClose={handleClose} />
     </>
   )
 }

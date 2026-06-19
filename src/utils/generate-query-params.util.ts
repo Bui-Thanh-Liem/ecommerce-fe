@@ -1,9 +1,15 @@
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import qs from "qs"
 
-export function generateQueryParams(params?: QueryDto): string {
+export function generateQueryParams({
+  params,
+  isOption = false,
+}: {
+  params?: QueryDto
+  isOption?: boolean
+}): string {
   // 1. Thiết lập giá trị mặc định nếu params không tồn tại
-  const { filters, ...rest } = params || { page: 1, limit: 10 }
+  const { filters, ...rest } = params || { page: 1, limit: isOption ? 50 : 10 }
 
   // 2. Hàm helper để loại bỏ các giá trị falsy khỏi một object
   const removeFalsy = (obj: Record<string, any>) => {

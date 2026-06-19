@@ -29,7 +29,7 @@ export const productPromotionServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IProductPromotion>>(
       `/product-promotions?${queryParams}`,
@@ -42,7 +42,7 @@ export const productPromotionServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<IProductPromotion>>(
       `/product-promotions/options?${queryParams}`,
@@ -55,7 +55,7 @@ export const productPromotionServices = {
   },
 
   getTreeData: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<IProductPromotion[]>(
       `/product-promotions/tree?${queryParams.toString()}`,

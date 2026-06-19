@@ -1,6 +1,6 @@
 import { Footer } from "@/features/(public)/footer/footer"
 import { Header } from "@/features/(public)/header/header"
-import { Navbar } from "@/features/(public)/navbar/navbar"
+import { Navbar } from "@/features/(public)/menu/menu"
 import { TopBanner } from "@/features/(public)/top-banner/top-banner"
 
 export default function RootLayout({

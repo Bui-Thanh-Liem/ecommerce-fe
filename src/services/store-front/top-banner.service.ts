@@ -29,7 +29,7 @@ export const topBannerServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ITopBanner>>(
       `/top-banners?${queryParams}`,
@@ -42,7 +42,7 @@ export const topBannerServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
     const res = await apiCall<ResMetadataDto<ITopBanner>>(
       `/top-banners/options?${queryParams}`,
       {

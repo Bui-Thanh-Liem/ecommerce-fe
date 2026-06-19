@@ -29,7 +29,7 @@ export const mainBannerServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IMainBanner>>(
       `/main-banners?${queryParams}`,
@@ -41,9 +41,11 @@ export const mainBannerServices = {
     return handleResponse<ResMetadataDto<IMainBanner>>(res)
   },
 
-  findOptions: async () => {
+  findOptions: async (query?: QueryDto) => {
+    const queryParams = generateQueryParams({ params: query, isOption: true })
+
     const res = await apiCall<ResMetadataDto<IMainBanner>>(
-      `/main-banners/options`,
+      `/main-banners/options?${queryParams}`,
       {
         method: "GET",
       }

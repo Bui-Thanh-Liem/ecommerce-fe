@@ -7,7 +7,7 @@ import { handleResponse } from "@/utils/handle-response.util"
 
 export const auditLogServices = {
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IAuditLog>>(
       `/audit-logs?${queryParams}`,

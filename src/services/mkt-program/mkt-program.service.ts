@@ -20,7 +20,7 @@ export const mktProgramServices = {
   },
 
   findAll: async (query?: QueryDto<IMarketingProgram>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IMarketingProgram>>(
       `/marketing-programs?${queryParams}`,
@@ -33,7 +33,7 @@ export const mktProgramServices = {
   },
 
   findOptions: async (query?: QueryDto<IMarketingProgram>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<IMarketingProgram>>(
       `/marketing-programs/options?${queryParams}`,

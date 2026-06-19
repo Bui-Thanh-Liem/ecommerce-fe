@@ -8,30 +8,29 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useFindOptionsMainBanners } from "@/hooks/apis/store-front/use-main-banner"
+import { useGetStoreFront } from "@/hooks/use-get-store-front"
 import Image from "next/image"
 import Link from "next/link"
 
-export function MainBanner() {
-  const { data } = useFindOptionsMainBanners()
-  const mainBanners = data?.metadata?.data || []
+export function MainBannerSection() {
+  const { mainBanner } = useGetStoreFront()
 
   //
-  if (mainBanners.length === 0) return null
+  if (mainBanner.length === 0) return null
 
   //
-  if (mainBanners.length === 1) {
+  if (mainBanner.length === 1) {
     return (
       <div className="mx-auto">
         <Card className="relative">
           <CardContent className="flex h-50 items-center justify-center p-6">
-            <Link href={mainBanners[0].slug}>
+            <Link href={mainBanner[0].slug}>
               <Image
                 fill
                 quality={100}
                 className="object-cover"
-                alt={mainBanners[0].title}
-                src={mainBanners[0].image.url}
+                alt={mainBanner[0].title}
+                src={mainBanner[0].image.url}
               />
             </Link>
           </CardContent>
@@ -45,7 +44,7 @@ export function MainBanner() {
     <div className="mx-auto">
       <Carousel className="w-full">
         <CarouselContent>
-          {mainBanners.map((banner, index) => (
+          {mainBanner.map((banner, index) => (
             <CarouselItem key={index}>
               <Card className="relative">
                 <CardContent className="flex h-50 items-center justify-center p-6">

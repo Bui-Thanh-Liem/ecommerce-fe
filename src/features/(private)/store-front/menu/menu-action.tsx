@@ -29,7 +29,7 @@ const initFormValue: z.infer<typeof CreateMenuSchema> = {
 }
 
 //
-export function ProductNavbarAction({
+export function MenuAction({
   open,
   onClose,
   dataEdit,

@@ -40,6 +40,9 @@ import { MarketingProgram01 } from "./marketing-program-01"
 import { MarketingProgram03 } from "./marketing-program-03"
 import { MarketingProgram02 } from "./marketing-program-02"
 import { MarketingProgram04 } from "./marketing-program-04"
+import { MarketingProgram05 } from "./marketing-program-05"
+import { MarketingProgram06 } from "./marketing-program-06"
+import { PopularSearch } from "./popular-search"
 
 // --- 1. COMPONENT SORTABLE ITEM ---
 function SortableItem({
@@ -113,7 +116,7 @@ function BlockDetailConfig({
   blockId: keyof IDetailHomeConfig
   storeFrontConfig: IStoreFrontConfig | null
 }) {
-  console.log("storeFrontConfig :::", storeFrontConfig)
+  const { config } = storeFrontConfig?.homeConfig || {}
 
   const isTopBanner = blockId === "topBanner"
   const isMenu = blockId === "menu"
@@ -124,8 +127,13 @@ function BlockDetailConfig({
   const isMarketingProgram01 = blockId === "marketingProgram01"
   const isMarketingProgram02 = blockId === "marketingProgram02"
   const isMarketingProgram03 = blockId === "marketingProgram03"
-  const isMarketingProgram04 = blockId === "marketingProgram04"
   const isSuggestForYou = blockId === "suggestForYou"
+  const isMarketingProgram04 = blockId === "marketingProgram04"
+  const isMarketingProgram05 = blockId === "marketingProgram05"
+  const isMarketingProgram06 = blockId === "marketingProgram06"
+  const isPopularSearch = blockId === "popularSearch"
+
+  if (!config) return null
 
   return (
     <div className="animate-in fade-in duration-300">
@@ -147,26 +155,23 @@ function BlockDetailConfig({
         {isTopBanner && (
           <TopBanner
             idConfig={storeFrontConfig?.id || ""}
-            topBanner={storeFrontConfig?.homeConfig?.config.topBanner || null}
+            topBanner={config.topBanner || null}
           />
         )}
 
         {/* Header */}
-        {isHeader && <p>The title is not dynamically updated content.</p>}
+        {isHeader && <p>{config.header}</p>}
 
         {/* Menu */}
         {isMenu && (
-          <Menu
-            idConfig={storeFrontConfig?.id || ""}
-            menu={storeFrontConfig?.homeConfig?.config.menu}
-          />
+          <Menu idConfig={storeFrontConfig?.id || ""} menu={config.menu} />
         )}
 
         {/* Main Banner */}
         {isMainBanner && (
           <MainBanner
             idConfig={storeFrontConfig?.id || ""}
-            mainBanner={storeFrontConfig?.homeConfig?.config.mainBanner}
+            mainBanner={config.mainBanner}
           />
         )}
 
@@ -174,22 +179,18 @@ function BlockDetailConfig({
         {isListCategories && (
           <ListCategories
             idConfig={storeFrontConfig?.id || ""}
-            listCategories={storeFrontConfig?.homeConfig?.config.listCategories}
+            listCategories={config.listCategories}
           />
         )}
 
         {/* History Products */}
-        {isHistoryProducts && (
-          <p>The history products content is not dynamically updated.</p>
-        )}
+        {isHistoryProducts && <p>{config.historyProducts}</p>}
 
         {/* Marketing Program 01 */}
         {isMarketingProgram01 && (
           <MarketingProgram01
             idConfig={storeFrontConfig?.id || ""}
-            mktProgram01={
-              storeFrontConfig?.homeConfig?.config.marketingProgram01
-            }
+            mktProgram01={config.marketingProgram01}
           />
         )}
 
@@ -197,9 +198,7 @@ function BlockDetailConfig({
         {isMarketingProgram02 && (
           <MarketingProgram02
             idConfig={storeFrontConfig?.id || ""}
-            mktProgram02={
-              storeFrontConfig?.homeConfig?.config.marketingProgram02
-            }
+            mktProgram02={config.marketingProgram02}
           />
         )}
 
@@ -207,25 +206,40 @@ function BlockDetailConfig({
         {isMarketingProgram03 && (
           <MarketingProgram03
             idConfig={storeFrontConfig?.id || ""}
-            mktProgram03={
-              storeFrontConfig?.homeConfig?.config.marketingProgram03
-            }
+            mktProgram03={config.marketingProgram03}
           />
         )}
 
         {/* Suggest for you */}
-        {isSuggestForYou && (
-          <p>The suggest for you content is not dynamically updated.</p>
-        )}
+        {isSuggestForYou && <p>{config.suggestForYou}</p>}
 
         {/* Marketing Program 04 */}
         {isMarketingProgram04 && (
           <MarketingProgram04
             idConfig={storeFrontConfig?.id || ""}
-            mktProgram04={
-              storeFrontConfig?.homeConfig.config.marketingProgram04
-            }
+            mktProgram04={config.marketingProgram04}
           />
+        )}
+
+        {/* Marketing Program 05 */}
+        {isMarketingProgram05 && (
+          <MarketingProgram05
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram05={config.marketingProgram05}
+          />
+        )}
+
+        {/* Marketing Program 06 */}
+        {isMarketingProgram06 && (
+          <MarketingProgram06
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram06={config.marketingProgram06}
+          />
+        )}
+
+        {/* Popular Search */}
+        {isPopularSearch && (
+          <PopularSearch idConfig={storeFrontConfig?.id || ""} popularSearch={config.popularSearch} />
         )}
       </div>
     </div>
@@ -277,7 +291,12 @@ export function HomeContent({
       label: "Marketing program 05",
       color: "bg-blue-900",
     },
-    { id: "topic", label: "Topic", color: "bg-slate-700" },
+    {
+      id: "marketingProgram06",
+      label: "Marketing program 06",
+      color: "bg-blue-900",
+    },
+    { id: "popularSearch", label: "Popular Search", color: "bg-slate-700" },
   ])
 
   useEffect(() => {

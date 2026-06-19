@@ -116,7 +116,7 @@ export function Menu({ idConfig, menu }: MenuProps) {
       </div>
 
       {/* Khu vực Xem trước danh sách Menu (Preview) */}
-      <div className="max-h-[calc(100vh-580px)] space-y-4 overflow-y-auto">
+      <div className="max-h-[calc(100vh-600px)] space-y-4 overflow-y-auto">
         <Label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Preview ({selectedMenus.length}):
         </Label>

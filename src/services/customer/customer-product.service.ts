@@ -17,7 +17,7 @@ export const customerProductServices = {
   },
 
   findAll: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ICustomerProduct>>(
       `/customer-products?${queryParams}`,
@@ -30,7 +30,7 @@ export const customerProductServices = {
   },
 
   findOptions: async (query?: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ICustomerProduct>>(
       `/customer-products/options?${queryParams}`,

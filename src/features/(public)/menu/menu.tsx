@@ -1,14 +1,23 @@
 "use client"
 
-import { useFindOptionsMenus } from "@/hooks/apis/store-front/use-menu"
+import { useGetStoreFront } from "@/hooks/use-get-store-front"
 import Link from "next/link"
 
 export function Navbar() {
-  const { data } = useFindOptionsMenus()
-  const menus = data?.metadata?.data || []
+  const { menus, isLoading } = useGetStoreFront()
 
-  if (menus.length === 0) return null
+  //
+  if (menus?.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <p className="text-gray-500">
+          {isLoading ? "Đang tải..." : "Không có menu nào"}
+        </p>
+      </div>
+    )
+  }
 
+  //
   return (
     <nav className="grid grid-cols-12 bg-white">
       <div className="col-span-2"></div>

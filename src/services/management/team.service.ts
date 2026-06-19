@@ -26,7 +26,7 @@ export const teamServices = {
   },
 
   findAll: async (query: QueryDto) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<ITeam>>(`/teams?${queryParams}`, {
       method: "GET",

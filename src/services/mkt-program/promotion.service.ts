@@ -20,7 +20,7 @@ export const promotionServices = {
   },
 
   findAll: async (query?: QueryDto<IPromotion>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IPromotion>>(
       `/promotions?${queryParams}`,
@@ -33,7 +33,7 @@ export const promotionServices = {
   },
 
   findOptions: async (query?: QueryDto<IPromotion>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<IPromotion>>(
       `/promotions/options?${queryParams}`,

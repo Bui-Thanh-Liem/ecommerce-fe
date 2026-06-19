@@ -59,7 +59,9 @@ export function NavOrder() {
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="gap-x-1 uppercase">
         ORDERS
-        <Badge className="mb-3 bg-green-50 text-green-700">Low</Badge>
+        <Badge variant="destructive" className="mb-3">
+          high
+        </Badge>
       </SidebarGroupLabel>
       <SidebarMenu>
         {mainItems.map((item) => (

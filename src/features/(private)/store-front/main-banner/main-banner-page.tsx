@@ -166,6 +166,7 @@ export function MainBannerPage() {
         }}
         className="@xl/main:grid-cols-1 @5xl/main:grid-cols-1"
       />
+
       <MainBannerAction
         open={open}
         dataEdit={dataEdit}

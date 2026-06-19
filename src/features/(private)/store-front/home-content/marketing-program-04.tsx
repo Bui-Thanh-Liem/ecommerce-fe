@@ -8,27 +8,26 @@ import { Loader2, Save, X, ImageIcon } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { CustomCombobox } from "@/components/ui/custom-combobox"
-import { maxCategoriesToShow } from "@/features/(public)/home/category-list"
 import { CampaignOption } from "@/shared/interfaces/models/store-front/store-front-config.interface"
 import { useFindOptionsCampaigns } from "@/hooks/apis/mkt-program/use-campaign"
 
 interface MarketingProgram04Props {
   idConfig: string
-  mktProgram04: { title: string; campaign: CampaignOption } | null
+  mktProgram04: { title: string; campaign: CampaignOption } | undefined
 }
 
 export function MarketingProgram04({
   idConfig,
   mktProgram04,
 }: MarketingProgram04Props) {
-  // Lấy danh sách các marketing chương trình có sẵn từ API công khai/options
+  // Lấy danh sách các campaign có sẵn từ API công khai/options
   const { data } = useFindOptionsCampaigns()
   const optionsCampaigns = data?.metadata?.data || []
 
   // Hook update API cấu hình giao diện
   const { mutateAsync, isPending } = useUpdateStoreFrontConfig()
 
-  // State lưu trữ tiêu đề và mảng các marketing chương trình đang được chọn
+  // State lưu trữ tiêu đề và mảng các campaign đang được chọn
   const [titleValue, setTitleValue] = useState("")
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignOption>()
 
@@ -76,13 +75,13 @@ export function MarketingProgram04({
         })
       }
     } catch (error) {
-      console.error("Error updating marketing programs config:", error)
+      console.error("Error updating campaign config:", error)
     }
   }
 
   return (
     <div className="space-y-8">
-      {/* Ô nhập tiêu đề của cụm Marketing */}
+      {/* Ô nhập tiêu đề của cụm campaign */}
       <div className="space-y-2">
         <Label htmlFor="mkt-title" className="text-sm font-medium">
           Section Title
@@ -95,7 +94,7 @@ export function MarketingProgram04({
         />
       </div>
 
-      {/* Dropdown Chọn Nhiều Marketing Program */}
+      {/* Dropdown Chọn Nhiều Campaign */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">
           Choose a campaign to display on the homepage
@@ -103,8 +102,8 @@ export function MarketingProgram04({
         <CustomCombobox
           options={optionsCampaigns.map((p) => ({
             value: p.id!,
-            label: p.name || "Untitled Program",
             image: p.mainImage,
+            label: p.name || "Untitled Campaign",
           }))}
           value={selectedCampaign?.id}
           onChange={(value) => {
@@ -112,10 +111,9 @@ export function MarketingProgram04({
               handleCampaignChange(value)
             }
           }}
-          maxItems={maxCategoriesToShow}
           placeholder="Choose a campaign"
-          searchPlaceholder="Search program names..."
-          emptyMessage="No marketing programs found."
+          searchPlaceholder="Search campaign names..."
+          emptyMessage="No campaigns found."
           // Render item trong danh sách sổ xuống của Combobox
           renderItem={(option) => (
             <div className="flex w-full items-center gap-3 py-0.5 text-left">
@@ -199,7 +197,7 @@ export function MarketingProgram04({
           </div>
         ) : (
           <div className="text-muted-foreground bg-muted/50 flex h-24 w-full items-center justify-center rounded-xl border-2 border-dashed text-sm">
-            No marketing programs selected
+            No campaign selected
           </div>
         )}
       </div>
@@ -208,7 +206,7 @@ export function MarketingProgram04({
       <div className="flex">
         <Button
           onClick={onSubmit}
-          disabled={isPending || !!selectedCampaign?.id}
+          disabled={isPending || !selectedCampaign?.id}
           className="ml-auto"
         >
           {isPending ? (

@@ -17,7 +17,7 @@ export const menuServices = {
   },
 
   findAll: async (query?: QueryDto<IMenu>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IMenu>>(`/menus?${queryParams}`, {
       method: "GET",
@@ -27,7 +27,7 @@ export const menuServices = {
   },
 
   findOptions: async (query?: QueryDto<IMenu>) => {
-    const queryParams = generateQueryParams(query)
+    const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<IMenu>>(
       `/menus/options?${queryParams}`,
