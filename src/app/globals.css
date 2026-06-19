@@ -143,3 +143,18 @@
     @apply rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm font-semibold text-pink-600;
   }
 }
+
+@layer components {
+  /* Loại bỏ các border mặc định thô cứng của Sonner */
+  [data-sonner-toast] {
+    --normal-bg: transparent !important;
+    --normal-border: transparent !important;
+    font-family: inherit !important;
+  }
+
+  /* Tạo hiệu ứng stack (xếp chồng) mượt hơn khi có nhiều toast */
+  [data-sonner-toaster][data-theme="dark"] {
+    --normal-bg: rgba(9, 9, 11, 0.95);
+    --normal-border: rgba(39, 39, 42, 0.8);
+  }
+}

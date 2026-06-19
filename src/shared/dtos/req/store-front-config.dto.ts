@@ -57,7 +57,7 @@ export const MktSessionProgramSchema = z.object({
 
 // marketingProgram02
 export const MktSessionProgram02Schema = z.object({
-  campaign: z.array(CampaignSchema),
+  campaigns: z.array(CampaignSchema),
 })
 
 // marketingProgram04 & marketingProgram05 (Cho phép null)

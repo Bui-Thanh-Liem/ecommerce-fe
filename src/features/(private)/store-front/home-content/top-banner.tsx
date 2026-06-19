@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { ITopBanner } from "@/shared/interfaces/models/store-front/top-banner.interface"
 import { useUpdateStoreFrontConfig } from "@/hooks/apis/store-front/use-store-front-config"
 import { useFindOptionsTopBanners } from "@/hooks/apis/store-front/use-top-banner"
 import { Button } from "@/components/ui/button"

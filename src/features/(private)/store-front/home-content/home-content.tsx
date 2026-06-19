@@ -38,6 +38,8 @@ import { toast } from "sonner"
 import { ListCategories } from "./list-categories"
 import { MarketingProgram01 } from "./marketing-program-01"
 import { MarketingProgram03 } from "./marketing-program-03"
+import { MarketingProgram02 } from "./marketing-program-02"
+import { MarketingProgram04 } from "./marketing-program-04"
 
 // --- 1. COMPONENT SORTABLE ITEM ---
 function SortableItem({
@@ -111,6 +113,8 @@ function BlockDetailConfig({
   blockId: keyof IDetailHomeConfig
   storeFrontConfig: IStoreFrontConfig | null
 }) {
+  console.log("storeFrontConfig :::", storeFrontConfig)
+
   const isTopBanner = blockId === "topBanner"
   const isMenu = blockId === "menu"
   const isHeader = blockId === "header"
@@ -120,6 +124,8 @@ function BlockDetailConfig({
   const isMarketingProgram01 = blockId === "marketingProgram01"
   const isMarketingProgram02 = blockId === "marketingProgram02"
   const isMarketingProgram03 = blockId === "marketingProgram03"
+  const isMarketingProgram04 = blockId === "marketingProgram04"
+  const isSuggestForYou = blockId === "suggestForYou"
 
   return (
     <div className="animate-in fade-in duration-300">
@@ -187,12 +193,37 @@ function BlockDetailConfig({
           />
         )}
 
+        {/* Marketing Program 02 */}
+        {isMarketingProgram02 && (
+          <MarketingProgram02
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram02={
+              storeFrontConfig?.homeConfig?.config.marketingProgram02
+            }
+          />
+        )}
+
         {/* Marketing Program 03 */}
         {isMarketingProgram03 && (
           <MarketingProgram03
             idConfig={storeFrontConfig?.id || ""}
             mktProgram03={
               storeFrontConfig?.homeConfig?.config.marketingProgram03
+            }
+          />
+        )}
+
+        {/* Suggest for you */}
+        {isSuggestForYou && (
+          <p>The suggest for you content is not dynamically updated.</p>
+        )}
+
+        {/* Marketing Program 04 */}
+        {isMarketingProgram04 && (
+          <MarketingProgram04
+            idConfig={storeFrontConfig?.id || ""}
+            mktProgram04={
+              storeFrontConfig?.homeConfig.config.marketingProgram04
             }
           />
         )}
@@ -291,11 +322,10 @@ export function HomeContent({
         const oldIndex = items.findIndex((item) => item.id === active.id)
         const newIndex = items.findIndex((item) => item.id === over.id)
 
-        // KIỂM TRA ĐIỀU KIỆN:
         // Nếu item đem kéo thuộc top 3 HOẶC vị trí định thả vào thuộc top 3
         if (oldIndex < 3 || newIndex < 3) {
-          toast.info("The top 3 blocks are fixed and cannot be rearranged.")
-          return items // Trả về mảng cũ, không thay đổi gì cả
+          toast.warning("The top 3 blocks are fixed and cannot be rearranged.")
+          return items
         }
 
         return arrayMove(items, oldIndex, newIndex)

@@ -51,7 +51,7 @@ export interface IDetailHomeConfig {
     mktPrograms: MktProgramOption[]
   }
   marketingProgram02: {
-    campaign: CampaignOption[]
+    campaigns: CampaignOption[]
   }
   marketingProgram03: {
     title: string
@@ -60,12 +60,12 @@ export interface IDetailHomeConfig {
   suggestForYou: string // Không có đối tượng cấu hình động cho suggestForYou
   marketingProgram04: {
     title: string
-    campaign: CampaignOption | null
-  }
+    campaign: CampaignOption
+  } | null
   marketingProgram05: {
     title: string
-    campaign: CampaignOption | null
-  }
+    campaign: CampaignOption
+  } | null
   marketingProgram06: {
     title: string
     campaigns: CampaignOption[]
