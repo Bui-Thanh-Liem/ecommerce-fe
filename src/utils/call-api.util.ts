@@ -50,7 +50,7 @@ export const apiCall = async <T>(
     } else if ([401].includes(statusCode)) {
       // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho staff login lại
       deleteStorage()
-      await fetch("/api/auth/logout", {
+      await fetch("/api/auth/signout", {
         method: "POST",
       })
     }
