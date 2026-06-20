@@ -25,6 +25,7 @@ export interface IVariantAttribute {
 export interface IProductVariant extends IBase {
   product: IProduct
   sku: string
+  slug: string
   barcode: string
   price: number
   costPrice: number

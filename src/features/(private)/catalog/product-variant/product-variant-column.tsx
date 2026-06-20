@@ -111,7 +111,7 @@ function SalesAttributesCell({
     <Dialog>
       <DialogTrigger asChild>
         {/* Sửa lại Trigger thành asChild để tránh lỗi lồng thẻ button bừa bãi */}
-        <Button variant="outline">View Sales Attributes</Button>
+        <Button variant="outline">View</Button>
       </DialogTrigger>
 
       <DialogContent className="w-full rounded-2xl p-6 sm:max-w-xl">

@@ -106,7 +106,7 @@ export function TopBanner({ idConfig, topBanner }: TopBannerProps) {
           Preview:
         </Label>
         {selectedBanner?.image?.url ? (
-          <div className="bg-muted relative flex h-12 w-full items-center justify-center overflow-hidden rounded-lg">
+          <div className="bg-muted relative flex h-12 w-full items-center justify-center overflow-hidden rounded-xl">
             <Image
               fill
               priority

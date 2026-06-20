@@ -20,6 +20,16 @@ export const useFindOptionsProductVariants = (query?: QueryDto) => {
   })
 }
 
+export const useFindAllByCampaignProductVariants = (
+  campaignId: string,
+  query?: QueryDto
+) => {
+  return useQuery({
+    queryKey: ["product-variants-campaign", campaignId],
+    queryFn: () => productVariantServices.findAllByCampaign(campaignId, query),
+  })
+}
+
 export const useCreateProductVariant = () => {
   const queryClient = useQueryClient()
 

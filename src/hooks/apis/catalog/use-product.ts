@@ -21,6 +21,13 @@ export const useFindOptionsProducts = (query?: QueryDto) => {
   })
 }
 
+export const useFindProductBySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["products", slug],
+    queryFn: () => productServices.findOneBySlug(slug),
+  })
+}
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient()
 

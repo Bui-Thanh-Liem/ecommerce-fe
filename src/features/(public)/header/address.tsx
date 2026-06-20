@@ -96,7 +96,7 @@ export function Address() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{location}</p>
+          <p> {location || "Vui lòng chọn địa chỉ giao hàng"}</p>
         </TooltipContent>
       </Tooltip>
 

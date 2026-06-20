@@ -169,7 +169,7 @@ export function MainBanner({ idConfig, mainBanner }: MainBannerProps) {
                     {banner.title || "Chưa đặt tiêu đề"}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    ID: {banner.id}
+                    Slug: {banner.slug}
                   </span>
                 </div>
 

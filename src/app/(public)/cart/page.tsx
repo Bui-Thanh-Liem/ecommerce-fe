@@ -1,4 +1,4 @@
-import { CartPage } from "@/features/(public)/cart/cart-page"
+import { CartPage } from "@/features/(public)/pages/cart/cart-page"
 
 export const metadata = {
   title: "Giỏ hàng - Siêu thị điện máy trực tuyến",

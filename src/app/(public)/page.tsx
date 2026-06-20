@@ -1,4 +1,4 @@
-import { HomePage } from "@/features/(public)/home/home-page"
+import { HomePage } from "@/features/(public)/pages/home/home-page"
 
 export const metadata = {
   title: "Siêu thị điện máy - mua bán đồ  điện tử, gia dụng chính hãng",

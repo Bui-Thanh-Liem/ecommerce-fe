@@ -90,7 +90,7 @@ export function MarketingProgram02({
       {/* Dropdown Chọn Nhiều Campaign */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">
-          Choose multiple campaigns to display on the homepage.
+          Choose multiple campaigns to display on the homepage. (Min 2)
         </Label>
         <CustomCombobox
           options={optionsCampaigns.map((p) => ({

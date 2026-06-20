@@ -1,4 +1,4 @@
-import { LoginPage } from "@/features/(public)/purchase-history/login-page"
+import { LoginPage } from "@/features/(public)/pages/purchase-history/login-page"
 
 export const metadata = {
   title: "Đăng nhập - Siêu thị điện máy trực tuyến",

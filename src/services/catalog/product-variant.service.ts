@@ -32,6 +32,19 @@ export const productVariantServices = {
     return handleResponse<ResMetadataDto<IProductVariant>>(res)
   },
 
+  findAllByCampaign: async (campaignId: string, query?: QueryDto) => {
+    const queryParams = generateQueryParams({ params: query, isOption: true })
+
+    const res = await apiCall<ResMetadataDto<IProductVariant>>(
+      `/product-variants/campaign/${campaignId}?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IProductVariant>>(res)
+  },
+
   findAll: async (query?: QueryDto) => {
     const queryParams = generateQueryParams({ params: query })
 

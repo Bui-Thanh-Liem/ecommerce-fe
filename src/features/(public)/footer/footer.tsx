@@ -20,11 +20,11 @@ export function Footer() {
   ]
 
   return (
-    <footer className="w-full border-t border-gray-100 bg-white px-4 py-6 font-sans text-[#333] select-none">
-      {/* Container giới hạn chiều rộng và căn giữa giống thiết kế */}
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 md:grid-cols-12">
+    <footer className="grid w-full grid-cols-12 border-t border-gray-100 bg-white py-6 font-sans text-[#333] select-none">
+      <div className="col-span-2"></div>
+      <div className="col-span-8 grid grid-cols-4">
         {/* Cột 1: Tổng đài hỗ trợ */}
-        <div className="md:col-span-3">
+        <div className="">
           <h3 className="mb-3 text-[15px] font-bold text-gray-800">
             Tổng đài hỗ trợ
           </h3>
@@ -47,7 +47,7 @@ export function Footer() {
         </div>
 
         {/* Cột 2: Về công ty */}
-        <div className="md:col-span-3">
+        <div className="">
           <h3 className="mb-3 text-[15px] font-bold text-gray-800">
             Về công ty
           </h3>
@@ -66,7 +66,7 @@ export function Footer() {
         </div>
 
         {/* Cột 3: Thông tin khác */}
-        <div className="md:col-span-3">
+        <div className="">
           <h3 className="mb-3 text-[15px] font-bold text-gray-800">
             Thông tin khác
           </h3>
@@ -102,7 +102,7 @@ export function Footer() {
         </div>
 
         {/* Cột 4: Website cùng tập đoàn & MXH */}
-        <div className="flex flex-col gap-4 md:col-span-3">
+        <div className="flex flex-col gap-4">
           <div>
             <h3 className="mb-3 text-[15px] font-bold text-gray-800">
               Website cùng tập đoàn
@@ -162,6 +162,7 @@ export function Footer() {
           </div>
         </div>
       </div>
+      <div className="col-span-2"></div>
     </footer>
   )
 }

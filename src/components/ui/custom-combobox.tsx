@@ -101,7 +101,7 @@ export function CustomCombobox({
             className
           )}
         >
-          <div className="flex max-w-[90%] flex-wrap items-center gap-1.5 text-left">
+          <div className="flex max-w-[90%] flex-wrap items-center gap-1.5 text-left py-2">
             {selectedValues.length > 0 ? (
               multiple ? (
                 selectedValues.map((val) => {

@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { useGetStoreFront } from "@/hooks/use-get-store-front"
+import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -42,7 +43,20 @@ export function MainBannerSection() {
   //
   return (
     <div className="mx-auto">
-      <Carousel className="w-full">
+      <Carousel
+        className="w-full"
+        // Thêm plugins ở đây
+        plugins={[
+          Autoplay({
+            delay: 5000,
+            stopOnInteraction: true,
+          }),
+        ]}
+        // Nên bật loop để chạy liên tục mượt mà
+        opts={{
+          loop: true,
+        }}
+      >
         <CarouselContent>
           {mainBanner.map((banner, index) => (
             <CarouselItem key={index}>

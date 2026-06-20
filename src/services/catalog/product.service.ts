@@ -45,6 +45,14 @@ export const productServices = {
     return handleResponse<ResMetadataDto<IProduct>>(res)
   },
 
+  findOneBySlug: async (slug: string) => {
+    const res = await apiCall<IProduct>(`/products/slug/${slug}`, {
+      method: "GET",
+    })
+
+    return handleResponse<IProduct>(res)
+  },
+
   update: async (id: string, payload: UpdateProductDto) => {
     const res = await apiCall(`/products/${id}`, {
       method: "PATCH",
