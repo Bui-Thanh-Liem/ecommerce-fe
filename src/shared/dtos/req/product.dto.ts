@@ -5,7 +5,11 @@ import { CreateProductImageSchema } from "./product-image.dto"
 export const SpecificationItemSchema = z.object({
   key: z.string().trim().min(1, "Key is required."),
 
+  label: z.string().trim().min(1, "Label is required."),
+
   value: z.string().trim().min(1, "Value is required."),
+
+  desc: z.string().trim().optional(),
 
   isHighlight: z.boolean().optional(),
 

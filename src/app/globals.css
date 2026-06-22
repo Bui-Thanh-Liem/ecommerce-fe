@@ -158,3 +158,24 @@
     --normal-border: rgba(39, 39, 42, 0.8);
   }
 }
+
+@keyframes truck-drive {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-1px) translateX(1px);
+  }
+  50% {
+    transform: translateY(0) translateX(2px);
+  }
+  75% {
+    transform: translateY(-1px) translateX(1px);
+  }
+}
+
+.animate-truck {
+  display: inline-block;
+  animation: truck-drive 0.6s infinite linear;
+}

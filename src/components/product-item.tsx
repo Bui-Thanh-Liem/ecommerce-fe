@@ -47,7 +47,9 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
     Math.round(variant.price / (1 - variant.discountPercent / 100))
 
   return (
-    <Link href={`/${category.slug}/${product.slug}/${variant.slug}`}>
+    <Link
+      href={`/${category.parent?.slug}/${category.slug}/${product.slug}/${variant.slug}`}
+    >
       <Card className="min-h-120 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-200 select-none hover:shadow-md">
         <CardContent className="relative flex h-full flex-col justify-between gap-2.5 p-3.5 font-sans text-sm">
           {/* 1. Top Badge: Trả góp cố định ở góc trên */}

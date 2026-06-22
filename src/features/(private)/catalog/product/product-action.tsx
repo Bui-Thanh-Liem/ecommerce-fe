@@ -289,7 +289,7 @@ export function ProductAction({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeaderAction
           title={!!dataEdit ? "Edit Product" : "Add New Product"}
           desc={`Fill in the details to ${!!dataEdit ? "update" : "create"} a new product.`}
@@ -800,8 +800,10 @@ export function ProductAction({
                     items: [
                       {
                         key: "",
-                        value: "",
                         order: 0,
+                        desc: "",
+                        value: "",
+                        label: "",
                       },
                     ],
                   })
@@ -920,7 +922,7 @@ function SpecificationItems({
             key={item.id}
             className="group border-muted-foreground/10 bg-muted/5 hover:border-muted-foreground/20 hover:bg-muted/10 relative space-y-3 rounded-2xl border p-3 text-xs transition-all duration-200"
           >
-            {/* Hàng 1: Inputs cho Key và Value + Nút Xóa */}
+            {/* Hàng 1: Inputs cho Key, label, desc và Value + Nút Xóa */}
             <div className="flex items-start gap-2.5">
               <div className="grid flex-1 grid-cols-2 gap-2.5">
                 <FieldGroup>
@@ -931,7 +933,7 @@ function SpecificationItems({
                       <Field data-invalid={fieldState.invalid}>
                         <Input
                           {...field}
-                          placeholder="Key (e.g. RAM)"
+                          placeholder="Key (e.g. screen)"
                           className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
                         />
                         {fieldState.invalid && (
@@ -950,10 +952,48 @@ function SpecificationItems({
                       <Field data-invalid={fieldState.invalid}>
                         <Input
                           {...field}
-                          placeholder="Value (e.g. 16GB)"
+                          placeholder="Value (e.g. 32inch)"
                           className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
                         />
 
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Controller
+                    name={`specifications.${specIdx}.items.${itemIdx}.label`}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <Input
+                          {...field}
+                          placeholder="Label (e.g. Screen Size)"
+                          className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Controller
+                    name={`specifications.${specIdx}.items.${itemIdx}.desc`}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <Input
+                          {...field}
+                          placeholder="Description (e.g. 32-inch LED display)"
+                          className="bg-background border-muted-foreground/20 focus-visible:ring-primary h-9 shadow-sm"
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -1034,7 +1074,14 @@ function SpecificationItems({
         size="sm"
         className="border-primary/30 text-primary hover:text-primary hover:bg-primary/5 hover:border-primary mt-1 h-9 w-full rounded-2xl border-dashed text-xs font-medium transition-all"
         onClick={() =>
-          appendItem({ key: "", value: "", order: 0, isHighlight: false })
+          appendItem({
+            key: "",
+            order: 0,
+            desc: "",
+            value: "",
+            label: "",
+            isHighlight: false,
+          })
         }
       >
         <Plus className="mr-1.5 h-4 w-4" /> Add Item

@@ -626,6 +626,8 @@ export function ProductVariantAction({
                     appendSpec({
                       key: "",
                       label: "",
+                      desc: "",
+                      order: 0,
                       value: "",
                       isSKU: false,
                     })
@@ -643,7 +645,7 @@ export function ProductVariantAction({
                   >
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
-                        <div className="grid flex-1 grid-cols-3 gap-2">
+                        <div className="grid flex-1 grid-cols-2 gap-2">
                           {/* Input cho Key */}
                           <FieldGroup>
                             <Controller
@@ -653,7 +655,27 @@ export function ProductVariantAction({
                                 <Field data-invalid={fieldState.invalid}>
                                   <Input
                                     {...field}
-                                    placeholder="Key (e.g., 256)"
+                                    placeholder="Key (e.g., disk)"
+                                    className="h-9 text-xs"
+                                  />
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              )}
+                            />
+                          </FieldGroup>
+
+                          {/* Input cho Value */}
+                          <FieldGroup>
+                            <Controller
+                              name={`salesAttributes.${specIdx}.value`}
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                  <Input
+                                    {...field}
+                                    placeholder="Value (e.g., 256GB)"
                                     className="h-9 text-xs"
                                   />
                                   {fieldState.invalid && (
@@ -684,16 +706,16 @@ export function ProductVariantAction({
                             />
                           </FieldGroup>
 
-                          {/* Input cho Value */}
+                          {/* Input for Description */}
                           <FieldGroup>
                             <Controller
-                              name={`salesAttributes.${specIdx}.value`}
+                              name={`salesAttributes.${specIdx}.desc`}
                               control={form.control}
                               render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
                                   <Input
                                     {...field}
-                                    placeholder="Value (e.g., 256GB)"
+                                    placeholder="Description (e.g., 256GB SSD)"
                                     className="h-9 text-xs"
                                   />
                                   {fieldState.invalid && (
@@ -716,26 +738,49 @@ export function ProductVariantAction({
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      <div className="flex items-center gap-x-2.5">
-                        <Controller
-                          name={`salesAttributes.${specIdx}.isSKU`}
-                          control={form.control}
-                          render={({ field }) => (
-                            <Switch
-                              className="data-[state=checked]:bg-primary scale-90"
-                              checked={field.value}
-                              id={`sku-${specIdx}`}
-                              onCheckedChange={field.onChange}
-                            />
-                          )}
-                        />
 
-                        <label
-                          htmlFor={`sku-${specIdx}`}
-                          className="text-muted-foreground group-hover:text-foreground cursor-pointer font-medium transition-colors select-none"
-                        >
-                          SKU?
-                        </label>
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-x-2.5">
+                          <Controller
+                            name={`salesAttributes.${specIdx}.isSKU`}
+                            control={form.control}
+                            render={({ field }) => (
+                              <Switch
+                                className="data-[state=checked]:bg-primary scale-90"
+                                checked={field.value}
+                                id={`sku-${specIdx}`}
+                                onCheckedChange={field.onChange}
+                              />
+                            )}
+                          />
+
+                          <label
+                            htmlFor={`sku-${specIdx}`}
+                            className="text-muted-foreground group-hover:text-foreground cursor-pointer font-medium transition-colors select-none"
+                          >
+                            SKU?
+                          </label>
+                        </div>
+                        <div className="border-muted-foreground/10 bg-background flex items-center gap-x-2 rounded-xl border px-2 py-0.5 shadow-sm">
+                          <span className="text-muted-foreground text-[11px] font-medium tracking-wide">
+                            Order:
+                          </span>
+
+                          <Controller
+                            name={`salesAttributes.${specIdx}.order`}
+                            control={form.control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                type="number"
+                                className="h-6 w-12 [appearance:textfield] border-none bg-transparent p-0 text-center font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                onChange={(e) =>
+                                  field.onChange(e.target.valueAsNumber || 0)
+                                }
+                              />
+                            )}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

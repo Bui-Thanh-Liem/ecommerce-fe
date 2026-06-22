@@ -1,11 +1,9 @@
 import { ProductVariantCondition } from "@/shared/enums/product-variant-condition.enum"
 import { CreateProductImageSchema } from "./product-image.dto"
 import z from "zod"
+import { SpecificationItemSchema } from "./product.dto"
 
-const SalesAttributesSchema = z.object({
-  key: z.string().trim().min(1, "Key is required."),
-  label: z.string().trim().min(1, "Label is required."),
-  value: z.string().trim().min(1, "Value is required."),
+const SalesAttributesSchema = SpecificationItemSchema.extend({
   isSKU: z.boolean(),
 })
 
