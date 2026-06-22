@@ -58,6 +58,17 @@ export const productVariantServices = {
     return handleResponse<ResMetadataDto<IProductVariant>>(res)
   },
 
+  findOneBySlug: async (slug: string) => {
+    const res = await apiCall<IProductVariant>(
+      `/product-variants/slug/${slug}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<IProductVariant>(res)
+  },
+
   update: async (id: string, payload: UpdateProductVariantDto) => {
     const res = await apiCall(`/product-variants/${id}`, {
       method: "PATCH",

@@ -25,6 +25,8 @@ export const useFindProductBySlug = (slug: string) => {
   return useQuery({
     queryKey: ["products", slug],
     queryFn: () => productServices.findOneBySlug(slug),
+
+    enabled: !!slug, // Chỉ chạy query khi slug tồn tại
   })
 }
 

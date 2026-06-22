@@ -20,6 +20,15 @@ export const useFindOptionsProductVariants = (query?: QueryDto) => {
   })
 }
 
+export const useFindProductVariantBySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["product-variants", slug],
+    queryFn: () => productVariantServices.findOneBySlug(slug),
+
+    enabled: !!slug, // Chỉ thực hiện truy vấn khi slug có giá trị
+  })
+}
+
 export const useFindAllByCampaignProductVariants = (
   campaignId: string,
   query?: QueryDto
