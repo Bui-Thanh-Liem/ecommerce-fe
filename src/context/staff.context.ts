@@ -16,7 +16,7 @@ export const useStaffContext = create<State>()(
       clearStaff: () => set({ staff: null }),
     }),
     {
-      name: "staff_storage",
+      name: "e_s", // staff
       storage: createJSONStorage(() => localStorage),
     }
   )

@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { useGetStoreFront } from "@/hooks/use-get-store-front"
+import { formatVND } from "@/utils/format-vnd.util"
 import { LayoutGrid, Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -42,7 +43,7 @@ export function CategoryListSection() {
                 variant="destructive"
                 className="absolute top-4 right-0 bg-red-50"
               >
-                ${category?.minPrice?.toFixed(2)}
+                {formatVND(category.minPrice)}
               </Badge>
             )}
           </Link>

@@ -7,6 +7,7 @@ import { useFindOptionsProductPromotions } from "@/hooks/apis/mkt-program/use-pr
 import { PromotionApplyType } from "@/shared/enums/promotion-apply-type.enum"
 import Image from "next/image"
 import { useFindVariantByPromotion } from "@/hooks/apis/mkt-program/use-category-promotion"
+import { formatVND } from "@/utils/format-vnd.util"
 
 export function PromotionContent({ promotion }: { promotion: IPromotion }) {
   const {
@@ -191,10 +192,10 @@ export function PromotionContent({ promotion }: { promotion: IPromotion }) {
                 <div className="mt-2 border-t border-gray-50 pt-2">
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-400 line-through">
-                      ${variant.price.toFixed(2)}
+                      {formatVND(variant.price)}
                     </span>
                     <span className="text-sm font-bold text-red-600">
-                      ${displayPrice.toFixed(2)}
+                      {formatVND(displayPrice)}
                     </span>
                   </div>
                 </div>

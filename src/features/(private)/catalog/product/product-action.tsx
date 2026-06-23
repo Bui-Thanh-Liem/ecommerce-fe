@@ -62,13 +62,14 @@ const initFormValue: z.infer<typeof CreateProductSchema> = {
   productImages: [],
   discountPercent: 0,
   specifications: [],
-  status: ProductStatus.DRAFT,
   isFeatured: false,
   allowReview: true,
+  width: 0,
   weight: 0,
   height: 0,
   length: 0,
-  width: 0,
+  secondaryCategories: [],
+  status: ProductStatus.DRAFT,
 }
 
 //
@@ -116,20 +117,23 @@ export function ProductAction({
       form.reset({
         name: dataEdit.name,
         desc: dataEdit.desc,
-        status: dataEdit.status,
-        brand: dataEdit.brand.id,
-        basePrice: dataEdit.basePrice,
-        isFeatured: dataEdit.isFeatured,
-        allowReview: dataEdit.allowReview,
+        model: dataEdit.model,
+        width: dataEdit.width,
         weight: dataEdit.weight,
         height: dataEdit.height,
         length: dataEdit.length,
-        width: dataEdit.width,
+        brand: dataEdit.brand.id,
+        status: dataEdit.status,
+        basePrice: dataEdit.basePrice,
         category: dataEdit.category.id,
+        isFeatured: dataEdit.isFeatured,
+        allowReview: dataEdit.allowReview,
         discountPercent: dataEdit.discountPercent,
         specifications: dataEdit.specifications || [],
         productImages:
-          dataEdit.productImages?.map((img) => ({ image: img.image })) || [], // Map lại format để đưa vào form
+          dataEdit.productImages?.map((img) => ({ image: img.image })) || [],
+        secondaryCategories:
+          dataEdit.secondaryCategories?.map((cat) => cat.id) || [],
       })
 
       // Nếu có ảnh cũ từ API, map vào danh sách preview
@@ -517,12 +521,20 @@ export function ProductAction({
             <CategorySelectInForm
               form={form}
               name="category"
-              label="Category"
+              label="Category (main)"
             />
 
             {/* */}
             <BrandSelectInForm form={form} name="brand" label="Brand" />
           </div>
+
+          {/* */}
+          <CategorySelectInForm
+            multiple
+            form={form}
+            name="secondaryCategories"
+            label="Secondary Categories (support filtering)"
+          />
 
           {/*  */}
           <div className="grid grid-cols-2 gap-x-4">
@@ -557,7 +569,7 @@ export function ProductAction({
                         id="form-rhf-input-basePrice"
                       />
 
-                      <InputGroupAddon align="inline-end">USD</InputGroupAddon>
+                      <InputGroupAddon align="inline-end">VND</InputGroupAddon>
                     </InputGroup>
 
                     {fieldState.invalid && (

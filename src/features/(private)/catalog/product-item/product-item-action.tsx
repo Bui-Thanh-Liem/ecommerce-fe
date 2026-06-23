@@ -78,12 +78,12 @@ export function ProductItemAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
+        status: dataEdit.status,
         inventory: dataEdit.inventory.id,
-        purchasePrice: dataEdit.purchasePrice,
         serialNumber: dataEdit.serialNumber,
+        purchasePrice: dataEdit.purchasePrice,
         productVariant: dataEdit.productVariant.id,
         locationInWarehouse: dataEdit.locationInWarehouse,
-        status: dataEdit.status,
       })
     } else {
       form.reset(initFormValue)
@@ -270,7 +270,7 @@ export function ProductItemAction({
                         id="form-rhf-input-purchase-price"
                       />
 
-                      <InputGroupAddon align="inline-end">USD</InputGroupAddon>
+                      <InputGroupAddon align="inline-end">VND</InputGroupAddon>
                     </InputGroup>
 
                     {fieldState.invalid && (

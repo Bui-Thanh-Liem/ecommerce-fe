@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { IProductItem } from "@/shared/interfaces/models/catalog/product-item.interface"
+import { formatVND } from "@/utils/format-vnd.util"
 import { ColumnDef } from "@tanstack/table-core"
 
 export const productItemColumns: ColumnDef<IProductItem>[] = [
@@ -66,7 +67,7 @@ export const productItemColumns: ColumnDef<IProductItem>[] = [
   {
     accessorKey: "purchasePrice",
     header: "Purchase Price",
-    cell: ({ row }) => <span>${row.original.purchasePrice}</span>,
+    cell: ({ row }) => <span>{formatVND(row.original.purchasePrice)}</span>,
   },
   {
     accessorKey: "locationInWarehouse",

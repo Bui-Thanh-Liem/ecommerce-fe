@@ -13,6 +13,7 @@ import {
   IProductVariant,
   IVariantAttribute,
 } from "@/shared/interfaces/models/catalog/product-variant.interface"
+import { formatVND } from "@/utils/format-vnd.util"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 import Barcode from "react-barcode"
@@ -47,11 +48,11 @@ export const productVariantColumns: ColumnDef<IProductVariant>[] = [
           <span className="text-muted-foreground font-medium">
             Cost price:{" "}
           </span>
-          {row.original.costPrice.toFixed(2)}
+          {formatVND(row.original.costPrice)}
         </p>
         <p>
           <span className="text-muted-foreground font-medium">Price: </span>
-          {row.original.price.toFixed(2)}
+          {formatVND(row.original.price)}
         </p>
         <p>
           <span className="text-muted-foreground font-medium">Discount: </span>
@@ -137,7 +138,7 @@ function SalesAttributesCell({
                   <Badge
                     className={cn(
                       "ml-6",
-                      randomColorByString(attr.isSKU.toString())
+                      randomColorByString(attr.isSKU ? "1" : "0")
                     )}
                   >
                     {attr.isSKU ? "Yes" : "No"}

@@ -1,5 +1,5 @@
 export enum ProductVariantCondition {
-  NEW = 'new',
-  DISPLAY = 'display',
-  RETURNED = 'returned',
+  NEW = "new",
+  DISPLAY = "display",
+  RETURNED = "returned",
 }

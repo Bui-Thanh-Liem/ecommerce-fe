@@ -22,6 +22,7 @@ import { DataCard } from "@/components/data-card"
 import { CategoryHierarchy } from "./category-hierarchy"
 import { cn } from "@/lib/utils"
 import { useUrlParams } from "@/hooks/use-url-params"
+import { formatVND } from "@/utils/format-vnd.util"
 
 function CategoryCard({
   onEdit,
@@ -86,7 +87,7 @@ function CategoryCard({
 
       <div className="absolute top-16 left-4 space-x-2">
         <Badge variant="secondary">{category.code}</Badge>
-        <Badge variant="destructive">${category.minPrice?.toFixed(2)}</Badge>
+        <Badge variant="destructive">{formatVND(category.minPrice)}</Badge>
       </div>
 
       <div className={cn("absolute inset-0 hidden", isPending && "flex")}>

@@ -277,7 +277,7 @@ export function CategoryAction({
                         id="form-rhf-input-min-price"
                       />
 
-                      <InputGroupAddon align="inline-end">USD</InputGroupAddon>
+                      <InputGroupAddon align="inline-end">VND</InputGroupAddon>
                     </InputGroup>
 
                     {fieldState.invalid && (

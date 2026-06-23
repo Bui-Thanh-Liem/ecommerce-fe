@@ -36,6 +36,19 @@ export const useFindAllByCampaignProductVariants = (
   return useQuery({
     queryKey: ["product-variants-campaign", campaignId],
     queryFn: () => productVariantServices.findAllByCampaign(campaignId, query),
+    enabled: !!campaignId, // Chỉ thực hiện truy vấn khi campaignId có giá trị
+  })
+}
+
+export const useFindAllByCategorySlugProductVariants = (
+  categorySlug: string,
+  query?: QueryDto
+) => {
+  return useQuery({
+    queryKey: ["product-variants-category", categorySlug],
+    queryFn: () =>
+      productVariantServices.findAllByCategorySlug(categorySlug, query),
+    enabled: !!categorySlug, // Chỉ thực hiện truy vấn khi categorySlug có giá trị
   })
 }
 

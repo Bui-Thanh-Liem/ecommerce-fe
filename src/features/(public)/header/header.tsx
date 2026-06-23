@@ -18,6 +18,7 @@ import {
 import { useFindTreeDataCategories } from "@/hooks/apis/catalog/use-category"
 import Image from "next/image"
 import { Address } from "./address"
+import { useState } from "react"
 
 export function Header() {
   return (
@@ -60,9 +61,13 @@ function Category() {
   const { data } = useFindTreeDataCategories()
   const categories = data?.metadata || []
 
+  // 2. Tạo state để kiểm soát việc đóng mở menu
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="ml-8">
-      <DropdownMenu>
+      {/* 3. Truyền state vào DropdownMenu */}
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
@@ -101,8 +106,11 @@ function Category() {
                         </DropdownMenuLabel>
                         <div className="flex max-w-190 flex-wrap gap-x-4 gap-y-6">
                           {children.map((child) => (
-                            <div
+                            <Link
                               key={child.id}
+                              href={`/${child.slug}`}
+                              // 4. Thêm sự kiện onClick để ép menu đóng lại khi click chuyển trang
+                              onClick={() => setOpen(false)}
                               className="flex cursor-pointer flex-col items-center space-y-1 rounded-2xl p-2 hover:bg-slate-100"
                             >
                               {child?.image && (
@@ -117,7 +125,7 @@ function Category() {
                               <p className="line-clamp-2 max-w-32">
                                 {child.name}
                               </p>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </DropdownMenuSubContent>
@@ -150,7 +158,7 @@ function Login() {
       </Button>
     </Link>
   )
-}
+} 
 
 function Cart() {
   return (

@@ -18,6 +18,7 @@ import {
   IProduct,
   ISpecification,
 } from "@/shared/interfaces/models/catalog/product.interface"
+import { formatVND } from "@/utils/format-vnd.util"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 import { ColumnDef } from "@tanstack/table-core"
 import { ChevronDownIcon } from "lucide-react"
@@ -35,40 +36,66 @@ export const productColumns: ColumnDef<IProduct>[] = [
   {
     accessorKey: "name",
     header: "Information",
-    cell: ({ row }) => (
-      <div className="space-y-1">
-        <p>
-          <span className="text-muted-foreground font-medium">SPU:</span>{" "}
-          <Badge>{row.original.spu}</Badge>
-        </p>
-        <p>
-          <span className="text-muted-foreground font-medium">Model:</span>{" "}
-          <Badge>{row.original.model}</Badge>
-        </p>
-        <p className="line-clamp-4 max-w-96 whitespace-normal">
-          <span className="text-muted-foreground font-medium">Name:</span>{" "}
-          {row.original.name}
-        </p>
-        <p>
-          <span className="text-muted-foreground font-medium">Category:</span>{" "}
-          <Badge
-            variant="secondary"
-            className={randomColorByString(row.original.category.name)}
-          >
-            {row.original.category.name}
-          </Badge>
-        </p>
-        <p>
-          <span className="text-muted-foreground font-medium">Brand:</span>{" "}
-          <Badge
-            variant="secondary"
-            className={randomColorByString(row.original.brand.name)}
-          >
-            {row.original.brand.name}
-          </Badge>
-        </p>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const product = row.original
+      const category = product?.category || {}
+      const secondaryCategories = product?.secondaryCategories || []
+
+      return (
+        <div className="space-y-1">
+          <p>
+            <span className="text-muted-foreground font-medium">SPU:</span>{" "}
+            <Badge>{product.spu}</Badge>
+          </p>
+          <p>
+            <span className="text-muted-foreground font-medium">Model:</span>{" "}
+            <Badge>{product.model}</Badge>
+          </p>
+          <p className="line-clamp-4 max-w-96 whitespace-normal">
+            <span className="text-muted-foreground font-medium">Name:</span>{" "}
+            {product.name}
+          </p>
+          <p>
+            <span className="text-muted-foreground font-medium">Category:</span>{" "}
+            <Badge
+              variant="secondary"
+              className={randomColorByString(category.name)}
+            >
+              {category.name}
+            </Badge>
+          </p>
+          <p>
+            <span className="text-muted-foreground font-medium">
+              Secondary Categories:
+            </span>{" "}
+            <div>
+              {secondaryCategories?.length > 0 ? (
+                secondaryCategories.map((cat) => (
+                  <Badge
+                    key={cat.id}
+                    variant="secondary"
+                    className={randomColorByString(cat.name)}
+                  >
+                    {cat.name}
+                  </Badge>
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+          </p>
+          <p>
+            <span className="text-muted-foreground font-medium">Brand:</span>{" "}
+            <Badge
+              variant="secondary"
+              className={randomColorByString(product.brand.name)}
+            >
+              {product.brand.name}
+            </Badge>
+          </p>
+        </div>
+      )
+    },
   },
   {
     accessorKey: "specifications",
@@ -82,6 +109,7 @@ export const productColumns: ColumnDef<IProduct>[] = [
       const isFeatured = row.original.isFeatured
       const allowReview = row.original.allowReview
       if (specifications.length <= 0) return <span>-</span>
+
       return (
         <div className="space-y-1">
           <p>
@@ -127,7 +155,7 @@ export const productColumns: ColumnDef<IProduct>[] = [
   {
     accessorKey: "basePrice",
     header: "Base Price",
-    cell: ({ row }) => <p>${row.original.basePrice.toFixed(2)}</p>,
+    cell: ({ row }) => <p>{formatVND(row.original.basePrice)}</p>,
   },
   {
     accessorKey: "discountPercent",

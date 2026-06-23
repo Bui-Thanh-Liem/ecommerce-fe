@@ -45,6 +45,19 @@ export const productVariantServices = {
     return handleResponse<ResMetadataDto<IProductVariant>>(res)
   },
 
+  findAllByCategorySlug: async (categorySlug: string, query?: QueryDto) => {
+    const queryParams = generateQueryParams({ params: query, isOption: true })
+
+    const res = await apiCall<ResMetadataDto<IProductVariant>>(
+      `/product-variants/category/slug/${categorySlug}?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IProductVariant>>(res)
+  },
+
   findAll: async (query?: QueryDto) => {
     const queryParams = generateQueryParams({ params: query })
 

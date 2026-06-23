@@ -1,14 +1,15 @@
 import { productItemServices } from "@/services/catalog/product-item.service"
+import { QueryDto } from "@/shared/dtos/common/query.dto"
 import {
   CreateProductItemDto,
   UpdateProductItemDto,
 } from "@/shared/dtos/req/product-item.dto"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
-export const useFindAllProductItems = () => {
+export const useFindAllProductItems = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["product-items"],
-    queryFn: productItemServices.findAll,
+    queryFn: () => productItemServices.findAll(query),
   })
 }
 

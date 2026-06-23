@@ -465,7 +465,7 @@ export function ProductVariantAction({
                         />
 
                         <InputGroupAddon align="inline-end">
-                          USD
+                          VND
                         </InputGroupAddon>
                       </InputGroup>
 
@@ -510,7 +510,7 @@ export function ProductVariantAction({
                         />
 
                         <InputGroupAddon align="inline-end">
-                          USD
+                          VND
                         </InputGroupAddon>
                       </InputGroup>
 

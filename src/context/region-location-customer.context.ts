@@ -13,7 +13,7 @@ export const useRLCustomerContext = create<State>()(
       setLocation: (location) => set({ location }),
     }),
     {
-      name: "rl_customer_storage",
+      name: "e_rl_c", // region-location-customer
       storage: createJSONStorage(() => localStorage),
     }
   )

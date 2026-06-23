@@ -36,6 +36,8 @@ export const CreateProductSchema = z.object({
 
   category: z.uuidv4().min(1, "Category is required."),
 
+  secondaryCategories: z.array(z.uuidv4()).optional(),
+
   brand: z.uuidv4().min(1, "Brand is required."),
 
   desc: z.string().optional(),

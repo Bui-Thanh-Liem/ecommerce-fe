@@ -32,17 +32,19 @@ import {
 } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useRedirectCategoryContext } from "@/context/redirect-category.context"
 import { useRLCustomerContext } from "@/context/region-location-customer.context"
 import { useFindProductBySlug } from "@/hooks/apis/catalog/use-product"
 import { useFindProductVariantBySlug as find } from "@/hooks/apis/catalog/use-product-variant"
 import { cn } from "@/lib/utils"
+import { ISlugPageProps } from "@/shared/interfaces/common/category-slug-page-detail.interface"
 import { IProductImage } from "@/shared/interfaces/models/catalog/product-image.interface"
 import { IVariantAttribute } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import {
   IProduct,
   ISpecification,
 } from "@/shared/interfaces/models/catalog/product.interface"
-import { formatPrice } from "@/utils/format-price.util"
+import { formatVND } from "@/utils/format-vnd.util"
 import {
   Home,
   Star,
@@ -71,20 +73,14 @@ type GroupedSalesAttributes = Record<
   }[]
 >
 
-interface SlugPageProps {
-  categorySlug: string
-  subCategorySlug: string
-  productSlug: string
-  variantSlug: string
-}
-
 export function ProductDetailPage({
-  categorySlug,
-  productSlug,
   variantSlug,
-  subCategorySlug,
-}: SlugPageProps) {
+  categorySlug,
+  parentCategorySlug,
+}: ISlugPageProps) {
   const { location } = useRLCustomerContext()
+  const { data } = useRedirectCategoryContext()
+  const productSlug = data?.productSlug || ""
 
   //
   const { data: productRes, isLoading } = useFindProductBySlug(productSlug)
@@ -135,14 +131,14 @@ export function ProductDetailPage({
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${categorySlug}`}>
-                  {categorySlug}
+                <BreadcrumbLink href={`/${parentCategorySlug}`}>
+                  {data?.parentCategoryName}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${categorySlug}/${subCategorySlug}`}>
-                  {subCategorySlug}
+                <BreadcrumbLink href={`/${parentCategorySlug}/${categorySlug}`}>
+                  {data?.categoryName}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -181,8 +177,8 @@ export function ProductDetailPage({
               <SalesAttributes
                 variantSlug=""
                 categorySlug={categorySlug}
-                productSlug={productSlug}
                 salesAttributes={salesAttributes}
+                parentCategorySlug={parentCategorySlug}
                 salesAttributesWithoutSKU={salesAttributesWithoutSKU}
               />
               <ServicePackage
@@ -546,14 +542,14 @@ function Rating({ product }: { product: IProduct }) {
 }
 
 function SalesAttributes({
-  salesAttributes,
   categorySlug,
-  productSlug,
+  salesAttributes,
+  parentCategorySlug,
   salesAttributesWithoutSKU,
 }: {
   salesAttributesWithoutSKU: IVariantAttribute[]
   salesAttributes: (IVariantAttribute & { skuSlug: string })[]
-} & SlugPageProps) {
+} & ISlugPageProps) {
   const router = useRouter()
 
   // Gom nhóm theo key
@@ -621,7 +617,7 @@ function SalesAttributes({
     })
 
     if (matchedSlug) {
-      router.push(`/${categorySlug}/${productSlug}/${matchedSlug}`)
+      router.push(`/${parentCategorySlug}/${categorySlug}/${matchedSlug}`)
     } else {
       toast.info(
         "Sản phẩm đã hết hàng hoặc không tồn tại với lựa chọn của bạn."
@@ -684,10 +680,10 @@ function ServicePackage({
   const priceElement = (
     <div className="space-x-2">
       <span className="text-sm text-gray-400 line-through">
-        {formatPrice(price)}
+        {formatVND(price)}
       </span>
       <span className="text-lg font-bold text-red-500">
-        {formatPrice(discountedPrice)}
+        {formatVND(discountedPrice)}
       </span>
     </div>
   )
@@ -704,7 +700,7 @@ function ServicePackage({
       title: (
         <div className="flex gap-x-2">
           {priceElement}
-          <span className="text-sm text-orange-400"> +{formatPrice(5)}</span>
+          <span className="text-sm text-orange-400"> +{formatVND(5)}</span>
         </div>
       ),
       description: (
