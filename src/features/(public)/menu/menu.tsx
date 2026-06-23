@@ -25,8 +25,8 @@ export function Navbar() {
         {menus.map((menu) => (
           <Link
             key={menu.id}
-            href={menu.link}
-            className="text-sm text-sky-600 hover:text-sky-700 font-medium"
+            href={`/${menu.category?.slug}`}
+            className="text-sm font-medium text-sky-600 hover:text-sky-700"
           >
             {menu.name}
           </Link>

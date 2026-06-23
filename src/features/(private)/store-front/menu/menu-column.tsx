@@ -33,26 +33,10 @@ export const menuColumns: ColumnDef<IMenu>[] = [
     },
   },
   {
-    accessorKey: "link",
-    header: "Link",
+    accessorKey: "category",
+    header: "Category",
     cell: ({ row }) => {
-      return (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={row.original.link || "#"}
-          className="text-blue-400 underline"
-        >
-          {row.original.link || "-"}
-        </a>
-      )
-    },
-  },
-  {
-    accessorKey: "slug",
-    header: "Slug",
-    cell: ({ row }) => {
-      return <p>{row.original.slug || "-"}</p>
+      return <p>{row.original.category?.name || "-"}</p>
     },
   },
   {

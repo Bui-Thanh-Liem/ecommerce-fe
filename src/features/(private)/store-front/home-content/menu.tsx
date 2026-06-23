@@ -18,7 +18,7 @@ interface MenuProps {
 export function Menu({ idConfig, menu }: MenuProps) {
   // Lấy danh sách các menu có sẵn từ API
   const { data } = useFindOptionsMenus()
-  const optionsMainBanners = data?.metadata?.data || []
+  const optionsMenus = data?.metadata?.data || []
 
   // Hook update API
   const { mutateAsync, isPending } = useUpdateStoreFrontConfig()
@@ -38,7 +38,7 @@ export function Menu({ idConfig, menu }: MenuProps) {
   const handleMenusChange = (selectedIds: string[]) => {
     // Lọc và giữ lại các menu object dựa trên mảng IDs mới từ Combobox
     const updatedMenus = selectedIds
-      .map((id) => optionsMainBanners.find((b) => b.id === id))
+      .map((id) => optionsMenus.find((b) => b.id === id))
       .filter((b): b is IMenu => !!b) // Loại bỏ các giá trị undefined nếu có
 
     setSelectedMenus(updatedMenus)
@@ -55,9 +55,8 @@ export function Menu({ idConfig, menu }: MenuProps) {
       //
       const payload = selectedMenus.map((b) => ({
         id: b.id,
-        slug: b.slug,
         name: b.name,
-        link: b.link,
+        category: b.category,
       }))
 
       await mutateAsync({
@@ -79,7 +78,7 @@ export function Menu({ idConfig, menu }: MenuProps) {
           Choose multiple menus to display on the homepage. (Max 10)
         </Label>
         <CustomCombobox
-          options={optionsMainBanners.map((b) => ({
+          options={optionsMenus.map((b) => ({
             value: b.id!,
             label: b.name || "Unnamed menu",
           }))}
@@ -116,7 +115,7 @@ export function Menu({ idConfig, menu }: MenuProps) {
       </div>
 
       {/* Khu vực Xem trước danh sách Menu (Preview) */}
-      <div className="max-h-[calc(100vh-600px)] space-y-4 overflow-y-auto">
+      <div className="max-h-[calc(100vh-620px)] space-y-4 overflow-y-auto">
         <Label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Preview ({selectedMenus.length}):
         </Label>
@@ -137,7 +136,7 @@ export function Menu({ idConfig, menu }: MenuProps) {
                     {menu.name || "Unnamed menu"}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    Link: {menu.link}
+                    Category: {menu.category?.name}
                   </span>
                 </div>
 

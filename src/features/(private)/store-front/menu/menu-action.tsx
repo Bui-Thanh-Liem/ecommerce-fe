@@ -20,11 +20,12 @@ import { useCreateMenu, useUpdateMenu } from "@/hooks/apis/store-front/use-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
+import { CategorySelectInForm } from "@/components/select-in-form/category"
 
 const initFormValue: z.infer<typeof CreateMenuSchema> = {
   name: "",
   desc: "",
-  link: "",
+  category: "",
   isActive: true,
 }
 
@@ -59,8 +60,8 @@ export function MenuAction({
     if (dataEdit) {
       form.reset({
         name: dataEdit.name,
-        link: dataEdit.link,
         isActive: dataEdit.isActive,
+        category: dataEdit.category?.id,
       })
     } else {
       form.reset(initFormValue)
@@ -182,28 +183,11 @@ export function MenuAction({
               />
             </FieldGroup>
 
-            <FieldGroup>
-              <Controller
-                name="link"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-link">Link</FieldLabel>
-                    <Input
-                      {...field}
-                      type="text"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Link"
-                      autoComplete="link"
-                      id="form-rhf-input-link"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
+            <CategorySelectInForm
+              form={form}
+              name="category"
+              label="Category"
+            />
 
             <FieldGroup>
               <Controller
