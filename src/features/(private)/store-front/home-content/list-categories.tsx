@@ -142,7 +142,7 @@ export function ListCategories({
       </div>
 
       {/* Khu vực Xem trước danh sách Category (Preview) */}
-      <div className="max-h-[calc(100vh-600px)] space-y-4 overflow-y-auto">
+      <div className="max-h-[calc(100vh-620px)] space-y-4 overflow-y-auto">
         <Label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Preview ({selectedCategories.length}):
         </Label>

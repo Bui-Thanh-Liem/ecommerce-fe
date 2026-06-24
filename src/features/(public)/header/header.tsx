@@ -19,6 +19,7 @@ import { useFindTreeDataCategories } from "@/hooks/apis/catalog/use-category"
 import Image from "next/image"
 import { Address } from "./address"
 import { useState } from "react"
+import { useRedirectCategoryContext } from "@/context/redirect-category.context"
 
 export function Header() {
   return (
@@ -60,6 +61,7 @@ function Logo() {
 function Category() {
   const { data } = useFindTreeDataCategories()
   const categories = data?.metadata || []
+  const { setData } = useRedirectCategoryContext()
 
   // 2. Tạo state để kiểm soát việc đóng mở menu
   const [open, setOpen] = useState(false)
@@ -110,7 +112,12 @@ function Category() {
                               key={child.id}
                               href={`/${child.slug}`}
                               // 4. Thêm sự kiện onClick để ép menu đóng lại khi click chuyển trang
-                              onClick={() => setOpen(false)}
+                              onClick={() => {
+                                setOpen(false)
+                                setData({
+                                  parentCategoryName: child.name,
+                                })
+                              }}
                               className="flex cursor-pointer flex-col items-center space-y-1 rounded-2xl p-2 hover:bg-slate-100"
                             >
                               {child?.image && (
@@ -158,7 +165,7 @@ function Login() {
       </Button>
     </Link>
   )
-} 
+}
 
 function Cart() {
   return (

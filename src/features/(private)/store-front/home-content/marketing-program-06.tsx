@@ -17,7 +17,7 @@ interface MarketingProgram06Props {
   mktProgram06: { title: string; campaigns: CampaignOption[] } | undefined
 }
 
-const maxCampaigns = 15
+const maxCampaigns = 4
 
 export function MarketingProgram06({
   idConfig,

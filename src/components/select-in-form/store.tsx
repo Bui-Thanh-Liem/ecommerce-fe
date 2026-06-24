@@ -6,6 +6,7 @@ import { SelectInFormProps } from "@/shared/interfaces/common/props-select-in-fo
 import { Store } from "lucide-react"
 import { IStore } from "@/shared/interfaces/models/inventory/store.interface"
 import Image from "next/image"
+import { useRef, useState } from "react"
 
 export function StoreSelectInForm({
   form,
@@ -14,8 +15,25 @@ export function StoreSelectInForm({
   label = "Stores",
   multiple = false,
 }: SelectInFormProps) {
-  const { data } = useFindOptionsStores()
+  const [searchTerm, setSearchTerm] = useState("")
+  const { data } = useFindOptionsStores({
+    filters: { fullName: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const storesData = data?.metadata?.data || []
+
+  //
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  //
+  const handleSearchChange = (text: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+    timeoutRef.current = setTimeout(() => {
+      setSearchTerm(text)
+    }, 400) // 400ms debounce time
+  }
 
   // Khớp định dạng data đầu vào cho Combobox [{ value, label }]
   const comboboxOptions = storesData.map((store: IStore) => ({
@@ -42,6 +60,7 @@ export function StoreSelectInForm({
               placeholder={multiple ? "Select stores..." : "Select a store..."}
               searchPlaceholder="Search store name..."
               emptyMessage="No stores found."
+              onSearchChange={handleSearchChange}
               //
               renderItem={(option) => (
                 <div className="flex items-center gap-3 py-0.5 text-left">

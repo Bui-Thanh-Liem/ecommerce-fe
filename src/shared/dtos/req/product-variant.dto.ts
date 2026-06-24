@@ -2,6 +2,7 @@ import { ProductVariantCondition } from "@/shared/enums/product-variant-conditio
 import { CreateProductImageSchema } from "./product-image.dto"
 import z from "zod"
 import { SpecificationItemSchema } from "./product.dto"
+import { ProductVariantStatus } from "@/shared/enums/product-variant-status.enum"
 
 const SalesAttributesSchema = SpecificationItemSchema.extend({
   isSKU: z.boolean(),
@@ -21,6 +22,8 @@ export const CreateProductVariantSchema = z.object({
   discountPercent: z.number().min(0).max(100).optional().default(0),
 
   conditions: z.enum(ProductVariantCondition),
+
+  status: z.enum(ProductVariantStatus).optional(),
 
   salesAttributes: z
     .array(SalesAttributesSchema)

@@ -29,9 +29,8 @@ export const BannerItemSchema = z.object({
 // Dùng cho menu (id, slug, name, link)
 export const MenuItemSchema = z.object({
   id: z.string().min(1, "ID không được để trống"),
-  slug: z.string().min(1, "Slug không được để trống"),
   name: z.string().min(1, "Name không được để trống"),
-  link: z.string().min(1, "Link không được để trống"),
+  categorySlug: z.string().min(1, "Category Slug không được để trống"),
 })
 
 // Dùng cho listCategories (id, slug, name, image) - ĐÃ BỎ trường 'title' theo interface mới

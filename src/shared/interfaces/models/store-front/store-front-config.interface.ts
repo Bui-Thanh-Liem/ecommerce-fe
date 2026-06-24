@@ -31,7 +31,7 @@ export type MainBannerOption = Pick<
   "id" | "slug" | "title" | "image"
 >
 
-export type MenuOption = Pick<IMenu, "id" | "name" | "category">
+export type MenuOption = Pick<IMenu, "id" | "name" | "categorySlug">
 
 export type MktProgramOption = Pick<
   IMarketingProgram,

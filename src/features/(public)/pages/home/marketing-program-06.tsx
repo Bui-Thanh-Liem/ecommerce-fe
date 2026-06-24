@@ -6,7 +6,7 @@ export function MarketingProgram06Section() {
   const { marketingProgram06 } = useGetStoreFront()
 
   //
-  if (!marketingProgram06) return null
+  if (!marketingProgram06?.campaigns || !marketingProgram06?.title) return null
   const { title, campaigns } = marketingProgram06
 
   return (
@@ -14,7 +14,11 @@ export function MarketingProgram06Section() {
       <h2 className="text-xl font-bold text-white">{title}</h2>
       <div className="grid grid-cols-4 gap-x-4">
         {campaigns.map((campaign) => (
-          <Link key={campaign.id} href={campaign.slug} className="block">
+          <Link
+            key={campaign.id}
+            href={`/campaigns/${campaign.slug}`}
+            className="block"
+          >
             <div className="relative h-120 overflow-hidden rounded-2xl">
               <Image
                 fill

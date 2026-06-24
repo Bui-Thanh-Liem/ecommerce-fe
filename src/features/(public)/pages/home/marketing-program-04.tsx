@@ -19,7 +19,8 @@ export function MarketingProgram04Section() {
   )
 
   //
-  if (!marketingProgram04) return null
+  if (!marketingProgram04?.campaign || !marketingProgram04?.title) return null
+
   const { title, campaign } = marketingProgram04
   const productVariants = data?.metadata?.data || []
 
@@ -28,8 +29,8 @@ export function MarketingProgram04Section() {
       <h2 className="text-xl font-bold text-sky-900">{title}</h2>
       <div className="grid grid-cols-3 gap-x-3">
         <div className="relative col-span-1 overflow-hidden rounded-lg py-0.5">
-          <Link href={campaign.slug}>
-            <Image fill src={campaign.mainImage.url} alt={campaign.name} />
+          <Link href={`/campaigns/${campaign?.slug}`}>
+            <Image fill src={campaign?.mainImage?.url} alt={campaign?.name} />
           </Link>
         </div>
 

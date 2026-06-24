@@ -17,14 +17,12 @@ import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 import { CreateMenuSchema, UpdateMenuSchema } from "@/shared/dtos/req/menu.dto"
 import { useCreateMenu, useUpdateMenu } from "@/hooks/apis/store-front/use-menu"
-import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { IMenu } from "@/shared/interfaces/models/store-front/menu.interface"
 import { CategorySelectInForm } from "@/components/select-in-form/category"
 
 const initFormValue: z.infer<typeof CreateMenuSchema> = {
   name: "",
-  desc: "",
   category: "",
   isActive: true,
 }
@@ -188,31 +186,6 @@ export function MenuAction({
               name="category"
               label="Category"
             />
-
-            <FieldGroup>
-              <Controller
-                name="desc"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-input-desc">
-                      Description
-                    </FieldLabel>
-                    <Textarea
-                      {...field}
-                      rows={2}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter description here..."
-                      id="form-rhf-textarea-desc"
-                      className="resize-none"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
           </div>
           <DialogFooterAction onClose={onClose} isPending={isPending} />
         </form>

@@ -25,7 +25,7 @@ export function MainBannerSection() {
       <div className="mx-auto">
         <Card className="relative">
           <CardContent className="flex h-50 items-center justify-center p-6">
-            <Link href={mainBanner[0].slug}>
+            <Link href={`/campaigns/${mainBanner[0].slug}`}>
               <Image
                 fill
                 quality={100}
@@ -62,7 +62,7 @@ export function MainBannerSection() {
             <CarouselItem key={index}>
               <Card className="relative">
                 <CardContent className="flex h-50 items-center justify-center p-6">
-                  <Link href={banner.slug}>
+                  <Link href={`/campaigns/${banner.slug}`}>
                     <Image
                       fill
                       quality={100}

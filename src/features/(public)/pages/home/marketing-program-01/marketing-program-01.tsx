@@ -24,8 +24,8 @@ export function MarketingProgram01Section() {
     }
   }, [mktProgramsData, selectedMktId])
 
-  //
-  if (mktProgramsData.length === 0) return null
+  // Nếu không có dữ liệu Marketing Program, không render gì cả
+  if (!mktProgramsData.length) return null
 
   return (
     <div className="space-y-8 rounded-4xl border-2 border-sky-700 bg-white p-4 px-6">

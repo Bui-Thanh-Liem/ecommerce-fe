@@ -16,7 +16,8 @@ export function MarketingProgram03Section() {
   const { marketingProgram03 } = useGetStoreFront()
 
   //
-  if (!marketingProgram03) return null
+  if (!marketingProgram03?.mktPrograms || !marketingProgram03?.title)
+    return null
   const { title, mktPrograms } = marketingProgram03
 
   //
@@ -29,7 +30,7 @@ export function MarketingProgram03Section() {
             <CarouselItem key={index} className="basis-1/6">
               <Card className="relative">
                 <CardContent className="flex items-center justify-center p-6">
-                  <Link href={campaign.slug}>
+                  <Link href={`/campaigns/${campaign.slug}`}>
                     <Image
                       fill
                       quality={100}

@@ -33,6 +33,7 @@ import {
   UpdateProductVariantSchema,
 } from "@/shared/dtos/req/product-variant.dto"
 import { ProductVariantCondition } from "@/shared/enums/product-variant-condition.enum"
+import { ProductVariantStatus } from "@/shared/enums/product-variant-status.enum"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { PreviewImage } from "@/shared/interfaces/common/preview-image.interface"
@@ -40,7 +41,6 @@ import { IProductVariant } from "@/shared/interfaces/models/catalog/product-vari
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageIcon, Plus, Trash2, X } from "lucide-react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -55,6 +55,7 @@ const initFormValue: z.infer<typeof CreateProductVariantSchema> = {
   productImages: [],
   discountPercent: 0,
   salesAttributes: [],
+  status: ProductVariantStatus.NORMAL,
   conditions: ProductVariantCondition.NEW,
 }
 
@@ -72,8 +73,6 @@ export function ProductVariantAction({
   initialData?: IProductVariant | null
   onOpenChange?: (open: boolean) => void
 }) {
-  const router = useRouter()
-
   //
   const createApi = useCreateProductVariant()
   const updateApi = useUpdateProductVariant()
@@ -108,9 +107,10 @@ export function ProductVariantAction({
       form.reset({
         vat: dataEdit.vat || 0,
         price: dataEdit.price || 0,
+        status: dataEdit.status,
         barcode: dataEdit.barcode || "",
-        costPrice: dataEdit.costPrice || 0,
         product: dataEdit.product.id,
+        costPrice: dataEdit.costPrice || 0,
         conditions: dataEdit.conditions,
         discountPercent: dataEdit.discountPercent || 0,
         salesAttributes: dataEdit.salesAttributes || [],
@@ -358,7 +358,7 @@ export function ProductVariantAction({
             />
 
             {/* */}
-            <div className="grid grid-cols-2 gap-x-4">
+            <div className="grid grid-cols-3 gap-x-4">
               <FieldGroup>
                 <Controller
                   name="conditions"
@@ -384,6 +384,48 @@ export function ProductVariantAction({
                           <SelectContent align="end">
                             <SelectGroup>
                               {Object.values(ProductVariantCondition).map(
+                                (status) => (
+                                  <SelectItem key={status} value={status}>
+                                    {status}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+              </FieldGroup>
+
+              <FieldGroup>
+                <Controller
+                  name="status"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="form-status">Status</FieldLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                            id="form-status"
+                          >
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+
+                          <SelectContent align="end">
+                            <SelectGroup>
+                              {Object.values(ProductVariantStatus).map(
                                 (status) => (
                                   <SelectItem key={status} value={status}>
                                     {status}

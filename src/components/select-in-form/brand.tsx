@@ -18,7 +18,11 @@ export function BrandSelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsBrands({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsBrands({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const brandsData = data?.metadata?.data || []
 
   //

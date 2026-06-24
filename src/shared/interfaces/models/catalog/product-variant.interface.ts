@@ -8,6 +8,7 @@ import { IProductImage } from "./product-image.interface"
 import { IInventory } from "../inventory/inventory.interface"
 import { IProductPromotion } from "../mkt-program/product-promotion.interface"
 import { ICartItem } from "../customer/cart-item.interface"
+import { ProductVariantStatus } from "@/shared/enums/product-variant-status.enum"
 
 /**
  * KHÔNG DÙNG BẢNG ATTRIBUTE TRUYỀN THỐNG:
@@ -30,6 +31,7 @@ export interface IProductVariant extends IBase {
   vat?: number // Thuế VAT (nếu có) được tính trên giá gốc (price), không tính trên giá đã giảm (discountPrice) %
   soldCount: number
   conditions: ProductVariantCondition
+  status: ProductVariantStatus
   salesAttributes: IVariantAttribute[]
   productImages: IProductImage[]
 

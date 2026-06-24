@@ -20,6 +20,8 @@ export function ProductVariantSelectInForm({
 
   const { data } = useFindOptionsProductVariants({
     filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
   })
   const productsData = data?.metadata?.data || []
 

@@ -8,6 +8,7 @@ import { PromotionApplyType } from "@/shared/enums/promotion-apply-type.enum"
 import Image from "next/image"
 import { useFindVariantByPromotion } from "@/hooks/apis/mkt-program/use-category-promotion"
 import { formatVND } from "@/utils/format-vnd.util"
+import { ProductItem } from "@/components/product-item"
 
 export function PromotionContent({ promotion }: { promotion: IPromotion }) {
   const {
@@ -157,50 +158,7 @@ export function PromotionContent({ promotion }: { promotion: IPromotion }) {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {displayProducts.map(({ variant, displayPrice, tag }) => {
-            const thumb = variant.product.thumbnail || "/images/dmx.jpg"
-
-            return (
-              <div
-                key={variant.id}
-                className="group flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition-all hover:shadow-md"
-              >
-                <div>
-                  <div className="relative mb-2 aspect-square w-full overflow-hidden rounded-lg bg-gray-50">
-                    <Image
-                      width={600}
-                      height={600}
-                      src={thumb}
-                      loading="lazy"
-                      alt={variant.sku}
-                      className="h-full w-full object-contain transition-transform group-hover:scale-105"
-                    />
-                    {tag && (
-                      <span className="absolute top-1 left-1 rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                        {tag}
-                      </span>
-                    )}
-                  </div>
-
-                  <p
-                    className="line-clamp-2 text-sm font-medium text-gray-800"
-                    title={variant.sku}
-                  >
-                    {variant.sku}
-                  </p>
-                </div>
-
-                <div className="mt-2 border-t border-gray-50 pt-2">
-                  <div className="flex flex-col">
-                    <span className="text-xs text-gray-400 line-through">
-                      {formatVND(variant.price)}
-                    </span>
-                    <span className="text-sm font-bold text-red-600">
-                      {formatVND(displayPrice)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )
+            return <ProductItem key={variant.id} variant={variant} />
           })}
         </div>
       )}

@@ -18,7 +18,11 @@ export function CampaignSelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsCampaigns({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsCampaigns({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const campaignsData = data?.metadata?.data || []
 
   //

@@ -4,7 +4,7 @@ export function SuggestForYouSection() {
   const { suggestForYou } = useGetStoreFront()
 
   //
-  if (!suggestForYou) return null
+  if (!suggestForYou?.length) return null
 
   return (
     <div className="space-y-4 rounded-4xl bg-white p-4 px-6">

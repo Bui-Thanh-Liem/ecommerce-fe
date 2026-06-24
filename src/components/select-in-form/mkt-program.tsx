@@ -18,7 +18,11 @@ export function MktProgramSelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsMktPrograms({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsMktPrograms({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const mktProgramsData = data?.metadata?.data || []
 
   //

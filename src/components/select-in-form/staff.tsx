@@ -16,9 +16,12 @@ export function StaffSelectInForm({
 }: SelectInFormProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsStaffs({ filters: { fullName: searchTerm } })
+  const { data } = useFindOptionsStaffs({
+    filters: { fullName: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const staffsData = data?.metadata?.data || []
-  console.log("staffsData", staffsData)
 
   //
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)

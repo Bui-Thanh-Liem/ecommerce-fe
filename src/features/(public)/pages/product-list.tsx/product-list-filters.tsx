@@ -20,6 +20,7 @@ import {
   useFindBrandsByCategorySlug,
   useFindChildrenCategoryBySlug,
 } from "@/hooks/apis/use-filter"
+import { useUrlParams } from "@/hooks/use-url-params"
 import { cn } from "@/lib/utils"
 import { Funnel } from "lucide-react"
 import Image from "next/image"
@@ -31,51 +32,73 @@ interface ProductListFiltersProps {
   parentCategorySlug?: string
 }
 
+type SortOption = (typeof SORT_OPTIONS)[number]
+
+const FILTER_SORT_ITEMS: { label: string; value: SortOption }[] = [
+  { label: "Mới nhất", value: "newest" },
+  { label: "Nổi bật", value: "standout" },
+  { label: "Bán chạy", value: "best_seller" },
+  { label: "Giá thấp đến cao", value: "price_asc" },
+  { label: "Giá cao đến thấp", value: "price_desc" },
+]
+
+/**
+ * b: brand slug
+ * s: sort
+ */
+
 export function ProductListFilters({
   categorySlug: c,
   parentCategorySlug: pC,
 }: ProductListFiltersProps) {
-  //
   const router = useRouter()
 
-  //
-  const { setData: setDataClickDetail } = useRedirectCategoryContext()
+  // Giả định các custom hooks của bạn hoạt động như cũ
+  const { params, setParams } = useUrlParams({} as any)
+  const b = params?.b || ""
+  const currentSortParam = params?.s || "newest" // Mặc định nếu chưa có sort trên URL
 
-  //
+  const { setData: setDataClickDetail } = useRedirectCategoryContext()
   const { data: brandsData } = useFindBrandsByCategorySlug(c || pC || "")
   const { data } = useFindChildrenCategoryBySlug(c || pC || "")
+
   const categories = data?.metadata?.data || []
   const brands = brandsData?.metadata?.data || []
 
-  //
-  const singleFilter = [
-    "Mới nhất",
-    "Nổi bật",
-    "Bán chạy",
-    "Giá thấp đến cao",
-    "Giá cao đến thấp",
-  ]
-
-  //
   const [selectedCategory, setSelectedCategory] = useState<string>("")
-  const [selectedFilter, setSelectedFilter] = useState<string>(singleFilter[0])
 
-  //
-  const handleSelect = (slug: string) => {
+  // Thay đổi danh mục (Category)
+  const handleSelectCategory = (slug: string) => {
     setSelectedCategory(slug)
     setDataClickDetail({
       productSlug: "",
-      categoryName: categories.find((c) => c.slug === slug)?.name || "",
+      categoryName: categories.find((item) => item.slug === slug)?.name || "",
     })
 
     const url = pC ? `/${pC}/${slug}` : `/${slug}`
     router.push(url)
   }
 
+  // Bật / Tắt thương hiệu (Brand)
+  const handleToggleBrand = (slug: string) => {
+    setParams({
+      b: b === slug ? undefined : slug,
+    })
+  }
+
+  // Xử lý khi click chọn Sort (Giá thấp đến cao sẽ truyền "price_asc")
+  const handleSelectFilter = (value: SortOption) => {
+    setParams({
+      s: value, // Đẩy key "price_asc" lên URL parameter `s`
+    })
+  }
+
   return (
     <div className="space-y-4 rounded-4xl bg-gray-50 p-4">
       <div className="flex flex-wrap gap-2">
         <FilterAdvanced />
+
+        {/* Sub Categories */}
         {categories.length > 0 &&
           categories.map((category) => (
             <Button
@@ -86,19 +109,26 @@ export function ProductListFilters({
                 "border-sky-100 bg-sky-50 text-sky-500 hover:bg-sky-50 hover:text-sky-400":
                   selectedCategory === category.slug,
               })}
-              onClick={() => handleSelect(category.slug)}
+              onClick={() => handleSelectCategory(category.slug)}
             >
               {category.name}
             </Button>
           ))}
       </div>
 
+      {/* Brands */}
       <div className="flex flex-wrap gap-2">
         {brands.length > 0 &&
           brands.map((brand) => (
             <div
               key={brand.id}
-              className="relative h-8 w-24 rounded-full border"
+              className={cn(
+                "relative h-8 w-24 cursor-pointer overflow-hidden rounded-full border",
+                {
+                  "border-sky-400 bg-sky-50 text-sky-500": b === brand.slug,
+                }
+              )}
+              onClick={() => handleToggleBrand(brand.slug)}
             >
               <Image
                 fill
@@ -110,16 +140,18 @@ export function ProductListFilters({
           ))}
       </div>
 
+      {/* Filter sort (Bộ lọc sắp xếp giá) */}
       <div className="flex items-center gap-x-2">
         <p className="text-sm text-gray-500">Sắp xếp theo:</p>
-        {singleFilter.map((filter) => (
+        {FILTER_SORT_ITEMS.map((item) => (
           <Badge
-            key={filter}
+            key={item.value}
             className="cursor-pointer"
-            onClick={() => setSelectedFilter(filter)}
-            variant={selectedFilter === filter ? "default" : "secondary"}
+            // Gọi hàm xử lý truyền key tiếng Anh ra URL, đồng thời kích hoạt UI active
+            onClick={() => handleSelectFilter(item.value)}
+            variant={currentSortParam === item.value ? "default" : "secondary"}
           >
-            {filter}
+            {item.label}
           </Badge>
         ))}
       </div>

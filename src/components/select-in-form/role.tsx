@@ -19,6 +19,8 @@ export function RoleSelectInForm({
   //
   const { data, isLoading } = useFindOptionsRoles({
     filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
   })
   const rolesData = data?.metadata?.data || []
 

@@ -4,18 +4,10 @@ import { useGetStoreFront } from "@/hooks/use-get-store-front"
 import Link from "next/link"
 
 export function Navbar() {
-  const { menus, isLoading } = useGetStoreFront()
+  const { menus } = useGetStoreFront()
 
   //
-  if (menus?.length === 0) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <p className="text-gray-500">
-          {isLoading ? "Đang tải..." : "Không có menu nào"}
-        </p>
-      </div>
-    )
-  }
+  if (!menus?.length) return null
 
   //
   return (
@@ -25,7 +17,7 @@ export function Navbar() {
         {menus.map((menu) => (
           <Link
             key={menu.id}
-            href={`/${menu.category?.slug}`}
+            href={`/${menu?.categorySlug}`}
             className="text-sm font-medium text-sky-600 hover:text-sky-700"
           >
             {menu.name}

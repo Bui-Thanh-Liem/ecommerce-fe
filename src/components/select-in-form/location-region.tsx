@@ -19,6 +19,8 @@ export function LocationRegionSelectInForm({
   //
   const { data, isLoading } = useFindOptionsLocationRegions({
     filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
   })
   const locationRegionsData = data?.metadata?.data || []
 

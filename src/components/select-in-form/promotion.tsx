@@ -18,7 +18,11 @@ export function PromotionSelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsPromotions({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsPromotions({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const promotionsData = data?.metadata?.data || []
 
   //

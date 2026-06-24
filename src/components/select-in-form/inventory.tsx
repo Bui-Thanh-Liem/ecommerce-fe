@@ -19,6 +19,8 @@ export function InventorySelectInForm({
   //
   const { data, isLoading } = useFindOptionsInventories({
     filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
   })
   const inventoriesData = data?.metadata?.data || []
 

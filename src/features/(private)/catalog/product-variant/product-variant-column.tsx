@@ -66,15 +66,6 @@ export const productVariantColumns: ColumnDef<IProductVariant>[] = [
     ),
   },
   {
-    accessorKey: "salesAttributes",
-    header: "Sales Attributes",
-    cell: ({ row }) => {
-      const salesAttributes = row.original.salesAttributes || []
-      if (salesAttributes.length <= 0) return <span>-</span>
-      return <SalesAttributesCell salesAttributes={salesAttributes} />
-    },
-  },
-  {
     accessorKey: "productImages",
     header: "Product variant Images",
     cell: ({ row }) => {
@@ -97,9 +88,27 @@ export const productVariantColumns: ColumnDef<IProductVariant>[] = [
     ),
   },
   {
+    accessorKey: "salesAttributes",
+    header: "Sales Attributes",
+    cell: ({ row }) => {
+      const salesAttributes = row.original.salesAttributes || []
+      if (salesAttributes.length <= 0) return <span>-</span>
+      return <SalesAttributesCell salesAttributes={salesAttributes} />
+    },
+  },
+  {
     accessorKey: "conditions",
-    header: "Conditions",
-    cell: ({ row }) => <Badge>{row.original.conditions}</Badge>,
+    header: "Conditions/Status",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-x-1">
+        <Badge className={randomColorByString(row.original.conditions)}>
+          {row.original.conditions}
+        </Badge>
+        <Badge className={randomColorByString(row.original.status)}>
+          {row.original.status}
+        </Badge>
+      </div>
+    ),
   },
 ]
 

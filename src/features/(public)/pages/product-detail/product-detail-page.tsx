@@ -700,7 +700,7 @@ function ServicePackage({
       title: (
         <div className="flex gap-x-2">
           {priceElement}
-          <span className="text-sm text-orange-400"> +{formatVND(5)}</span>
+          <span className="text-sm text-orange-400"> +{formatVND(500000)}</span>
         </div>
       ),
       description: (

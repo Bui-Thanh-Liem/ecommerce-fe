@@ -16,7 +16,7 @@ import Link from "next/link"
 export function MarketingProgram02Section() {
   const { marketingProgram02 } = useGetStoreFront()
 
-  if (!marketingProgram02?.campaigns) return null
+  if (!marketingProgram02?.campaigns.length) return null
   const { campaigns } = marketingProgram02
 
   return (
@@ -41,7 +41,7 @@ export function MarketingProgram02Section() {
             <CarouselItem key={index} className="basis-1/2">
               <Card className="relative">
                 <CardContent className="flex h-42 items-center justify-center p-6">
-                  <Link href={campaign.slug}>
+                  <Link href={`/campaigns/${campaign.slug}`}>
                     <Image
                       fill
                       quality={100}

@@ -45,10 +45,15 @@ export const useFindAllByCategorySlugProductVariants = (
   query?: QueryDto
 ) => {
   return useQuery({
-    queryKey: ["product-variants-category", categorySlug],
+    queryKey: [
+      "product-variants-category",
+      categorySlug,
+      JSON.stringify(query),
+    ],
     queryFn: () =>
       productVariantServices.findAllByCategorySlug(categorySlug, query),
-    enabled: !!categorySlug, // Chỉ thực hiện truy vấn khi categorySlug có giá trị
+
+    enabled: !!categorySlug,
   })
 }
 

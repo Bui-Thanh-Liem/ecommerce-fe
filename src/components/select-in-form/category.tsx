@@ -18,7 +18,11 @@ export function CategorySelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsCategories({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsCategories({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const categoriesData = data?.metadata?.data || []
 
   //

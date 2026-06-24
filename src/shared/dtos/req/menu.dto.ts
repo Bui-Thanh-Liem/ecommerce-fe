@@ -6,8 +6,6 @@ export const CreateMenuSchema = z.object({
     .min(1, "Name is required.")
     .max(50, "Name must be at most 50 characters."),
 
-  desc: z.string().max(100, "Description must be at most 100 characters."),
-
   category: z.uuidv4(),
 
   isActive: z.boolean().optional(),

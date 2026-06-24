@@ -5,7 +5,7 @@ export function PopularSearchSection() {
   const { popularSearch } = useGetStoreFront()
 
   //
-  if (!popularSearch) return null
+  if (!popularSearch?.searches || !popularSearch?.title) return null
   const { title, searches } = popularSearch
 
   return (

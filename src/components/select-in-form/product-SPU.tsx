@@ -18,7 +18,11 @@ export function ProductSelectInForm({
   //
   const [searchTerm, setSearchTerm] = useState("")
 
-  const { data } = useFindOptionsProducts({ filters: { name: searchTerm } })
+  const { data } = useFindOptionsProducts({
+    filters: { name: searchTerm },
+    page: 1,
+    limit: 50,
+  })
   const productsData = data?.metadata?.data || []
 
   //

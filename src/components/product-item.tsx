@@ -4,26 +4,10 @@ import { Card, CardContent } from "./ui/card"
 import { formatVND } from "@/utils/format-vnd.util"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
 import { useRouter } from "next/navigation"
-
-// Import hoặc định nghĩa Enum trực tiếp nếu cần
-export enum ProductVariantCondition {
-  NEW = "new",
-  DISPLAY = "display",
-  RETURNED = "returned",
-}
-
-// Hàm map từ Enum sang text hiển thị tiếng Việt
-const getConditionLabel = (condition: string) => {
-  switch (condition) {
-    case ProductVariantCondition.DISPLAY:
-      return "Hàng trưng bày"
-    case ProductVariantCondition.RETURNED:
-      return "Hàng đổi trả"
-    case ProductVariantCondition.NEW:
-    default:
-      return "Máy mới chính hãng"
-  }
-}
+import { convertEnumToVN } from "@/utils/convert-enum-to-vn.util"
+import { ProductVariantStatus } from "@/shared/enums/product-variant-status.enum"
+import { cn } from "@/lib/utils"
+import { randomColorByString } from "@/utils/random-color-by-string.util"
 
 //
 const formatSoldCount = (count: number) => {
@@ -61,7 +45,11 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
     const categorySlug = category.slug || ""
     const parentCategorySlug = category.parent?.slug || ""
 
-    router.push(`/${parentCategorySlug}/${categorySlug}/${variantSlug}`)
+    router.push(
+      !parentCategorySlug
+        ? `/${categorySlug}/${variantSlug}`
+        : `/${parentCategorySlug}/${categorySlug}/${variantSlug}`
+    )
 
     setData({
       productSlug: productSlug,
@@ -70,6 +58,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
     })
   }
 
+  const isNormalStatus = variant.status === ProductVariantStatus.NORMAL
   return (
     <Card
       className="min-h-120 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2 shadow-sm transition-all duration-300 ease-out select-none hover:-translate-y-1 hover:shadow-xl"
@@ -77,12 +66,24 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
     >
       <CardContent className="relative flex h-full flex-col justify-between gap-2.5 p-3.5 font-sans text-sm">
         {/* 1. Top Badge: Trả góp cố định ở góc trên */}
-        <div className="absolute top-2.5 left-2.5 z-10 rounded bg-[#f1f1f1] px-2 py-0.5 text-[11px] font-medium text-[#333]">
-          Trả chậm 0% trả trước 0đ
-        </div>
+        {!isNormalStatus && (
+          <div
+            className={cn(
+              "absolute top-2.5 left-2.5 z-10 rounded px-2 py-0.5 text-[11px] font-medium",
+              randomColorByString(variant.status)
+            )}
+          >
+            {convertEnumToVN(variant.status)}
+          </div>
+        )}
 
         {/* 2. Khối Hình ảnh Sản phẩm */}
-        <div className="relative mt-6 flex h-36 w-full items-center justify-center">
+        <div
+          className={cn(
+            "relative flex h-36 w-full items-center justify-center",
+            { "mt-6": !isNormalStatus }
+          )}
+        >
           <Image
             fill
             quality={100}
@@ -109,7 +110,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
           {/* Hiển thị tình trạng máy từ Enum (nếu có) */}
           {variant.conditions && (
             <span className="rounded bg-[#f1f1f1] px-2 py-0.5 text-[11px] font-medium text-[#555]">
-              {getConditionLabel(variant.conditions)}
+              {convertEnumToVN(variant.conditions)}
             </span>
           )}
           {/* Tag mặc định cứng theo ảnh mẫu của bạn */}
@@ -144,6 +145,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
           )}
         </div>
 
+        {/* 7. Đặc điểm sản phẩm */}
         {specifications.length > 0 && (
           <div className="rounded-xl bg-gray-50 px-3 py-1.5">
             <ul className="list-inside list-disc space-y-1">
@@ -159,7 +161,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
           </div>
         )}
 
-        {/* 7. Đánh giá sao & Số lượng đã bán */}
+        {/* 8. Đánh giá sao & Số lượng đã bán */}
         <div className="mt-0.5 flex items-center gap-1 text-[12px] text-[#666]">
           <div className="flex items-center gap-0.5 font-bold text-[#fb1]">
             <span className="text-[14px] leading-none">★</span>
