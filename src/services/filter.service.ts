@@ -1,4 +1,5 @@
 import { QueryDto } from "@/shared/dtos/common/query.dto"
+import { IFilterAttribute } from "@/shared/dtos/res/filter-attribute.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IBrand } from "@/shared/interfaces/models/catalog/brand.interface"
 import { ICategory } from "@/shared/interfaces/models/catalog/category.interface"
@@ -11,7 +12,7 @@ export const filterServices = {
     const queryParams = generateQueryParams({ params: query })
 
     const res = await apiCall<ResMetadataDto<IBrand>>(
-      `/filters/category/${categorySlug}?${queryParams}`,
+      `/filters/brand/category/${categorySlug}?${queryParams}`,
       {
         method: "GET",
       }
@@ -22,12 +23,23 @@ export const filterServices = {
 
   findChildrenCategoryBySlug: async (slug: string) => {
     const res = await apiCall<ResMetadataDto<ICategory>>(
-      `/filters/category/children/${slug}`,
+      `/filters/children/category/${slug}`,
       {
         method: "GET",
       }
     )
 
     return handleResponse<ResMetadataDto<ICategory>>(res)
+  },
+
+  findAttributesByCategorySlug: async (slug: string) => {
+    const res = await apiCall<IFilterAttribute[]>(
+      `/filters/attribute/category/${slug}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<IFilterAttribute[]>(res)
   },
 }

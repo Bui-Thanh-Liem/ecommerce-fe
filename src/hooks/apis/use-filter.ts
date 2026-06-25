@@ -16,3 +16,11 @@ export const useFindChildrenCategoryBySlug = (slug: string) => {
     enabled: !!slug,
   })
 }
+
+export const useFindAttributesByCategorySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["attributes-by-category", slug],
+    queryFn: () => filterServices.findAttributesByCategorySlug(slug),
+    enabled: !!slug,
+  })
+}

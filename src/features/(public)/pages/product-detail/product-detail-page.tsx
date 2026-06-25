@@ -101,7 +101,7 @@ export function ProductDetailPage({
   const salesAttributes =
     product?.productVariants
       ?.map((variant) =>
-        variant.salesAttributes.map((attr) => ({
+        variant.salesAttributes?.map((attr) => ({
           ...attr,
           skuSlug: variant.slug,
         }))
@@ -555,16 +555,16 @@ function SalesAttributes({
   // Gom nhóm theo key
   const groupedSalesAttributes = useMemo(() => {
     return salesAttributes.reduce<GroupedSalesAttributes>((acc, attr) => {
-      if (!acc[attr.key]) {
-        acc[attr.key] = []
+      if (!acc[attr?.key]) {
+        acc[attr?.key] = []
       }
 
-      if (!acc[attr.key].some((item) => item.value === attr.value)) {
-        acc[attr.key].push({
-          value: attr.value,
-          label: attr.label,
-          desc: attr.desc,
-          skuSlug: attr.skuSlug,
+      if (!acc[attr?.key].some((item) => item.value === attr?.value)) {
+        acc[attr?.key].push({
+          value: attr?.value,
+          label: attr?.label,
+          desc: attr?.desc,
+          skuSlug: attr?.skuSlug,
         })
       }
 

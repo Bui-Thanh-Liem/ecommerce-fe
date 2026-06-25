@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTable } from "@/components/data-table"
-import { useFilters } from "@/hooks/apis/use-filters"
+import { useFilters } from "@/hooks/use-filters"
 import {
   useDeleteTeam,
   useFindAllTeams,

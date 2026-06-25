@@ -40,6 +40,23 @@ export const useFindAllByCampaignProductVariants = (
   })
 }
 
+export const useCountProductsByCategorySlug = (
+  categorySlug: string,
+  query?: QueryDto
+) => {
+  return useQuery({
+    queryKey: [
+      "count-product-variants-category",
+      categorySlug,
+      JSON.stringify(query),
+    ],
+    queryFn: () =>
+      productVariantServices.countProductsByCategorySlug(categorySlug, query),
+
+    enabled: !!categorySlug,
+  })
+}
+
 export const useFindAllByCategorySlugProductVariants = (
   categorySlug: string,
   query?: QueryDto
