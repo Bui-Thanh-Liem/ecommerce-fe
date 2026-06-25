@@ -19,6 +19,7 @@ import Image from "next/image"
 export function CustomerHistorySection() {
   const { data } = useFindOptionsCustomerProducts()
   const customerProducts = data?.metadata?.data || []
+  console.log("customerProducts ::: ", data)
 
   //
   if (customerProducts.length === 0) return null

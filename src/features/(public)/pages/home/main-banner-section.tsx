@@ -8,13 +8,22 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useGetStoreFront } from "@/hooks/use-get-store-front"
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 import Link from "next/link"
 
 export function MainBannerSection() {
-  const { mainBanner } = useGetStoreFront()
+  const { mainBanner, isLoading } = useGetStoreFront()
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto">
+        <Skeleton className="h-50 w-full" />
+      </div>
+    )
+  }
 
   //
   if (mainBanner.length === 0) return null
