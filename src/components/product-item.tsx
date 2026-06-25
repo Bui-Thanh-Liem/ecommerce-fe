@@ -23,13 +23,17 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
   const specifications =
     product.specifications
       ?.flatMap((s) => s.items)
-      ?.filter((att) => att.isHighlight) || []
+      ?.filter((att) => att.isHighlight)
+      .slice(0, 4) || []
   const category = product.category || {}
   const images = variant.productImages || []
   const salesAttributes = variant.salesAttributes || []
   const thumbnail = product.thumbnail || (images && images[0]?.image.url) || ""
   const attributeValues =
-    salesAttributes.slice(0, 4).map((attr) => attr.desc) || []
+    salesAttributes
+      .filter((attr) => attr.isSKU)
+      .slice(0, 4)
+      .map((attr) => attr.desc) || []
 
   // Tính giá sau khi áp dụng giảm giá
   const discountPrice = variant.price * (1 - variant.discountPercent / 100)
@@ -65,7 +69,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
       onClick={handleClick}
     >
       <CardContent className="relative flex h-full flex-col justify-between gap-2.5 p-3.5 font-sans text-sm">
-        {/* 1. Top Badge: Trả góp cố định ở góc trên */}
+        {/* 1. Top Badge: tình trạng */}
         {!isNormalStatus && (
           <div
             className={cn(
@@ -105,15 +109,8 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
           {product.name}
         </h2>
 
-        {/* 5. Khối chứa Đặc tính sản phẩm & Tình trạng máy (Enum) */}
+        {/* 5. Khối chứa Đặc tính SKU sản phẩm */}
         <div className="flex flex-wrap gap-1">
-          {/* Hiển thị tình trạng máy từ Enum (nếu có) */}
-          {variant.conditions && (
-            <span className="rounded bg-[#f1f1f1] px-2 py-0.5 text-[11px] font-medium text-[#555]">
-              {convertEnumToVN(variant.conditions)}
-            </span>
-          )}
-          {/* Tag mặc định cứng theo ảnh mẫu của bạn */}
           {attributeValues.length > 0 &&
             attributeValues.map((attr, idx) => (
               <span
@@ -145,7 +142,7 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
           )}
         </div>
 
-        {/* 7. Đặc điểm sản phẩm */}
+        {/* 7. Đặc điểm sản phẩm Highlight */}
         {specifications.length > 0 && (
           <div className="rounded-xl bg-gray-50 px-3 py-1.5">
             <ul className="list-inside list-disc space-y-1">

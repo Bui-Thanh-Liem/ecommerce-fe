@@ -15,7 +15,7 @@ export function TopBanner() {
     <header className="grid h-10 grid-cols-12 bg-blue-600">
       <div className="col-span-2"></div>
       <Link
-        href={topBanner.slug}
+        href={`/campaigns/${topBanner.slug}`}
         className="relative col-span-8 flex items-center justify-center"
       >
         <Image src={topBanner.image?.url} alt={topBanner.title} priority fill />

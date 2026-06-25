@@ -69,6 +69,7 @@ export function ProductListPage({
 
   // Kiểm tra xem đã hết sản phẩm chưa
   const hasMore = currentPage < totalPages
+  const hasData = displayVariants.length > 0
 
   if (isLoading && displayVariants.length === 0) {
     return <ProductListPageSkeleton />
@@ -123,7 +124,7 @@ export function ProductListPage({
             />
 
             {/* Thay `variants.map` bằng `displayVariants.map` */}
-            {displayVariants.length > 0 ? (
+            {hasData ? (
               <div className="grid grid-cols-5 gap-4">
                 {displayVariants.map((v) => (
                   <ProductItem key={v.id} variant={v} />
