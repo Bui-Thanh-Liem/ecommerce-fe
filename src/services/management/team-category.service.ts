@@ -42,8 +42,6 @@ export const teamCategoryServices = {
   },
 
   findAllByStore: async (storeId: string) => {
-    console.log(`Fetching team categories for store: ${storeId}`)
-
     const res = await apiCall<ITeamCategory[]>(
       `/team-categories/store/${storeId}`,
       {

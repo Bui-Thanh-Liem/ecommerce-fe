@@ -16,7 +16,7 @@ export function MarketingProgram06Section() {
         {campaigns.map((campaign) => (
           <Link
             key={campaign.id}
-            href={`/campaigns/${campaign.slug}`}
+            href={`/campaign/${campaign.slug}`}
             className="block"
           >
             <div className="relative h-120 overflow-hidden rounded-2xl">

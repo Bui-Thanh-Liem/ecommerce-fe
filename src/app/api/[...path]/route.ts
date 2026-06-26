@@ -56,7 +56,7 @@ async function handler(
       headers: responseHeaders,
     })
   } catch (error) {
-    console.log("Error occurred while fetching API:", error)
+    console.error("Error occurred while fetching API:", error)
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

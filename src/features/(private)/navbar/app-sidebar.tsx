@@ -44,10 +44,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain />
         <NavStoreFront />
+        <NavMktProgram />
         <NavManagement />
         <NavCatalog />
         <NavInventory />
-        <NavMktProgram />
         <NavCustomer />
         <NavOrder />
         <NavReport />

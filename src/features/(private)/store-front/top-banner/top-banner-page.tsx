@@ -146,7 +146,7 @@ export function TopBannerPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete top banner :::", error)
+      console.error("Error delete top banner :::", error)
     }
   }
 

@@ -1,6 +1,7 @@
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateCustomerProductDto } from "@/shared/dtos/req/customer-product.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
+import { CustomerProductType } from "@/shared/enums/customer-product-type.enum"
 import { ICustomerProduct } from "@/shared/interfaces/models/customer/customer-product.interface"
 import { apiCall } from "@/utils/call-api.util"
 import { generateQueryParams } from "@/utils/generate-query-params.util"
@@ -29,11 +30,11 @@ export const customerProductServices = {
     return handleResponse<ResMetadataDto<ICustomerProduct>>(res)
   },
 
-  findOptions: async (query?: QueryDto) => {
+  findOptions: async (type: CustomerProductType, query?: QueryDto) => {
     const queryParams = generateQueryParams({ params: query, isOption: true })
 
     const res = await apiCall<ResMetadataDto<ICustomerProduct>>(
-      `/customer-products/options?${queryParams}`,
+      `/customer-products/options/${type}?${queryParams}`,
       {
         method: "GET",
       }

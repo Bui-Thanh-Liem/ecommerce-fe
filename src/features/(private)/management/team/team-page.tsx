@@ -57,7 +57,7 @@ export function TeamPage() {
         payload: { members: [...new Set(newMemberIds)] },
       })
     } catch (error) {
-      console.log("Error deleting member :::", error)
+      console.error("Error deleting member :::", error)
     }
   }
 
@@ -81,7 +81,7 @@ export function TeamPage() {
         },
       })
     } catch (error) {
-      console.log("Error promoting member to leader :::", error)
+      console.error("Error promoting member to leader :::", error)
     }
   }
 
@@ -93,7 +93,7 @@ export function TeamPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete team :::", error)
+      console.error("Error delete team :::", error)
     }
   }
 

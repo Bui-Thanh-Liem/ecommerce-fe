@@ -1,3 +1,4 @@
+import { CampaignSelectInForm } from "@/components/select-in-form/campaign"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -35,10 +36,10 @@ import { toast } from "sonner"
 import z from "zod"
 
 const initFormValue: z.infer<typeof CreateMainBannerSchema> = {
-  title: "",
   desc: "",
-  image: undefined,
+  campaign: "",
   isActive: true,
+  image: undefined,
 }
 
 export function MainBannerAction({
@@ -87,10 +88,10 @@ export function MainBannerAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        title: dataEdit.title,
-        desc: dataEdit.desc || "",
         image: dataEdit.image,
+        desc: dataEdit.desc || "",
         isActive: dataEdit.isActive,
+        campaign: dataEdit?.campaign?.id,
       })
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(dataEdit.image?.url || "")
@@ -243,28 +244,7 @@ export function MainBannerAction({
             </div>
           </FieldGroup>
 
-          <FieldGroup>
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-input-title">Title</FieldLabel>
-                  <Input
-                    {...field}
-                    type="text"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="title"
-                    autoComplete="title"
-                    id="form-rhf-input-title"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
+          <CampaignSelectInForm form={form} name="campaign" label="Campaign" />
 
           <FieldGroup>
             <Controller

@@ -15,7 +15,7 @@ export const useFindAllProductVariants = (query?: QueryDto) => {
 
 export const useFindOptionsProductVariants = (query?: QueryDto) => {
   return useQuery({
-    queryKey: ["product-variants-options"],
+    queryKey: ["product-variants-options", JSON.stringify(query)],
     queryFn: () => productVariantServices.findOptions(query),
   })
 }

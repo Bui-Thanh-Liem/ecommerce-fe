@@ -81,7 +81,6 @@ export function CategoryAction({
       const url = URL.createObjectURL(file) // Tạo link preview tạm thời
       setPreviewUrl(url)
     }
-    console.log("handleFileChange :::", e.target.files)
   }
 
   //

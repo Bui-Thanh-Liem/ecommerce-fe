@@ -42,7 +42,7 @@ export function HomePage() {
   }
 
   return (
-    <div className="space-y-6 py-8">
+    <div className="space-y-6 py-8 pt-0">
       {order.map((key) => (
         <div key={key}>{mapOrder[key]}</div>
       ))}

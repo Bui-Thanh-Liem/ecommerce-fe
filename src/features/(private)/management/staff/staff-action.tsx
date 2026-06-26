@@ -122,7 +122,6 @@ export function StaffAction({
     try {
       // API không cần confirmPassword nên xóa trước khi gửi
       delete data.confirmPassword
-      console.log("data to submit:", data)
 
       let res = null
       if (dataEdit) {

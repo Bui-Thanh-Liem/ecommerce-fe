@@ -62,7 +62,7 @@ function MainBannerCard({
         <div className="flex items-center justify-between rounded-2xl bg-gray-50/90 p-4 py-2">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <Badge className="shrink-0 truncate text-sm font-semibold">
-              {mainBanner.title}
+              {mainBanner.campaign.name}
             </Badge>
 
             {mainBanner.desc && (
@@ -138,7 +138,7 @@ export function MainBannerPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete main banner :::", error)
+      console.error("Error delete main banner :::", error)
     }
   }
 

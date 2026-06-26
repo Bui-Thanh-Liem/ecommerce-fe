@@ -19,11 +19,15 @@ export const MktProgramSchema = z.object({
 export const CampaignSchema = MktProgramSchema
 
 // Dùng cho topBanner, mainBanner (id, slug, title, image)
-export const BannerItemSchema = z.object({
+export const TopBannerItemSchema = z.object({
   id: z.string().min(1, "ID không được để trống"),
   slug: z.string().min(1, "Slug không được để trống"),
   title: z.string().min(1, "Title không được để trống"),
   image: ImageSchema,
+})
+
+export const MainBannerItemSchema = TopBannerItemSchema.partial().extend({
+  campaignSlug: z.string().min(1, "Campaign Slug không được để trống"),
 })
 
 // Dùng cho menu (id, slug, name, link)
@@ -80,10 +84,10 @@ export const MktSessionMultiCampaignsSchema = z.object({
 // --- 3. SCHEMA CHÍNH CHO DetailHomeConfig ---
 
 export const DetailHomeConfigSchema = z.object({
-  topBanner: BannerItemSchema.nullable().optional(), // Cập nhật: Cho phép null
+  topBanner: TopBannerItemSchema.nullable().optional(), // Cập nhật: Cho phép null
   header: z.string().optional(),
   menu: z.array(MenuItemSchema).optional(),
-  mainBanner: z.array(BannerItemSchema).optional(),
+  mainBanner: z.array(MainBannerItemSchema).optional(),
   listCategories: z.array(CategoryItemSchema).optional(), // Đã chuẩn hóa theo CategoryItem mới
   historyProducts: z.string().optional(),
   suggestForYou: z.string().optional(),

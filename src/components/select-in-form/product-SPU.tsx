@@ -50,7 +50,6 @@ export function ProductSelectInForm({
     label: product.name,
     thumbnail: product.thumbnail,
   }))
-  console.log("comboboxOptions products", comboboxOptions)
 
   return (
     <FieldGroup>

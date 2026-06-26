@@ -2,17 +2,16 @@ import z from "zod"
 import { imageDtoSchema } from "../common/image.dto"
 
 export const CreateMainBannerSchema = z.object({
-  title: z
-    .string()
-    .min(1, "Title is required.")
-    .max(100, "Title must be at most 100 characters."),
   desc: z
     .string()
     .min(1, "Description is required.")
     .max(200, "Description must be at most 200 characters."),
+
   image: imageDtoSchema.optional(),
 
   isActive: z.boolean().optional(),
+
+  campaign: z.uuidv4("Invalid campaign ID format."),
 })
 
 export const UpdateMainBannerSchema = CreateMainBannerSchema.partial()

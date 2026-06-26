@@ -20,10 +20,9 @@ import {
 } from "@/hooks/apis/store-front/use-top-banner"
 import { useUploadCloudinary } from "@/hooks/apis/use-upload-cloudinary"
 import {
-  CreateMainBannerSchema,
-  UpdateMainBannerSchema,
-} from "@/shared/dtos/req/main-banner.dto"
-import { CreateTopBannerSchema } from "@/shared/dtos/req/top-banner.dto"
+  CreateTopBannerSchema,
+  UpdateTopBannerSchema,
+} from "@/shared/dtos/req/top-banner.dto"
 import { Provider } from "@/shared/enums/provider.enum"
 import { IImage } from "@/shared/interfaces/common/image.interface"
 import { ITopBanner } from "@/shared/interfaces/models/store-front/top-banner.interface"
@@ -66,9 +65,7 @@ export function TopBannerAction({
   const [isPending, setIsPending] = useState(false)
 
   //
-  const formSchema = !!dataEdit
-    ? UpdateMainBannerSchema
-    : CreateMainBannerSchema
+  const formSchema = !!dataEdit ? UpdateTopBannerSchema : CreateTopBannerSchema
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initFormValue,
@@ -153,7 +150,7 @@ export function TopBannerAction({
         })
       } else {
         res = await createApi.mutateAsync({ ...data, image } as z.infer<
-          typeof CreateMainBannerSchema
+          typeof CreateTopBannerSchema
         >)
       }
 

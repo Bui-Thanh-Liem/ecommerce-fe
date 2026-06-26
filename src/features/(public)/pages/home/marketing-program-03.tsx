@@ -26,16 +26,16 @@ export function MarketingProgram03Section() {
       <h2 className="text-xl font-bold text-sky-900">{title}</h2>
       <Carousel className="w-full py-2">
         <CarouselContent className="py-1">
-          {mktPrograms.map((campaign, index) => (
+          {mktPrograms.map((mkt, index) => (
             <CarouselItem key={index} className="basis-1/6">
               <Card className="relative">
                 <CardContent className="flex items-center justify-center p-6">
-                  <Link href={`/campaigns/${campaign.slug}`}>
+                  <Link href={`/campaigns/${mkt.slug}`}>
                     <Image
                       fill
                       quality={100}
-                      alt={campaign.name}
-                      src={campaign.mainImage.url}
+                      alt={mkt.name}
+                      src={mkt.mainImage.url}
                       className="object-contain"
                     />
                   </Link>

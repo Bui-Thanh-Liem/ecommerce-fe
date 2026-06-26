@@ -110,7 +110,7 @@ export function BrandPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete brand :::", error)
+      console.error("Error delete brand :::", error)
     }
   }
 

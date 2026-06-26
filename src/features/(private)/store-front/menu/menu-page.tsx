@@ -119,7 +119,7 @@ export function MenuPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete menu :::", error)
+      console.error("Error delete menu :::", error)
     }
   }
 

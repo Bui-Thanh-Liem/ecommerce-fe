@@ -1,7 +1,7 @@
-import { CampaignCustomerPage } from "@/features/(public)/pages/campaign/campaign-customer-page"
+import { MktProgramPage } from "@/features/(public)/pages/mkt-program/mkt-program-page"
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = await params
 
-  return <CampaignCustomerPage slug={slug} />
+  return <MktProgramPage slug={slug} />
 }

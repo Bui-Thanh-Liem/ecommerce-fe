@@ -12,7 +12,7 @@ export function MarketingProgram05Section() {
   return (
     <div className="space-y-2 rounded-4xl">
       <h2 className="text-xl font-bold text-white">{title}</h2>
-      <Link href={`/campaigns/${campaign?.slug}`} className="block">
+      <Link href={`/campaign/${campaign?.slug}`} className="block">
         <div className="relative h-96 overflow-hidden rounded-2xl">
           <Image fill src={campaign?.mainImage?.url} alt={campaign?.name} />
         </div>

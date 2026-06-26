@@ -57,9 +57,8 @@ export function MainBanner({ idConfig, mainBanner }: MainBannerProps) {
       //
       const payload = selectedBanners.map((b) => ({
         id: b.id,
-        slug: b.slug,
-        title: b.title,
         image: b.image,
+        campaignSlug: b.campaignSlug,
       }))
 
       await mutateAsync({
@@ -83,8 +82,8 @@ export function MainBanner({ idConfig, mainBanner }: MainBannerProps) {
         <CustomCombobox
           options={optionsMainBanners.map((b) => ({
             value: b.id!,
-            label: b.title || "Untitled Banner",
             image: b.image,
+            label: b.campaign?.name || "Untitled Banner",
           }))}
           value={selectedBanners.map((b) => b.id!)}
           onChange={(values) => {
@@ -155,7 +154,7 @@ export function MainBanner({ idConfig, mainBanner }: MainBannerProps) {
                       fill
                       className="object-cover"
                       src={banner.image.url}
-                      alt={banner.title || "Main banner preview"}
+                      alt={banner.campaignSlug || "Main banner preview"}
                     />
                   </div>
                 ) : (
@@ -166,10 +165,10 @@ export function MainBanner({ idConfig, mainBanner }: MainBannerProps) {
 
                 <div className="flex min-w-0 flex-1 flex-col justify-center">
                   <span className="truncate text-sm font-semibold">
-                    {banner.title || "Chưa đặt tiêu đề"}
+                    {banner.campaignSlug || "Chưa đặt tiêu đề"}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    Slug: {banner.slug}
+                    Slug: {banner.campaignSlug}
                   </span>
                 </div>
 

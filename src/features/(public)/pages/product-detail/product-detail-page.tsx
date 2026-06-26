@@ -587,10 +587,15 @@ function SalesAttributes({
 
   //
   const handleSelect = (key: string, value: string) => {
-    // 1. Tạo ra trạng thái lựa chọn MỚI NHẤT sau khi user click
-    const nextAttributes = {
-      ...selectedAttributes,
-      [key]: value,
+    // 1. Tạo bản sao của trạng thái hiện tại
+    const nextAttributes = { ...selectedAttributes }
+
+    // KIỂM TRA CLICK LẦN 2: Nếu đã chọn đúng cặp key-value này rồi thì XÓA đi (Bỏ chọn)
+    if (nextAttributes[key] === value) {
+      delete nextAttributes[key]
+    } else {
+      // Nếu chưa chọn hoặc chọn giá trị khác thì cập nhật mới
+      nextAttributes[key] = value
     }
 
     // 2. Cập nhật state UI công khai

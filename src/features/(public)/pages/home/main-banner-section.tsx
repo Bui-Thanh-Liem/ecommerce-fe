@@ -34,13 +34,13 @@ export function MainBannerSection() {
       <div className="mx-auto">
         <Card className="relative">
           <CardContent className="flex h-50 items-center justify-center p-6">
-            <Link href={`/campaigns/${mainBanner[0].slug}`}>
+            <Link href={`/campaigns/${mainBanner[0].campaignSlug}`}>
               <Image
                 fill
                 quality={100}
                 className="object-cover"
-                alt={mainBanner[0].title}
                 src={mainBanner[0].image.url}
+                alt={mainBanner[0].campaignSlug}
               />
             </Link>
           </CardContent>
@@ -71,12 +71,12 @@ export function MainBannerSection() {
             <CarouselItem key={index}>
               <Card className="relative">
                 <CardContent className="flex h-50 items-center justify-center p-6">
-                  <Link href={`/campaigns/${banner.slug}`}>
+                  <Link href={`/campaign/${banner.campaignSlug}`}>
                     <Image
                       fill
                       quality={100}
-                      alt={banner.title}
                       src={banner.image.url}
+                      alt={banner.campaignSlug}
                       className="object-cover"
                     />
                   </Link>

@@ -28,8 +28,8 @@ export function MarketingProgram04Section() {
     <div className="space-y-4 rounded-4xl bg-white p-4 px-6 pb-6">
       <h2 className="text-xl font-bold text-sky-900">{title}</h2>
       <div className="grid grid-cols-3 gap-x-3">
-        <div className="relative col-span-1 overflow-hidden rounded-lg py-0.5">
-          <Link href={`/campaigns/${campaign?.slug}`}>
+        <div className="relative col-span-1 overflow-hidden rounded-lg py-1">
+          <Link href={`/campaign/${campaign?.slug}`}>
             <Image fill src={campaign?.mainImage?.url} alt={campaign?.name} />
           </Link>
         </div>
@@ -38,7 +38,7 @@ export function MarketingProgram04Section() {
           <Carousel>
             <CarouselContent>
               {productVariants.map((variant) => (
-                <CarouselItem key={variant.id} className="basis-1/3 py-0.5">
+                <CarouselItem key={variant.id} className="basis-1/3 py-1">
                   <ProductItem variant={variant} />
                 </CarouselItem>
               ))}

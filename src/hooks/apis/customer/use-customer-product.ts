@@ -1,6 +1,7 @@
 import { customerProductServices } from "@/services/customer/customer-product.service"
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { CreateCustomerProductDto } from "@/shared/dtos/req/customer-product.dto"
+import { CustomerProductType } from "@/shared/enums/customer-product-type.enum"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 export const useFindAllCustomerProducts = (query?: QueryDto) => {
@@ -10,10 +11,13 @@ export const useFindAllCustomerProducts = (query?: QueryDto) => {
   })
 }
 
-export const useFindOptionsCustomerProducts = (query?: QueryDto) => {
+export const useFindOptionsCustomerProducts = (
+  type: CustomerProductType,
+  query?: QueryDto
+) => {
   return useQuery({
-    queryKey: ["customer-products", "options"],
-    queryFn: () => customerProductServices.findOptions(query),
+    queryKey: ["customer-products", "options", type],
+    queryFn: () => customerProductServices.findOptions(type, query),
   })
 }
 

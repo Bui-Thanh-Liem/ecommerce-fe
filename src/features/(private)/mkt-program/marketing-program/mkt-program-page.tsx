@@ -42,7 +42,6 @@ export function MktProgramPage() {
 
   //
   function handleAddCampaign(mktProgram: IMarketingProgram) {
-    console.log("Adding campaign for program:", mktProgram)
     setDataEdit(mktProgram)
     setOpenAddCampaign(true)
   }

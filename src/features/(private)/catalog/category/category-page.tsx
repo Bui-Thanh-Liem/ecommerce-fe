@@ -130,7 +130,7 @@ export function CategoryPage() {
         setOpen(false)
       }
     } catch (error) {
-      console.log("Error delete category :::", error)
+      console.error("Error delete category :::", error)
     }
   }
 

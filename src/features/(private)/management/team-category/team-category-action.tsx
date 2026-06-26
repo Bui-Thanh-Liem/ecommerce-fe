@@ -54,9 +54,6 @@ export function TeamCategoryAction({
   initialData: ITeamCategory | null
   onOpenChange?: (open: boolean) => void
 }) {
-  console.log("TeamCategoryAction - dataEdit:", dataEdit)
-  console.log("TeamCategoryAction - initialData:", initialData)
-
   //
   const createApi = useCreateTeamCategory()
   const updateApi = useUpdateTeamCategory()

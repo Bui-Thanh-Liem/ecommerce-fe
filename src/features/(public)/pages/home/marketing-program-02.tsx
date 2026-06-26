@@ -41,7 +41,7 @@ export function MarketingProgram02Section() {
             <CarouselItem key={index} className="basis-1/2">
               <Card className="relative">
                 <CardContent className="flex h-42 items-center justify-center p-6">
-                  <Link href={`/campaigns/${campaign.slug}`}>
+                  <Link href={`/campaign/${campaign.slug}`}>
                     <Image
                       fill
                       quality={100}

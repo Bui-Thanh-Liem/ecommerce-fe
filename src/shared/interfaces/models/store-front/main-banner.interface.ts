@@ -1,10 +1,11 @@
-import { IBase } from "../../common/base.interface";
-import { IImage } from "../../common/image.interface";
+import { IBase } from "../../common/base.interface"
+import { IImage } from "../../common/image.interface"
+import { ICampaign } from "../mkt-program/campaign.interface"
 
 export interface IMainBanner extends IBase {
-  title: string;
-  slug: string;
-  desc?: string;
-  image: IImage;
-  isActive: boolean;
+  desc?: string
+  image: IImage
+  isActive: boolean
+  campaign: ICampaign
+  campaignSlug: string
 }
