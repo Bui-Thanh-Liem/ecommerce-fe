@@ -14,7 +14,7 @@ import { SuggestForYouSection } from "./suggest-for-you"
 import { MarketingProgram04Section } from "./marketing-program-04"
 import { MarketingProgram05Section } from "./marketing-program-05"
 import { MarketingProgram06Section } from "./marketing-program-06"
-import Chatbot from "../../chatbot/chatbot"
+import { Chatbot } from "../../chatbot/chatbot"
 
 export function HomePage() {
   const { order } = useGetStoreFront()
