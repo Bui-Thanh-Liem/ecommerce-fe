@@ -89,11 +89,6 @@ const badgeColors = [
   "bg-slate-100 text-slate-800 border-slate-300",
   "bg-slate-200 text-slate-900 border-slate-400",
 
-  // Gray
-  "bg-gray-50 text-gray-700 border-gray-200",
-  "bg-gray-100 text-gray-800 border-gray-300",
-  "bg-gray-200 text-gray-900 border-gray-400",
-
   // Zinc
   "bg-zinc-50 text-zinc-700 border-zinc-200",
   "bg-zinc-100 text-zinc-800 border-zinc-300",
@@ -108,12 +103,18 @@ const badgeColors = [
   "bg-stone-50 text-stone-700 border-stone-200",
   "bg-stone-100 text-stone-800 border-stone-300",
   "bg-stone-200 text-stone-900 border-stone-400",
+
+  // Gray
+  "bg-gray-50 text-gray-700 border-gray-200",
+  "bg-gray-100 text-gray-800 border-gray-300",
+  "bg-gray-200 text-gray-900 border-gray-400",
 ]
 
 export function randomColorByString(string: string) {
-  let hash = 0
+  if (!string.length) return badgeColors[badgeColors.length - 1]
 
-  for (let i = 0; i < string.length; i++) {
+  let hash = 0
+  for (let i = 0; i < string?.length; i++) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash)
   }
 
