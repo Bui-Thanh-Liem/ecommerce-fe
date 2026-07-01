@@ -5,19 +5,32 @@ import { Send, X } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 
+interface SourceItem {
+  sku?: string
+  name?: string
+}
+
 interface ChatMessage {
   id: string
-  sources?: any[]
-  content?: string
+  content: string
+  sources?: SourceItem[]
   isStreaming?: boolean
-  /** true khi đang chờ sản phẩm/câu trả lời, chưa có chunk thật nào về */
+  /** true khi chưa có answer_chunk thực sự nào -> hiện dấu "..." */
   isThinking?: boolean
-  /** label hiển thị kèm dấu "..." khi đang nghĩ, ví dụ "Đang tìm kiếm sản phẩm..." */
-  thinkingLabel?: string
-  /** true khi tin nhắn này là thông báo lỗi từ server (type: "error") */
   isError?: boolean
   type: "user" | "assistant"
 }
+
+/** Khớp @Param('type') type: DocumentType trong RagController -> GET /api/rag/ask/:type */
+type DocumentType = "public" | "internal"
+
+/** Các event mà BE hiện gửi qua SSE, theo đúng ask() đã sửa */
+type StreamEvent =
+  | { type: "sources"; data: SourceItem[] }
+  | { type: "start_answer" }
+  | { type: "answer_chunk"; content: string }
+  | { type: "end" }
+  | { type: "error"; content?: string }
 
 function TypingDots() {
   return (
@@ -29,62 +42,116 @@ function TypingDots() {
   )
 }
 
-export function Chatbot() {
+interface ChatbotProps {
+  /** Loại nguồn dữ liệu để hỏi, mặc định "public" cho widget khách hàng */
+  type?: DocumentType
+}
+
+export function Chatbot({ type = "public" }: ChatbotProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
-  // Auto scroll xuống cuối mỗi khi có message mới
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
     }
   }, [messages])
 
+  useEffect(() => {
+    return () => abortControllerRef.current?.abort()
+  }, [])
+
+  // Áp dụng 1 event đã parse vào đúng message assistant tương ứng
+  const applyEvent = (assistantMessageId: string, event: StreamEvent) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== assistantMessageId) return m
+
+        switch (event.type) {
+          case "sources":
+            return { ...m, sources: event.data || [] }
+          case "start_answer":
+            // Reset content cho sạch, giữ isThinking=true đến khi có chunk thật đầu tiên
+            return { ...m, content: "" }
+          case "answer_chunk":
+            return {
+              ...m,
+              isThinking: event.content ? false : m.isThinking, // chỉ tắt khi có content thật
+              content: m.content + (event.content ?? ""),
+            }
+          case "end":
+            return { ...m, isStreaming: false, isThinking: false }
+          case "error":
+            return {
+              ...m,
+              isStreaming: false,
+              isThinking: false,
+              isError: true,
+              content: event.content || "❌ Có lỗi xảy ra, vui lòng thử lại.",
+            }
+          default:
+            return m
+        }
+      })
+    )
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
 
+    const currentQuestion = input.trim()
+
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       type: "user",
-      content: input.trim(),
+      content: currentQuestion,
     }
 
-    setMessages((prev) => [...prev, userMessage])
-    const currentQuestion = input.trim()
+    const assistantMessageId = crypto.randomUUID()
+    const assistantMessage: ChatMessage = {
+      id: assistantMessageId,
+      type: "assistant",
+      content: "",
+      isStreaming: true,
+      isThinking: true,
+    }
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage])
     setInput("")
     setIsLoading(true)
 
+    const patchAssistant = (patch: Partial<ChatMessage>) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === assistantMessageId ? { ...m, ...patch } : m))
+      )
+    }
+
+    abortControllerRef.current?.abort()
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    let receivedEndEvent = false
+
     try {
-      const response = await fetch("/api/chatbot/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: currentQuestion }),
+      const url = `/api/rag/ask/${type}?question=${encodeURIComponent(currentQuestion)}`
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Accept: "text/event-stream" },
+        signal: controller.signal,
       })
 
-      if (!response.body) throw new Error("No response body")
+      if (!response.ok || !response.body) {
+        throw new Error(`Request failed with status ${response.status}`)
+      }
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
-
-      // Thêm message assistant tạm - hiện "..." ngay lập tức, chưa có content thật
-      const assistantMessageId = (Date.now() + 1).toString()
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: assistantMessageId,
-          type: "assistant",
-          content: "",
-          isStreaming: true,
-          isThinking: true,
-          thinkingLabel: "Đang suy nghĩ...",
-        },
-      ])
-
       let buffer = ""
 
       while (true) {
@@ -92,99 +159,72 @@ export function Chatbot() {
         if (done) break
 
         buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split("\n\n")
 
-        buffer = lines.pop() || "" // Giữ lại phần chưa hoàn chỉnh
+        // Mỗi SSE event cách nhau bởi 1 dòng trống
+        const rawEvents = buffer.split("\n\n")
+        buffer = rawEvents.pop() || "" // phần chưa nhận đủ, giữ lại
 
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6))
+        for (const rawEvent of rawEvents) {
+          // QUAN TRỌNG: không giả định có khoảng trắng sau "data:".
+          // Một số adapter/proxy gửi "data:{...}" thay vì "data: {...}",
+          // nếu chỉ match "data: " (có space) sẽ bỏ sót toàn bộ event.
+          const dataLines = rawEvent
+            .split("\n")
+            .filter((line) => line.startsWith("data:"))
+            .map((line) => line.replace(/^data:\s?/, ""))
 
-              setMessages((prev) =>
-                prev.map((msg) =>
-                  msg.id === assistantMessageId
-                    ? updateMessageFromStream(msg, data)
-                    : msg
-                )
-              )
-            } catch (err) {
-              console.error("Parse error:", err)
+          if (dataLines.length === 0) continue
+
+          const rawData = dataLines.join("\n")
+
+          try {
+            const event = JSON.parse(rawData) as StreamEvent
+            applyEvent(assistantMessageId, event)
+            if (event.type === "end" || event.type === "error") {
+              receivedEndEvent = true
             }
+          } catch (err) {
+            console.error("Không parse được SSE event:", rawData, err)
           }
         }
       }
-    } catch (error) {
-      console.error("Chat error:", error)
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.isStreaming
-            ? {
-                ...msg,
-                content: "❌ Có lỗi xảy ra, vui lòng thử lại.",
-                isStreaming: false,
-                isThinking: false,
-                isError: true,
-              }
-            : msg
+
+      if (!receivedEndEvent) {
+        // Kết nối đóng mà không có event "end"/"error" tường minh
+        // -> nhiều khả năng generator throw lỗi giữa chừng ở BE
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? m.content
+                ? { ...m, isStreaming: false, isThinking: false }
+                : {
+                    ...m,
+                    isStreaming: false,
+                    isThinking: false,
+                    isError: true,
+                    content: "❌ Kết nối bị ngắt giữa chừng, vui lòng thử lại.",
+                  }
+              : m
+          )
         )
-      )
+      }
+    } catch (error) {
+      if ((error as any)?.name === "AbortError") return
+
+      console.error("Chat error:", error)
+      patchAssistant({
+        isStreaming: false,
+        isThinking: false,
+        isError: true,
+        content: "❌ Có lỗi xảy ra, vui lòng thử lại.",
+      })
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Xử lý từng chunk từ server
-  const updateMessageFromStream = (
-    msg: ChatMessage,
-    data: any
-  ): ChatMessage => {
-    switch (data.type) {
-      case "thinking":
-        // Chỉ cập nhật label hiển thị cạnh dấu "...", KHÔNG đụng vào content thật
-        return {
-          ...msg,
-          isThinking: true,
-          thinkingLabel: data.content || "Đang suy nghĩ...",
-        }
-
-      case "sources":
-        // Sản phẩm tham khảo có thể đến trước khi câu trả lời bắt đầu stream
-        return { ...msg, sources: data.data || [] }
-
-      case "start_answer":
-        // Reset content cho sạch, nhưng GIỮ isThinking = true -> dots vẫn chạy
-        // liên tục đến khi answer_chunk THẬT đầu tiên về, tránh khoảng trống
-        // hiện cursor rỗng nếu sau đó lỗi xảy ra mà chưa có chunk nào.
-        return { ...msg, content: "" }
-
-      case "answer_chunk":
-        return {
-          ...msg,
-          isThinking: false,
-          content: (msg.content || "") + data.content,
-        }
-
-      case "end":
-        return { ...msg, isStreaming: false, isThinking: false }
-
-      case "error":
-        return {
-          ...msg,
-          isStreaming: false,
-          isThinking: false,
-          isError: true,
-          content: data.content || "❌ Có lỗi xảy ra, vui lòng thử lại.",
-        }
-
-      default:
-        return msg
-    }
-  }
-
   return (
     <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3">
-      {/* Panel chat - bung ra từ góc phải dưới */}
       <div
         role="dialog"
         aria-label="AI Shopping Assistant"
@@ -255,22 +295,18 @@ export function Chatbot() {
                         Sản phẩm tham khảo:
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {msg.sources
-                          .slice(0, 4)
-                          .map((product: any, idx: number) => (
-                            <Badge variant="secondary" key={idx}>
-                              {product.name || product.sku}
-                            </Badge>
-                          ))}
+                        {msg.sources.slice(0, 4).map((product, idx) => (
+                          <Badge variant="secondary" key={idx}>
+                            {product.name || product.sku}
+                          </Badge>
+                        ))}
                       </div>
                     </div>
                   )}
 
                 {msg.isThinking && !msg.content ? (
                   <div className="flex items-center gap-2 text-gray-400">
-                    {msg.thinkingLabel && (
-                      <span className="text-xs">{msg.thinkingLabel}</span>
-                    )}
+                    <span className="text-xs">Đang suy nghĩ...</span>
                     <TypingDots />
                   </div>
                 ) : (
@@ -316,7 +352,7 @@ export function Chatbot() {
         </div>
       </div>
 
-      {/* Nút bong bóng - mở/đóng widget, luôn nằm cố định góc phải dưới */}
+      {/* Nút bong bóng */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
