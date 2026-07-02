@@ -33,9 +33,12 @@ export const config = {
     "/management/:path*",
 
     "/products/:path*",
+
     "/catalog/:path*",
 
     "/inventories/:path*",
+
+    "/chatbot/:path*",
 
     "/marketing-programs/:path*",
 
