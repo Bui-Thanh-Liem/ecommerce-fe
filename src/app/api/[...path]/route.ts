@@ -15,8 +15,9 @@ async function handler(
     }
 
     // Forward Content-Type nếu không phải FormData
-    if (!(req.body instanceof FormData)) {
-      headers["Content-Type"] = "application/json"
+    const contentType = req.headers.get("content-type")
+    if (contentType) {
+      headers["Content-Type"] = contentType
     }
 
     // 👇 Forward cookie từ browser lên BE

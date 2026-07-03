@@ -6,6 +6,6 @@ export interface IBase {
   logInsert(): void
   logUpdate(): void
   logRemove(): void
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | string
+  updatedAt: Date | string
 }
