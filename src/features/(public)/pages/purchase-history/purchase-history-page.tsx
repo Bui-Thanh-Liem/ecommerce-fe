@@ -1,24 +1,44 @@
+"use client"
+
+import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { useCustomerContext } from "@/context/customer.context"
+import { AccountSidebar } from "./account-sidebar"
+import { PurchaseOrderTab } from "./purchase-order-tab"
+import { PurchaseAddressTab } from "./purchase-address-tab"
+import { PurchaseCouponTab } from "./purchase-coupon-tab"
+
 export function PurchaseHistoryPage() {
+  const { customer } = useCustomerContext()
+
   return (
-    <div className="grid grid-cols-12">
+    <div className="grid grid-cols-12 py-12">
       <div className="col-span-2"></div>
       <div className="col-span-8 h-[calc(100vh-300px)]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 800 500"
-          fill="none"
-          className="mx-auto h-full w-full"
-        >
-          <rect width="800" height="500" fill="#F3F4F6" />
-          <path
-            d="M400 100C300 100 200 150 200 250C200 350 300 400 400 400C500 400 600 350 600 250C600 150 500 100 400 100ZM400 150C450.523 150 500 175.477 500 250C500 325 450.523 350 400 350C300 400 250 375.523 250 300C250 225 300.523 200 400 200Z"
-            fill="#9CA3AF"
-          />
-          <path
-            d="M385 220C380.477 220 375.477 222.238 372.929 224.786C370.381 227.334 368.143 232.334 368.143 237.857C368.143 243.38 370.381 248.38 372.929 250.928C375.477 253.476 380.477 255.714 385 255.714C389.523 255.714 394.523 253.476 397.071 250.928C399.619 248.38 401.857 243.38 401.857 237.857C401.857 232.334 399.619 227.334 397.071 224.786C394.523 222.238 389.523 220 385 220ZM385 230C387.209 230 389.143 231.934 389.143 234.143C389.143 236.352 387.209 238.286 385 238.286C382.791 238.286 380.857 236.352 380.857 234.143C380.857 231.934 382.791 230 385 230Z"
-            fill="#9CA3AF"
-          />
-        </svg>
+        <div className="container py-8">
+          <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+            <Tabs
+              defaultValue="orders"
+              orientation="vertical"
+              className="grid gap-8 lg:grid-cols-[280px_1fr]"
+            >
+              <AccountSidebar customer={customer} />
+
+              <div className="min-h-175 bg-red-400">
+                <TabsContent value="orders" className="bg-red-600">
+                  <PurchaseOrderTab />
+                </TabsContent>
+
+                <TabsContent value="address">
+                  <PurchaseAddressTab />
+                </TabsContent>
+
+                <TabsContent value="coupon">
+                  <PurchaseCouponTab />
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
+        </div>
       </div>
       <div className="col-span-2"></div>
     </div>

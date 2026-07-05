@@ -20,6 +20,7 @@ import Image from "next/image"
 import { Address } from "./address"
 import { useState } from "react"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
+import { useCustomerContext } from "@/context/customer.context"
 
 export function Header() {
   return (
@@ -153,6 +154,23 @@ function Category() {
 }
 
 function Login() {
+  const { customer } = useCustomerContext()
+
+  if (customer) {
+    return (
+      <Link href="/purchase-history">
+        <Button
+          className="ml-4 cursor-pointer text-white"
+          variant="ghost"
+          size="lg"
+        >
+          <User />
+          <span>Xin chào, {customer.fullname}</span>
+        </Button>
+      </Link>
+    )
+  }
+
   return (
     <Link href="/purchase-history/login">
       <Button

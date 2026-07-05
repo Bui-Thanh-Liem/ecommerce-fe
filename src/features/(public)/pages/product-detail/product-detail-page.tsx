@@ -78,6 +78,7 @@ export function ProductDetailPage({
   categorySlug,
   parentCategorySlug,
 }: ISlugPageProps) {
+  const route = useRouter()
   const { location } = useRLCustomerContext()
   const { data } = useRedirectCategoryContext()
   const productSlug = data?.productSlug || ""
@@ -111,6 +112,11 @@ export function ProductDetailPage({
   //
   const images = variant?.productImages || []
   const specifications = product?.specifications || []
+
+  //
+  function handleBuyNow() {
+    route.push("/order")
+  }
 
   if (isLoading || isVariantLoading || !product || !variant) {
     return <ProductDetailSkeleton />
@@ -174,6 +180,12 @@ export function ProductDetailPage({
           {/*  */}
           <div className="col-span-1">
             <div className="space-y-6 rounded-4xl bg-white p-4">
+              <Button
+                variant="ghost"
+                className="w-full text-blue-500 hover:bg-transparent hover:text-blue-600"
+              >
+                <Store /> Cửa hàng gần nhất
+              </Button>
               <SalesAttributes
                 variantSlug=""
                 categorySlug={categorySlug}
@@ -188,7 +200,7 @@ export function ProductDetailPage({
 
               <div className="space-y-2">
                 <p className="font-bold">Thông tin vận chuyển</p>
-                <p className="text-sm text-gray-600">
+                <p className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
                   <strong className="flex items-center gap-x-1">
                     <span>
                       <MapPinned size={18} className="text-red-400" />
@@ -197,6 +209,7 @@ export function ProductDetailPage({
                   </strong>
                   {location || "Vui lòng chọn địa chỉ giao hàng"}
                 </p>
+
                 <p className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
                   <strong className="flex items-center gap-x-1">
                     <span className="animate-truck alignment-baseline inline-block">
@@ -217,17 +230,14 @@ export function ProductDetailPage({
                 >
                   <ShoppingCart /> Thêm vào giỏ hàng
                 </Button>
-                <Button size="lg" className="bg-amber-600 hover:bg-amber-700">
+                <Button
+                  size="lg"
+                  className="bg-amber-600 hover:bg-amber-700"
+                  onClick={handleBuyNow}
+                >
                   Mua ngay
                 </Button>
               </div>
-
-              <Button
-                variant="ghost"
-                className="w-full text-blue-500 hover:bg-transparent hover:text-blue-600"
-              >
-                <Store /> Xem cửa hàng gần nhất có hàng
-              </Button>
             </div>
           </div>
         </div>
@@ -712,15 +722,15 @@ function ServicePackage({
         <span className="block space-y-2">
           <span className="flex gap-x-2">
             <ChessQueen size={20} color="orange" /> BH 1 đổi 1 bởi ĐMX trong 12
-            tháng cho sản phẩm từ 30-40 triệu
+            tháng cho sản phẩm.
           </span>
           <span className="flex gap-x-2">
             <ChessQueen size={20} color="orange" /> BHMR 1 năm bởi ĐMX cho sản
-            phẩm từ 30-40 triệu
+            phẩm.
           </span>
           <span className="flex gap-x-2">
             <ChessQueen size={20} color="orange" /> BHRV 6 tháng ĐMX cho sản
-            phẩm từ 30-40 triệu
+            phẩm.
           </span>
         </span>
       ),

@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { ReactQueryProvider } from "@/components/providers/query-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { GuestProvider } from "@/components/providers/guest-provider"
+import { Chatbot } from "@/features/(public)/chatbot/chatbot"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -34,7 +35,10 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <ReactQueryProvider>
           <ThemeProvider>
-            <TooltipProvider>{children}</TooltipProvider>
+            <TooltipProvider>
+              {children}
+              <Chatbot />
+            </TooltipProvider>
             <Toaster position="bottom-right" />
             <GuestProvider />
           </ThemeProvider>

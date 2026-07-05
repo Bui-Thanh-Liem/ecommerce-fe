@@ -1,3 +1,5 @@
+import { PurchaseHistoryPage } from "@/features/(public)/pages/purchase-history/purchase-history-page"
+
 export const metadata = {
   title: "Lịch sử mua hàng - Siêu thị điện máy trực tuyến",
   description:
@@ -5,9 +7,5 @@ export const metadata = {
 }
 
 export default function Page() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold">Lịch sử mua hàng</h1>
-    </div>
-  )
+  return <PurchaseHistoryPage />
 }

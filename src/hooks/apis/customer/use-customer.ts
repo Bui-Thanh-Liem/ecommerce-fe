@@ -6,6 +6,7 @@ import {
   VerifyLoginOtpCustomerDto,
 } from "@/shared/dtos/req/customer.dto"
 import { QueryDto } from "@/shared/dtos/common/query.dto"
+import { useCustomerContext } from "@/context/customer.context"
 
 export const useLoginCustomer = () => {
   return useMutation({
@@ -18,7 +19,7 @@ export const useLoginCustomer = () => {
 }
 
 export const useVerifyLoginOtpCustomer = () => {
-  const queryClient = useQueryClient()
+  const { setCustomer } = useCustomerContext()
 
   return useMutation({
     //
@@ -26,8 +27,14 @@ export const useVerifyLoginOtpCustomer = () => {
       customerServices.verifyLoginOtp(payload),
 
     //
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customers"] })
+    onSuccess: (data) => {
+      console.log("data ::", data)
+
+      //
+      if (data?.statusCode === 201) {
+        const customer = data.metadata!.customer
+        setCustomer(customer)
+      }
     },
   })
 }

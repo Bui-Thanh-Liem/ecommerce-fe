@@ -1,14 +1,19 @@
-import { OrderStatus } from '@/shared/enums/order-status.enum';
-import { OrderPaymentMethod } from '@/shared/enums/order-payment-method.enum';
-import { IBase } from '../../common/base.interface';
+import { OrderStatus } from "@/shared/enums/order-status.enum"
+import { PaymentMethod } from "@/shared/enums/payment-method.enum"
+import { IBase } from "../../common/base.interface"
+import { ICustomer } from "./customer.interface"
+import { PaymentGateway } from "@/shared/enums/order-payment-gateway.enum"
+import { IOrderItem } from "./order-item.interface"
 
 export interface IOrder extends IBase {
-  id: string;
-  customerId: string;
-  productIds: string[];
-  totalAmount: number;
-  paymentMethod: OrderPaymentMethod;
-  orderDate: Date;
-  status: OrderStatus;
-  shoppingAddress: string;
+  customer: ICustomer
+  totalAmount: number
+  status: OrderStatus
+  invoiceNumber: string
+  shoppingAddress: string
+  paymentGateway: PaymentGateway
+  paymentMethod: PaymentMethod
+
+  //
+  orderItems: IOrderItem[]
 }

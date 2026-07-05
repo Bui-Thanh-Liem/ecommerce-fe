@@ -71,7 +71,6 @@ export function Address() {
     // Gọi api để BE xử lý về khu vực, cửa hàng gần nhất (khuyến mãi, ...)
     const res = await selectionLocationRegion()
     if (res?.statusCode === 201 && res.metadata) {
-      form.reset()
       setOpen(false)
       setLocation(
         `${res.metadata.addressDetail}, ${res.metadata.districtTown.name}, ${res.metadata.wardCommune.name}`
@@ -90,8 +89,8 @@ export function Address() {
             className="ml-4 flex-1 cursor-pointer bg-sky-50/20 text-white hover:bg-sky-50/30 hover:text-white data-[state=open]:bg-sky-50/30"
           >
             <MapPin />
-            <p className="line-clamp-1 max-w-42">
-              {location || "Vui lòng chọn địa chỉ giao hàng"}
+            <p className="line-clamp-1 max-w-42 truncate">
+              {location.slice(0, 32) || "Vui lòng chọn địa chỉ giao hàng"}
             </p>
           </Button>
         </TooltipTrigger>
