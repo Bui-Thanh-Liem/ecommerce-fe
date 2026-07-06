@@ -21,6 +21,14 @@ export const customerServices = {
     return handleResponse<ICustomer>(res)
   },
 
+  signout: async () => {
+    const res = await apiCall("/customers/signout", {
+      method: "POST",
+    })
+
+    return handleResponse(res)
+  },
+
   verifyLoginOtp: async (payload: VerifyLoginOtpCustomerDto) => {
     const res = await apiCall<ResLoginCustomerDto>(
       "/customers/verify-login-otp",
@@ -48,6 +56,15 @@ export const customerServices = {
 
   update: async (id: string, payload: UpdateCustomerDto) => {
     const res = await apiCall<ICustomer>(`/customers/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+
+    return handleResponse<ICustomer>(res)
+  },
+
+  updateProfile: async (payload: UpdateCustomerDto) => {
+    const res = await apiCall<ICustomer>(`/customers/update-profile`, {
       method: "PATCH",
       body: JSON.stringify(payload),
     })

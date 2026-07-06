@@ -45,11 +45,30 @@ export const apiCall = async <T>(
 
       // Trường hợp refresh token hết hạn (BE xoa cookie refresh token va access token)
       if (statusCode === 401) {
-        deleteStorage()
+        deleteStorage("staff")
+      }
+    } else if (
+      statusCode === 401 &&
+      message === ("TokenCustomerExpiredError" as const)
+    ) {
+      // Gọi API refresh token để  lấy access_token mới
+      await fetch("/api/customers/refresh-token", {
+        ...config,
+        method: "POST",
+      })
+
+      // Sau khi refresh token thành công, gọi lại API ban đầu với access_token mới
+      response = await fetch(`/api/${endpoint}`, config)
+      result = (await response.json()) as OkResponse<T>
+      const { statusCode } = result
+
+      // Trường hợp refresh token hết hạn (BE xoa cookie refresh token va access token)
+      if (statusCode === 401) {
+        deleteStorage("customer")
       }
     } else if ([401].includes(statusCode)) {
       // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho staff login lại
-      deleteStorage()
+      deleteStorage("staff")
       await fetch("/api/auth/signout", {
         method: "POST",
       })

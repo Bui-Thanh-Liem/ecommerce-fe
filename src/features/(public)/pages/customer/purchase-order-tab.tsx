@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OrderStatus } from "@/shared/enums/order-status.enum"
+import { IOrder } from "@/shared/interfaces/models/customer/order.interface"
 import { CalendarDays, ShoppingBag } from "lucide-react"
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
@@ -15,10 +16,10 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
 }
 
 export function PurchaseOrderTab() {
-  const orders: any[] = []
+  const orders: IOrder[] = []
 
   return (
-    <div className="space-y-6 bg-red-200">
+    <div className="space-y-6">
       <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
         <h2 className="text-3xl font-semibold">Đơn hàng đã mua</h2>
 
@@ -27,14 +28,13 @@ export function PurchaseOrderTab() {
           05/07/2025 - 05/07/2026
         </Button>
       </div>
-
-      <Tabs defaultValue={OrderStatus.SUCCESS}>
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-3 bg-transparent p-0">
+      <Tabs defaultValue={OrderStatus.SUCCESS} orientation="horizontal">
+        <TabsList className="flex w-full flex-row! justify-between">
           {Object.values(OrderStatus).map((status) => (
             <TabsTrigger
               key={status}
               value={status}
-              className="data-[state=active]:border-primary rounded-md border px-5 py-2"
+              className="data-[state=active]:border-primary w-fit shrink-0 rounded-md border px-5 py-2"
             >
               {STATUS_LABEL[status]}
             </TabsTrigger>
@@ -57,7 +57,7 @@ export function PurchaseOrderTab() {
 
 function EmptyOrder() {
   return (
-    <div className="bg-background flex min-h-125 flex-col items-center justify-center rounded-lg border px-6 text-center">
+    <div className="bg-background flex min-h-125 flex-col items-center justify-center rounded-lg px-6 text-center">
       <ShoppingBag className="text-primary mb-6 h-24 w-24" strokeWidth={1.5} />
 
       <h3 className="text-3xl font-semibold">

@@ -1,4 +1,4 @@
-import { PurchaseHistoryPage } from "@/features/(public)/pages/purchase-history/purchase-history-page"
+import { PurchaseHistoryPage } from "@/features/(public)/pages/customer/purchase-history-page"
 
 export const metadata = {
   title: "Lịch sử mua hàng - Siêu thị điện máy trực tuyến",

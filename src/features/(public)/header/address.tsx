@@ -90,7 +90,7 @@ export function Address() {
           >
             <MapPin />
             <p className="line-clamp-1 max-w-42 truncate">
-              {location.slice(0, 32) || "Vui lòng chọn địa chỉ giao hàng"}
+              {location || "Vui lòng chọn địa chỉ giao hàng"}
             </p>
           </Button>
         </TooltipTrigger>

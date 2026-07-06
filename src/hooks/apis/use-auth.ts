@@ -66,7 +66,7 @@ export const useSignOut = () => {
     onSuccess: (data) => {
       //
       if (data?.statusCode === 201) {
-        deleteStorage() // Xóa token, staff info, etc. trong localStorage/sessionStorage
+        deleteStorage("staff") // Xóa token, staff info, etc. trong localStorage/sessionStorage
         clearStaff() // Clear staff context
       }
     },

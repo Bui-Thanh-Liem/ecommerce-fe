@@ -7,6 +7,7 @@ import {
 } from "@/shared/dtos/req/customer.dto"
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { useCustomerContext } from "@/context/customer.context"
+import { deleteStorage } from "@/utils/delete-storage.util"
 
 export const useLoginCustomer = () => {
   return useMutation({
@@ -15,6 +16,24 @@ export const useLoginCustomer = () => {
 
     //
     onSuccess: () => {},
+  })
+}
+
+export const useSignOutCustomer = () => {
+  const { clearCustomer } = useCustomerContext()
+
+  return useMutation({
+    //
+    mutationFn: () => customerServices.signout(),
+
+    //
+    onSuccess: (data) => {
+      //
+      if (data?.statusCode === 201) {
+        deleteStorage("customer") // Xóa token, customer info, etc. trong localStorage/sessionStorage
+        clearCustomer() // Clear customer context
+      }
+    },
   })
 }
 
@@ -46,6 +65,21 @@ export const useUpdateCustomer = () => {
     //
     mutationFn: ({ id, payload }: { id: string; payload: UpdateCustomerDto }) =>
       customerServices.update(id, payload),
+
+    //
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] })
+    },
+  })
+}
+
+export const useUpdateProfileCustomer = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    //
+    mutationFn: ({ payload }: { payload: UpdateCustomerDto }) =>
+      customerServices.updateProfile(payload),
 
     //
     onSuccess: () => {

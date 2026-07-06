@@ -52,7 +52,7 @@ export function PurchaseCouponTab() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-semibold">Mã giảm giá của bạn</h2>
 
-        <Badge variant="secondary">{coupons.length} Voucher</Badge>
+        <Badge variant="outline">{coupons.length} Voucher</Badge>
       </div>
 
       {coupons.length === 0 ? (
@@ -94,7 +94,7 @@ function CouponCard({ coupon }: { coupon: ICoupon }) {
               {coupon.isExpired ? (
                 <Badge variant="destructive">Hết hạn</Badge>
               ) : (
-                <Badge>Còn hiệu lực</Badge>
+                <Badge variant="secondary">Còn hiệu lực</Badge>
               )}
             </div>
 

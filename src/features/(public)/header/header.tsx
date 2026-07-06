@@ -21,6 +21,11 @@ import { Address } from "./address"
 import { useState } from "react"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
 import { useCustomerContext } from "@/context/customer.context"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export function Header() {
   return (
@@ -158,21 +163,30 @@ function Login() {
 
   if (customer) {
     return (
-      <Link href="/purchase-history">
-        <Button
-          className="ml-4 cursor-pointer text-white"
-          variant="ghost"
-          size="lg"
-        >
-          <User />
-          <span>Xin chào, {customer.fullname}</span>
-        </Button>
-      </Link>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link href="/customer">
+            <Button
+              className="ml-4 cursor-pointer text-white"
+              variant="ghost"
+              size="lg"
+            >
+              <User />
+              <span className="line-clamp-1 max-w-42 truncate">
+                Xin chào, {customer.fullname}
+              </span>
+            </Button>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Xin chào, {customer.fullname}</p>
+        </TooltipContent>
+      </Tooltip>
     )
   }
 
   return (
-    <Link href="/purchase-history/login">
+    <Link href="/customer">
       <Button
         className="ml-4 cursor-pointer text-white"
         variant="ghost"
