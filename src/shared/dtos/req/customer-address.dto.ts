@@ -1,11 +1,10 @@
 import z from "zod"
 
 export const CreateCustomerAddressSchema = z.object({
-  customer: z.uuidv4(),
   country: z.uuidv4(),
-  city: z.uuidv4(),
-  district: z.uuidv4(),
-  ward: z.uuidv4(),
+  provinceCity: z.uuidv4(),
+  districtTown: z.uuidv4(),
+  wardCommune: z.uuidv4(),
   address: z
     .string()
     .min(1, "Address is required.")

@@ -10,24 +10,6 @@ import { generateQueryParams } from "@/utils/generate-query-params.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
 export const customerAddressServices = {
-  create: async (payload: CreateCustomerAddressDto) => {
-    const res = await apiCall("/customer-address", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    })
-
-    return handleResponse(res)
-  },
-
-  update: async (id: string, payload: UpdateCustomerAddressDto) => {
-    const res = await apiCall(`/customer-address/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    })
-
-    return handleResponse(res)
-  },
-
   findAll: async (query?: QueryDto) => {
     const queryParams = generateQueryParams({ params: query })
 
@@ -39,6 +21,24 @@ export const customerAddressServices = {
     )
 
     return handleResponse<ResMetadataDto<ICustomerAddress>>(res)
+  },
+
+  create: async (payload: CreateCustomerAddressDto) => {
+    const res = await apiCall("/customer-address", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+
+    return handleResponse(res)
+  },
+
+  updateOwned: async (id: string, payload: UpdateCustomerAddressDto) => {
+    const res = await apiCall(`/customer-address/owned/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+
+    return handleResponse(res)
   },
 
   findAllOwned: async (query?: QueryDto) => {
@@ -54,8 +54,8 @@ export const customerAddressServices = {
     return handleResponse<ResMetadataDto<ICustomerAddress>>(res)
   },
 
-  delete: async (id: string) => {
-    const res = await apiCall(`/customer-address/${id}`, {
+  deleteOwned: async (id: string) => {
+    const res = await apiCall(`/customer-address/owned/${id}`, {
       method: "DELETE",
     })
 

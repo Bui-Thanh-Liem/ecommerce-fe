@@ -6,6 +6,13 @@ import {
 } from "@/shared/dtos/req/customer-address.dto"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+export const useFindAllCustomerAddresses = (query?: QueryDto) => {
+  return useQuery({
+    queryKey: ["customer-addresses"],
+    queryFn: () => customerAddressServices.findAll(query),
+  })
+}
+
 export const useCreateCustomerAddress = () => {
   const queryClient = useQueryClient()
 
@@ -16,12 +23,12 @@ export const useCreateCustomerAddress = () => {
 
     //
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customer-addresses"] })
+      queryClient.invalidateQueries({ queryKey: ["customer-addresses-owned"] })
     },
   })
 }
 
-export const useUpdateCustomerAddress = () => {
+export const useUpdateOwnedCustomerAddress = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -32,39 +39,32 @@ export const useUpdateCustomerAddress = () => {
     }: {
       id: string
       payload: UpdateCustomerAddressDto
-    }) => customerAddressServices.update(id, payload),
+    }) => customerAddressServices.updateOwned(id, payload),
 
     //
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customer-addresses"] })
+      queryClient.invalidateQueries({ queryKey: ["customer-addresses-owned"] })
     },
   })
 }
 
-export const useDeleteCustomerAddress = () => {
+export const useDeleteOwnedCustomerAddress = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     //
-    mutationFn: (id: string) => customerAddressServices.delete(id),
+    mutationFn: (id: string) => customerAddressServices.deleteOwned(id),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customer-addresses"] })
+      queryClient.invalidateQueries({ queryKey: ["customer-addresses-owned"] })
     },
     onError: () => {},
   })
 }
 
-export const useFindAllCustomerAddresses = (query?: QueryDto) => {
-  return useQuery({
-    queryKey: ["customer-addresses"],
-    queryFn: () => customerAddressServices.findAll(query),
-  })
-}
-
 export const useFindAllOwnedCustomerAddresses = (query?: QueryDto) => {
   return useQuery({
-    queryKey: ["customer-addresses"],
+    queryKey: ["customer-addresses-owned"],
     queryFn: () => customerAddressServices.findAllOwned(query),
   })
 }

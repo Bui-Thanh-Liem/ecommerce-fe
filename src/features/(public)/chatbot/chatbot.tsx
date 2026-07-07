@@ -225,132 +225,134 @@ export function Chatbot({ type = "public" }: ChatbotProps) {
 
   return (
     <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3">
-      <div
-        role="dialog"
-        aria-label="AI Shopping Assistant"
-        aria-hidden={!isOpen}
-        className={`flex h-150 max-h-[calc(100vh-7rem)] w-95 max-w-[calc(100vw-2rem)] origin-bottom-right flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl transition-all duration-200 ease-out ${
-          isOpen
-            ? "scale-100 opacity-100"
-            : "pointer-events-none scale-95 opacity-0"
-        }`}
-      >
-        {/* Header */}
-        <div className="flex items-center gap-x-3 border-b bg-white px-5 py-4">
-          <Image
-            width={36}
-            height={36}
-            alt="chat-bot"
-            src="/images/chat-bot.png"
-          />
-          <div>
-            <h1 className="font-semibold text-gray-800">Trợ lý mua sắm AI</h1>
-            <p className="text-sm text-gray-500">
-              Hỏi bất cứ điều gì về sản phẩm
-            </p>
-          </div>
-          <button
-            type="button"
-            aria-label="Đóng chat"
-            onClick={() => setIsOpen(false)}
-            className="ml-auto rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Chat Area */}
+      {isOpen && (
         <div
-          ref={chatContainerRef}
-          className="flex-1 space-y-6 overflow-y-auto bg-gray-50 p-5"
+          role="dialog"
+          aria-label="AI Shopping Assistant"
+          aria-hidden={!isOpen}
+          className={`flex h-150 max-h-[calc(100vh-7rem)] w-95 max-w-[calc(100vw-2rem)] origin-bottom-right flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl transition-all duration-200 ease-out ${
+            isOpen
+              ? "scale-100 opacity-100"
+              : "pointer-events-none scale-95 opacity-0"
+          }`}
         >
-          {messages.length === 0 && (
-            <div className="flex h-full items-center justify-center text-center">
-              <div>
-                <p className="mb-2 text-2xl">👋</p>
-                <p className="text-gray-500">
-                  Chào bạn! Bạn đang tìm sản phẩm gì hôm nay?
-                </p>
-              </div>
+          {/* Header */}
+          <div className="flex items-center gap-x-3 border-b bg-white px-5 py-4">
+            <Image
+              width={36}
+              height={36}
+              alt="chat-bot"
+              src="/images/chat-bot.png"
+            />
+            <div>
+              <h1 className="font-semibold text-gray-800">Trợ lý mua sắm AI</h1>
+              <p className="text-sm text-gray-500">
+                Hỏi bất cứ điều gì về sản phẩm
+              </p>
             </div>
-          )}
-
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
+            <button
+              type="button"
+              aria-label="Đóng chat"
+              onClick={() => setIsOpen(false)}
+              className="ml-auto rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
             >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Chat Area */}
+          <div
+            ref={chatContainerRef}
+            className="flex-1 space-y-6 overflow-y-auto bg-gray-50 p-5"
+          >
+            {messages.length === 0 && (
+              <div className="flex h-full items-center justify-center text-center">
+                <div>
+                  <p className="mb-2 text-2xl">👋</p>
+                  <p className="text-gray-500">
+                    Chào bạn! Bạn đang tìm sản phẩm gì hôm nay?
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {messages.map((msg) => (
               <div
-                className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
-                  msg.type === "user"
-                    ? "bg-blue-600 text-white"
-                    : "border border-gray-100 bg-white shadow-sm"
-                }`}
+                key={msg.id}
+                className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
               >
-                {msg.type === "assistant" &&
-                  msg.sources &&
-                  msg.sources.length > 0 && (
-                    <div className="mb-3">
-                      <p className="mb-2 text-xs font-medium text-gray-500">
-                        Sản phẩm tham khảo:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {msg.sources.slice(0, 4).map((product, idx) => (
-                          <Badge variant="secondary" key={idx}>
-                            {product.name || product.sku}
-                          </Badge>
-                        ))}
+                <div
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
+                    msg.type === "user"
+                      ? "bg-blue-600 text-white"
+                      : "border border-gray-100 bg-white shadow-sm"
+                  }`}
+                >
+                  {msg.type === "assistant" &&
+                    msg.sources &&
+                    msg.sources.length > 0 && (
+                      <div className="mb-3">
+                        <p className="mb-2 text-xs font-medium text-gray-500">
+                          Sản phẩm tham khảo:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {msg.sources.slice(0, 4).map((product, idx) => (
+                            <Badge variant="secondary" key={idx}>
+                              {product.name || product.sku}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
+                    )}
+
+                  {msg.isThinking && !msg.content ? (
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <span className="text-xs">Đang suy nghĩ...</span>
+                      <TypingDots />
+                    </div>
+                  ) : (
+                    <div
+                      className={`leading-relaxed whitespace-pre-wrap ${
+                        msg.isError ? "text-red-600" : ""
+                      }`}
+                    >
+                      {msg.content}
+                      {msg.isStreaming && (
+                        <span className="animate-pulse">▋</span>
+                      )}
                     </div>
                   )}
-
-                {msg.isThinking && !msg.content ? (
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <span className="text-xs">Đang suy nghĩ...</span>
-                    <TypingDots />
-                  </div>
-                ) : (
-                  <div
-                    className={`leading-relaxed whitespace-pre-wrap ${
-                      msg.isError ? "text-red-600" : ""
-                    }`}
-                  >
-                    {msg.content}
-                    {msg.isStreaming && (
-                      <span className="animate-pulse">▋</span>
-                    )}
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Input Area */}
-        <div className="border-t bg-white p-3">
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ví dụ: Tôi muốn mua áo thun nam màu đen..."
-              className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              aria-label="Gửi"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
-          <p className="mt-2 text-center text-[10px] text-gray-400">
-            AI có thể sai sót • Hãy kiểm tra thông tin sản phẩm
-          </p>
+          {/* Input Area */}
+          <div className="border-t bg-white p-3">
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ví dụ: Tôi muốn mua áo thun nam màu đen..."
+                className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                aria-label="Gửi"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
+            <p className="mt-2 text-center text-[10px] text-gray-400">
+              AI có thể sai sót • Hãy kiểm tra thông tin sản phẩm
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Nút bong bóng */}
       <button

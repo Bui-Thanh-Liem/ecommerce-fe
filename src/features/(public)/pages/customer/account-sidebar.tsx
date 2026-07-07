@@ -16,6 +16,7 @@ import {
   useUpdateProfileCustomer,
 } from "@/hooks/apis/customer/use-customer"
 import { useCustomerContext } from "@/context/customer.context"
+import { useRouter } from "next/navigation"
 
 export function AccountSidebar({ customer }: { customer: ICustomer }) {
   const { mutateAsync } = useUpdateProfileCustomer()

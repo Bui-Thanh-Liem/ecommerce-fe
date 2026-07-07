@@ -8,6 +8,7 @@ import {
 import { QueryDto } from "@/shared/dtos/common/query.dto"
 import { useCustomerContext } from "@/context/customer.context"
 import { deleteStorage } from "@/utils/delete-storage.util"
+import { useRouter } from "next/navigation"
 
 export const useLoginCustomer = () => {
   return useMutation({
@@ -20,6 +21,7 @@ export const useLoginCustomer = () => {
 }
 
 export const useSignOutCustomer = () => {
+  const router = useRouter()
   const { clearCustomer } = useCustomerContext()
 
   return useMutation({
@@ -32,6 +34,7 @@ export const useSignOutCustomer = () => {
       if (data?.statusCode === 201) {
         deleteStorage("customer") // Xóa token, customer info, etc. trong localStorage/sessionStorage
         clearCustomer() // Clear customer context
+        router.replace("/customer/login") // Chuyển hướng về trang login
       }
     },
   })

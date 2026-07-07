@@ -20,9 +20,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { GenerateLocation } from "@/features/(private)/inventory/store/generate-location"
 import {
   useCreateCustomerAddress,
+  useDeleteOwnedCustomerAddress,
   useFindAllOwnedCustomerAddresses,
-  useUpdateCustomerAddress,
-} from "@/hooks/apis/customer/customer-address"
+  useUpdateOwnedCustomerAddress,
+} from "@/hooks/apis/customer/user-customer-address"
 import {
   CreateCustomerAddressSchema,
   UpdateCustomerAddressSchema,
@@ -36,6 +37,8 @@ import { toast } from "sonner"
 import z from "zod"
 
 export function PurchaseAddressTab() {
+  const { mutateAsync } = useDeleteOwnedCustomerAddress()
+  const updateApi = useUpdateOwnedCustomerAddress()
   const { data } = useFindAllOwnedCustomerAddresses()
   const addresses = data?.metadata?.data || []
 
@@ -52,14 +55,44 @@ export function PurchaseAddressTab() {
     return () => clearTimeout(id)
   }
 
+  //
+  async function handleDelete(address: ICustomerAddress) {
+    try {
+      const res = await mutateAsync(address.id)
+      if (res?.statusCode === 200) {
+        setOpen(false)
+      }
+    } catch (error) {
+      console.error("Error delete customer address :::", error)
+    }
+  }
+
+  //
+  async function handleEdit(address: ICustomerAddress) {
+    setOpen(true)
+    setDataEdit(address)
+  }
+
+  //
+  async function handleChangeDefault(address: ICustomerAddress) {
+    try {
+      await updateApi.mutateAsync({
+        id: address.id,
+        payload: {
+          isDefault: true,
+        },
+      })
+    } catch (error) {
+      console.error("Error change default customer address :::", error)
+    }
+  }
+
   return (
     <>
       <div className="space-y-6">
         {/* Header */}
-
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-semibold">Địa chỉ nhận hàng</h2>
-
           <Button onClick={() => setOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Thêm địa chỉ
@@ -71,7 +104,13 @@ export function PurchaseAddressTab() {
         ) : (
           <div className="space-y-5">
             {addresses.map((address) => (
-              <AddressCard key={address.id} address={address} />
+              <AddressCard
+                key={address.id}
+                address={address}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onChangeDefault={handleChangeDefault}
+              />
             ))}
           </div>
         )}
@@ -83,9 +122,9 @@ export function PurchaseAddressTab() {
 
 const initFormValue: z.infer<typeof UpdateCustomerAddressSchema> = {
   country: "",
-  city: "",
-  district: "",
-  ward: "",
+  provinceCity: "",
+  districtTown: "",
+  wardCommune: "",
   address: "",
   recipientName: "",
   recipientPhone: "",
@@ -104,7 +143,7 @@ function AddressAction({
   onOpenChange?: (open: boolean) => void
 }) {
   const createApi = useCreateCustomerAddress()
-  const updateApi = useUpdateCustomerAddress()
+  const updateApi = useUpdateOwnedCustomerAddress()
 
   //
   const formSchema = !!dataEdit
@@ -119,10 +158,10 @@ function AddressAction({
   useEffect(() => {
     if (dataEdit) {
       form.reset({
-        city: dataEdit.city.id,
+        provinceCity: dataEdit.provinceCity.id,
         country: dataEdit.country.id,
-        district: dataEdit.district.id,
-        ward: dataEdit.ward.id,
+        districtTown: dataEdit.districtTown.id,
+        wardCommune: dataEdit.wardCommune.id,
         address: dataEdit.address,
         recipientName: dataEdit.recipientName,
         recipientPhone: dataEdit.recipientPhone,
@@ -275,9 +314,19 @@ function AddressAction({
   )
 }
 
-function AddressCard({ address }: { address: ICustomerAddress }) {
+function AddressCard({
+  address,
+  onEdit,
+  onDelete,
+  onChangeDefault,
+}: {
+  address: ICustomerAddress
+  onEdit?: (address: ICustomerAddress) => void
+  onDelete?: (address: ICustomerAddress) => void
+  onChangeDefault?: (address: ICustomerAddress) => void
+}) {
   return (
-    <div className="bg-background rounded-xl border">
+    <div className="bg-background group rounded-xl border">
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-3">
           <Home className="text-primary h-5 w-5" />
@@ -288,18 +337,36 @@ function AddressCard({ address }: { address: ICustomerAddress }) {
 
               <Badge variant="secondary">{address.recipientPhone}</Badge>
 
-              {address.isDefault && <Badge>Mặc định</Badge>}
+              {address.isDefault ? (
+                <Badge>Mặc định</Badge>
+              ) : (
+                <Badge
+                  variant="outline"
+                  onClick={() => onChangeDefault?.(address)}
+                  className="hidden cursor-pointer opacity-0 transition-all duration-300 ease-in-out group-hover:block group-hover:opacity-100"
+                >
+                  Thay đổi mặc định
+                </Badge>
+              )}
             </div>
           </div>
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" size="icon">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => onEdit?.(address)}
+          >
             <Pencil className="h-4 w-4" />
           </Button>
 
           {!address.isDefault && (
-            <Button variant="destructive" size="icon">
+            <Button
+              size="icon"
+              variant="destructive"
+              onClick={() => onDelete?.(address)}
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
@@ -316,7 +383,8 @@ function AddressCard({ address }: { address: ICustomerAddress }) {
             <p className="font-medium">{address.address}</p>
 
             <p className="text-muted-foreground">
-              {address.ward.name}, {address.district.name}, {address.city.name}
+              {address.wardCommune.name}, {address.districtTown.name},{" "}
+              {address.provinceCity.name}, {address.country.name}
             </p>
           </div>
         </div>
@@ -333,7 +401,7 @@ function AddressCard({ address }: { address: ICustomerAddress }) {
 
 function EmptyAddress() {
   return (
-    <div className="flex min-h-100 flex-col items-center justify-center rounded-xl border">
+    <div className="flex min-h-100 flex-col items-center justify-center rounded-xl">
       <MapPin
         className="text-muted-foreground mb-5 h-16 w-16"
         strokeWidth={1.5}

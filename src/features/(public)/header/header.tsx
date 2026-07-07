@@ -1,6 +1,6 @@
 "use client"
 import { Input } from "@/components/ui/input"
-import { Menu, ShoppingBag, ShoppingCart, User } from "lucide-react"
+import { Menu, ShoppingCart, User } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,15 +51,16 @@ export function Header() {
 
 function Logo() {
   return (
-    <Link
-      href="/"
-      className="flex items-center justify-center gap-x-2 text-yellow-300"
-    >
-      <ShoppingBag className="size-6!" />
-      <strong className="text-base font-semibold">
-        <span className="text-2xl text-yellow-300 italic">E</span>
-        -commerce.
-      </strong>
+    <Link href="/" className="group relative flex items-center gap-x-2">
+      {/* Chữ "Shop" hiệu ứng Glow */}
+      <div className="relative text-2xl font-black tracking-wider text-yellow-300 uppercase italic transition-all duration-300 group-hover:text-yellow-200">
+        Shop
+        {/* Dấu chấm phá cách */}
+        <span className="absolute -right-3 -bottom-1 h-2 w-2 animate-pulse rounded-full bg-amber-500" />
+      </div>
+
+      {/* Đường gạch chân công nghệ (chỉ xuất hiện khi hover) */}
+      <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-linear-to-r from-yellow-300 to-transparent transition-all duration-300" />
     </Link>
   )
 }

@@ -36,7 +36,10 @@ import { useRedirectCategoryContext } from "@/context/redirect-category.context"
 import { useRLCustomerContext } from "@/context/region-location-customer.context"
 import { useFindProductBySlug } from "@/hooks/apis/catalog/use-product"
 import { useFindProductVariantBySlug as find } from "@/hooks/apis/catalog/use-product-variant"
+import { useCreateOrder } from "@/hooks/apis/customer/use-order"
 import { cn } from "@/lib/utils"
+import { PaymentGateway } from "@/shared/enums/order-payment-gateway.enum"
+import { PaymentMethod } from "@/shared/enums/payment-method.enum"
 import { ISlugPageProps } from "@/shared/interfaces/common/category-slug-page-detail.interface"
 import { IProductImage } from "@/shared/interfaces/models/catalog/product-image.interface"
 import { IVariantAttribute } from "@/shared/interfaces/models/catalog/product-variant.interface"
@@ -80,6 +83,7 @@ export function ProductDetailPage({
 }: ISlugPageProps) {
   const route = useRouter()
   const { location } = useRLCustomerContext()
+  const createOrderApi = useCreateOrder()
   const { data } = useRedirectCategoryContext()
   const productSlug = data?.productSlug || ""
 
@@ -114,8 +118,24 @@ export function ProductDetailPage({
   const specifications = product?.specifications || []
 
   //
-  function handleBuyNow() {
-    route.push("/order")
+  async function handleBuyNow() {
+    const res = await createOrderApi.mutateAsync({
+      orderItems: [
+        {
+          quantity: 1,
+          price: 100000,
+          product: variant?.id || "",
+        },
+      ],
+      invoiceNumber: "12345",
+      totalAmount: 100000,
+      paymentGateway: PaymentGateway.SEPAY,
+      paymentMethod: PaymentMethod.BANK_TRANSFER,
+      shoppingAddress: location || "",
+    })
+    if (res?.statusCode === 201) {
+      route.push("/customer/order")
+    }
   }
 
   if (isLoading || isVariantLoading || !product || !variant) {

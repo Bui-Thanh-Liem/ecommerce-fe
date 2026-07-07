@@ -1,5 +1,5 @@
 export enum PaymentGateway {
-  CASH = 'cash',
-  SEPAY = 'SEPAY',
-  MOMO = 'MOMO',
+  CASH = "cash",
+  SEPAY = "sepay",
+  MOMO = "momo",
 }

@@ -25,8 +25,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useCustomerContext } from "@/context/customer.context"
+import { useCreateCustomerAddress } from "@/hooks/apis/customer/user-customer-address"
 
 export function Address() {
+  const createAddressApi = useCreateCustomerAddress()
+  const { customer } = useCustomerContext()
+
   //
   const form = useForm({
     defaultValues: {
@@ -75,6 +80,18 @@ export function Address() {
       setLocation(
         `${res.metadata.addressDetail}, ${res.metadata.districtTown.name}, ${res.metadata.wardCommune.name}`
       )
+    }
+
+    // Nếu customer đã login, thì gọi api để lưu địa chỉ giao hàng của customer
+    if (customer?.id) {
+      data.address = data.addressDetail
+      delete data.addressDetail
+      const res = await createAddressApi.mutateAsync({
+        ...data,
+        recipientPhone: customer.phone,
+        recipientName: customer.fullname,
+      })
+      console.log("res create address :::", res)
     }
   }
 
