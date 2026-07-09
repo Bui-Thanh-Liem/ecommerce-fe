@@ -13,6 +13,13 @@ export const useFindAllCustomerAddresses = (query?: QueryDto) => {
   })
 }
 
+export const useFindOneIsDefaultCustomerAddress = () => {
+  return useQuery({
+    queryKey: ["customer-addresses-default"],
+    queryFn: () => customerAddressServices.findOneIsDefault(),
+  })
+}
+
 export const useCreateCustomerAddress = () => {
   const queryClient = useQueryClient()
 

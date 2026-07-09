@@ -23,6 +23,14 @@ export const customerAddressServices = {
     return handleResponse<ResMetadataDto<ICustomerAddress>>(res)
   },
 
+  findOneIsDefault: async () => {
+    const res = await apiCall<ICustomerAddress>(`/customer-address/default`, {
+      method: "GET",
+    })
+
+    return handleResponse<ICustomerAddress>(res)
+  },
+
   create: async (payload: CreateCustomerAddressDto) => {
     const res = await apiCall("/customer-address", {
       method: "POST",

@@ -19,11 +19,6 @@ export const CreateOrderSchema = z.object({
 
   paymentMethod: z.enum(PaymentMethod),
 
-  invoiceNumber: z
-    .string()
-    .min(1, "Invoice number is required.")
-    .max(50, "Invoice number must be at most 50 characters."),
-
   shoppingAddress: z
     .string()
     .min(1, "Shopping address is required.")

@@ -131,7 +131,7 @@ const initFormValue: z.infer<typeof UpdateCustomerAddressSchema> = {
   isDefault: false,
 }
 
-function AddressAction({
+export function AddressAction({
   open,
   onClose,
   dataEdit,
@@ -314,7 +314,7 @@ function AddressAction({
   )
 }
 
-function AddressCard({
+export function AddressCard({
   address,
   onEdit,
   onDelete,
@@ -326,7 +326,7 @@ function AddressCard({
   onChangeDefault?: (address: ICustomerAddress) => void
 }) {
   return (
-    <div className="bg-background group rounded-xl border">
+    <div className="bg-background group rounded-4xl border">
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-3">
           <Home className="text-primary h-5 w-5" />

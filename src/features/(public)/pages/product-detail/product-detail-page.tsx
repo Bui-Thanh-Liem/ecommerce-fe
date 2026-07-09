@@ -123,12 +123,11 @@ export function ProductDetailPage({
       orderItems: [
         {
           quantity: 1,
-          price: 100000,
+          price: variant?.price || 0,
           product: variant?.id || "",
         },
       ],
-      invoiceNumber: "12345",
-      totalAmount: 100000,
+      totalAmount: variant?.price || 0,
       paymentGateway: PaymentGateway.SEPAY,
       paymentMethod: PaymentMethod.BANK_TRANSFER,
       shoppingAddress: location || "",

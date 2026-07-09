@@ -16,7 +16,6 @@ import {
   useUpdateProfileCustomer,
 } from "@/hooks/apis/customer/use-customer"
 import { useCustomerContext } from "@/context/customer.context"
-import { useRouter } from "next/navigation"
 
 export function AccountSidebar({ customer }: { customer: ICustomer }) {
   const { mutateAsync } = useUpdateProfileCustomer()
@@ -131,7 +130,7 @@ export function AccountSidebar({ customer }: { customer: ICustomer }) {
         Đăng xuất
       </Button>
 
-      <div className="rounded-xl border bg-amber-50 p-5">
+      <div className="rounded-4xl border bg-amber-50 p-5">
         <h4 className="font-semibold">Tổng điểm tích lũy</h4>
         <p className="mt-1 text-3xl font-bold text-orange-600">0</p>
         <p className="text-muted-foreground mt-2 text-sm">
