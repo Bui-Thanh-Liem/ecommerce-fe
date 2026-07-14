@@ -1,5 +1,6 @@
 "use client"
 
+import Cookies from "js-cookie"
 import {
   Accordion,
   AccordionContent,
@@ -37,6 +38,7 @@ import { useRLCustomerContext } from "@/context/region-location-customer.context
 import { useFindProductBySlug } from "@/hooks/apis/catalog/use-product"
 import { useFindProductVariantBySlug as find } from "@/hooks/apis/catalog/use-product-variant"
 import { useCreateOrder } from "@/hooks/apis/customer/use-order"
+import { useFindOneIsDefaultCustomerAddress } from "@/hooks/apis/customer/user-customer-address"
 import { cn } from "@/lib/utils"
 import { PaymentGateway } from "@/shared/enums/order-payment-gateway.enum"
 import { PaymentMethod } from "@/shared/enums/payment-method.enum"
@@ -92,6 +94,10 @@ export function ProductDetailPage({
   const { data: variantRes, isLoading: isVariantLoading } = find(variantSlug)
 
   //
+  const { data: defaultAddress } = useFindOneIsDefaultCustomerAddress()
+  const address = defaultAddress?.metadata || null
+
+  //
   const product = productRes?.metadata
   const variant = variantRes?.metadata
 
@@ -119,6 +125,22 @@ export function ProductDetailPage({
 
   //
   async function handleBuyNow() {
+    if (!address) {
+      toast.error("Vui lòng cung cấp địa chỉ nhận hàng trước khi mua sản phẩm")
+      return
+    }
+
+    //
+    const {
+      country,
+      provinceCity,
+      districtTown,
+      wardCommune,
+      address: addressDetail,
+    } = address
+    const addressString = `${addressDetail}, ${wardCommune?.name}, ${districtTown?.name}, ${provinceCity?.name}, ${country?.name}`
+
+    //
     const res = await createOrderApi.mutateAsync({
       orderItems: [
         {
@@ -127,12 +149,18 @@ export function ProductDetailPage({
           product: variant?.id || "",
         },
       ],
+      shoppingAddress: addressString,
       totalAmount: variant?.price || 0,
       paymentGateway: PaymentGateway.SEPAY,
       paymentMethod: PaymentMethod.BANK_TRANSFER,
-      shoppingAddress: location || "",
     })
+
+    //
     if (res?.statusCode === 201) {
+      Cookies.set("e_order_session", `${res?.metadata?.id}`, {
+        expires: 365,
+        path: "/",
+      })
       route.push("/customer/order")
     }
   }

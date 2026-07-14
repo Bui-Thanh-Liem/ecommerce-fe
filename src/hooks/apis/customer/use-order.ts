@@ -23,3 +23,10 @@ export const useFindAllOwnedOrders = (query?: QueryDto) => {
     queryFn: () => orderService.findAllOwned(query),
   })
 }
+
+export const useFindOneOwnedOrder = (id: string) => {
+  return useQuery({
+    queryKey: ["orders-owned", id],
+    queryFn: () => orderService.findOneOwned(id),
+  })
+}

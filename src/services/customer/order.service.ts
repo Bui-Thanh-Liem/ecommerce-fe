@@ -28,4 +28,12 @@ export const orderService = {
 
     return handleResponse<ResMetadataDto<IOrder>>(res)
   },
+
+  findOneOwned: async (id: string) => {
+    const res = await apiCall<IOrder>(`/orders/owned/${id}`, {
+      method: "GET",
+    })
+
+    return handleResponse<IOrder>(res)
+  },
 }

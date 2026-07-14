@@ -26,9 +26,8 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
       ?.filter((att) => att.isHighlight)
       .slice(0, 4) || []
   const category = product.category || {}
-  const images = variant.productImages || []
   const salesAttributes = variant.salesAttributes || []
-  const thumbnail = product.thumbnail || (images && images[0]?.image.url) || ""
+  const thumbnail = product.thumbnail?.url
   const attributeValues =
     salesAttributes
       .filter((attr) => attr.isSKU)
@@ -63,6 +62,9 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
   }
 
   const isNormalStatus = variant.status === ProductVariantStatus.NORMAL
+
+  console.log("thumbnail :::", thumbnail)
+
   return (
     <Card
       className="min-h-120 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2 shadow-sm transition-all duration-300 ease-out select-none hover:-translate-y-1 hover:shadow-xl"
