@@ -7,7 +7,7 @@ import { OrderStatus } from "@/shared/enums/order-status.enum"
 import Image from "next/image"
 import Link from "next/link"
 
-export interface IOrderItem {
+export interface IOrderItemCard {
   id: string
   productName: string
   variantName?: string
@@ -22,7 +22,7 @@ export interface IOrderCard {
   createdAt: string
   status: OrderStatus
   total: number
-  items: IOrderItem[]
+  items: IOrderItemCard[]
 }
 
 const STATUS_COLOR: Record<OrderStatus, string> = {

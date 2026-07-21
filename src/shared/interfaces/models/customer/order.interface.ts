@@ -11,6 +11,8 @@ export interface IOrder extends IBase {
   status: OrderStatus
   invoiceNumber: string
   shoppingAddress: string
+  recipientName: string
+  recipientPhone: string
   paymentGateway: PaymentGateway
   paymentMethod: PaymentMethod
 

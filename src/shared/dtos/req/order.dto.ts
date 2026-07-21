@@ -23,6 +23,27 @@ export const CreateOrderSchema = z.object({
     .string()
     .min(1, "Shopping address is required.")
     .max(200, "Shopping address must be at most 200 characters."),
+
+  recipientName: z
+    .string()
+    .min(1, "Recipient name is required.")
+    .max(50, "Recipient name must be at most 50 characters."),
+
+  recipientPhone: z
+    .string()
+    .min(1, "Phone number is required.")
+    .regex(/^\+?[0-9]{7,15}$/, "Phone number must be valid")
+    .max(20, "Phone number must be at most 20 characters."),
+})
+
+export const ChangeQuantityItemOrderSchema = z.object({
+  orderId: z.uuid("Order ID must be a valid UUID."),
+  orderItemId: z.uuid("Order Item ID must be a valid UUID."),
+  productId: z.uuid("Product ID must be a valid UUID."),
+  quantity: z.number().min(1, "Quantity must be at least 1."),
 })
 
 export type CreateOrderDto = z.infer<typeof CreateOrderSchema>
+export type ChangeQuantityItemOrderDto = z.infer<
+  typeof ChangeQuantityItemOrderSchema
+>

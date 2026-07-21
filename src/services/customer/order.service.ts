@@ -36,4 +36,20 @@ export const orderService = {
 
     return handleResponse<IOrder>(res)
   },
+
+  changeQuantityItem: async (
+    orderId: string,
+    orderItemId: string,
+    productId: string,
+    quantity: number
+  ) => {
+    const res = await apiCall<IOrder>(
+      `/orders/${orderId}/items/${orderItemId}/product/${productId}/quantity/${quantity}`,
+      {
+        method: "PATCH",
+      }
+    )
+
+    return handleResponse<IOrder>(res)
+  },
 }

@@ -67,6 +67,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
+import { convertAddressToString } from "@/utils/convert-address-to-string.util"
 
 type GroupedSalesAttributes = Record<
   string,
@@ -131,16 +132,6 @@ export function ProductDetailPage({
     }
 
     //
-    const {
-      country,
-      provinceCity,
-      districtTown,
-      wardCommune,
-      address: addressDetail,
-    } = address
-    const addressString = `${addressDetail}, ${wardCommune?.name}, ${districtTown?.name}, ${provinceCity?.name}, ${country?.name}`
-
-    //
     const res = await createOrderApi.mutateAsync({
       orderItems: [
         {
@@ -149,9 +140,11 @@ export function ProductDetailPage({
           product: variant?.id || "",
         },
       ],
-      shoppingAddress: addressString,
       totalAmount: variant?.price || 0,
       paymentGateway: PaymentGateway.SEPAY,
+      shoppingAddress: convertAddressToString(address, location),
+      recipientName: address?.recipientName || "",
+      recipientPhone: address?.recipientPhone || "",
       paymentMethod: PaymentMethod.BANK_TRANSFER,
     })
 

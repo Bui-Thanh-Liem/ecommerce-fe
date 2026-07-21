@@ -26,9 +26,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useCustomerContext } from "@/context/customer.context"
-import { useCreateCustomerAddress } from "@/hooks/apis/customer/user-customer-address"
+import {
+  useCreateCustomerAddress,
+  useFindOneIsDefaultCustomerAddress,
+} from "@/hooks/apis/customer/user-customer-address"
+import { convertAddressToString } from "@/utils/convert-address-to-string.util"
 
 export function Address() {
+  //
+  const { data: defaultAddress } = useFindOneIsDefaultCustomerAddress()
+  const address = defaultAddress?.metadata
   const createAddressApi = useCreateCustomerAddress()
   const { customer } = useCustomerContext()
 
@@ -112,7 +119,10 @@ export function Address() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p> {location || "Vui lòng chọn địa chỉ giao hàng"}</p>
+          <p>
+            {convertAddressToString(address, location) ||
+              "Vui lòng chọn địa chỉ giao hàng"}
+          </p>
         </TooltipContent>
       </Tooltip>
 
