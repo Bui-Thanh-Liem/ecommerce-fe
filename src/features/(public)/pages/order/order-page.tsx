@@ -72,7 +72,7 @@ export function OrderPage() {
 
               <div className="space-y-4 p-5">
                 <div className="flex items-start gap-3">
-                  <MapPin className="text-muted-foreground h-5 w-13" />
+                  <MapPin className="text-muted-foreground h-5 w-5" />
 
                   <div>{order.shoppingAddress}</div>
                 </div>
@@ -151,15 +151,22 @@ interface OrderItemCardProps {
 }
 
 function OrderItemCard({ item, onQuantityChange }: OrderItemCardProps) {
-  const prod = item.product.product
+  console.log("item :::", item)
+
+  const variant = item.product
+  const prod = variant.product
   const skuInfo = item.product
 
   const originalPrice = skuInfo.discountPercent
     ? skuInfo.price / (1 - skuInfo.discountPercent / 100)
     : null
 
-  const optionAttributes =
-    skuInfo.sku.split("-").slice(3).join(" / ") || "Mặc định"
+  // const salesAttributes = variant.salesAttributes || []
+  // const attributeValues =
+  //   salesAttributes
+  //     .filter((attr) => attr.isSKU)
+  //     .slice(0, 4)
+  //     .map((attr) => attr.desc) || []
 
   return (
     <div className="flex items-start gap-x-4 border-b border-gray-100 pb-6 last:border-none last:pb-0">
@@ -178,10 +185,18 @@ function OrderItemCard({ item, onQuantityChange }: OrderItemCardProps) {
         <h4 className="line-clamp-2 text-base leading-snug font-semibold text-gray-900">
           {prod.name}
         </h4>
-
-        <div className="inline-flex self-start rounded bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
-          Màu/Dung lượng: {optionAttributes}
-        </div>
+        {/* 
+        <div className="flex flex-wrap gap-1">
+          {attributeValues.length > 0 &&
+            attributeValues.map((attr, idx) => (
+              <span
+                key={`${attr}-${idx}`}
+                className="rounded bg-[#f1f1f1] px-2 py-0.5 text-[11px] text-[#555]"
+              >
+                {attr}
+              </span>
+            ))}
+        </div> */}
 
         {skuInfo.discountPercent > 0 && (
           <div className="text-xs font-medium text-blue-600">

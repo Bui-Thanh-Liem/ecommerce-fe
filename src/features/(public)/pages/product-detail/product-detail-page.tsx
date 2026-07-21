@@ -34,7 +34,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
-import { useRLCustomerContext } from "@/context/region-location-customer.context"
 import { useFindProductBySlug } from "@/hooks/apis/catalog/use-product"
 import { useFindProductVariantBySlug as find } from "@/hooks/apis/catalog/use-product-variant"
 import { useCreateOrder } from "@/hooks/apis/customer/use-order"
@@ -85,7 +84,6 @@ export function ProductDetailPage({
   parentCategorySlug,
 }: ISlugPageProps) {
   const route = useRouter()
-  const { location } = useRLCustomerContext()
   const createOrderApi = useCreateOrder()
   const { data } = useRedirectCategoryContext()
   const productSlug = data?.productSlug || ""
@@ -127,7 +125,9 @@ export function ProductDetailPage({
   //
   async function handleBuyNow() {
     if (!address) {
-      toast.error("Vui lòng cung cấp địa chỉ nhận hàng trước khi mua sản phẩm")
+      toast.error(
+        "Vui lòng đăng nhập và chọn địa chỉ nhận hàng để mua sản phẩm"
+      )
       return
     }
 
@@ -142,7 +142,7 @@ export function ProductDetailPage({
       ],
       totalAmount: variant?.price || 0,
       paymentGateway: PaymentGateway.SEPAY,
-      shoppingAddress: convertAddressToString(address, location),
+      shoppingAddress: convertAddressToString(address),
       recipientName: address?.recipientName || "",
       recipientPhone: address?.recipientPhone || "",
       paymentMethod: PaymentMethod.BANK_TRANSFER,
@@ -220,12 +220,6 @@ export function ProductDetailPage({
           {/*  */}
           <div className="col-span-1">
             <div className="space-y-6 rounded-4xl bg-white p-4">
-              <Button
-                variant="ghost"
-                className="w-full text-blue-500 hover:bg-transparent hover:text-blue-600"
-              >
-                <Store /> Cửa hàng gần nhất
-              </Button>
               <SalesAttributes
                 variantSlug=""
                 categorySlug={categorySlug}
@@ -247,7 +241,9 @@ export function ProductDetailPage({
                     </span>
                     Giao đến:
                   </strong>
-                  {location || "Vui lòng chọn địa chỉ giao hàng"}
+                  {address
+                    ? convertAddressToString(address)
+                    : "Vui lòng đăng nhập và chọn địa chỉ nhận hàng để xem chi phí vận chuyển"}
                 </p>
 
                 <p className="flex flex-wrap items-center gap-1 text-sm text-gray-600">

@@ -10,7 +10,16 @@ export const CreateLocationRegionSchema = z.object({
   parent: z.uuidv4(),
 })
 
+export const SelectLocationRegionSchema = z.object({
+  wardCommune: z.uuidv4("Phường xã không hợp lệ."),
+  districtTown: z.uuidv4("Quận/huyện không hợp lệ."),
+  provinceCity: z.uuidv4("Tỉnh/thành phố không hợp lệ."),
+  country: z.uuidv4("Quốc gia không hợp lệ."),
+  addressDetail: z.string(),
+})
+
 export const UpdateLocationRegionSchema = CreateLocationRegionSchema.partial()
 
 export type CreateLocationRegionDto = z.infer<typeof CreateLocationRegionSchema>
 export type UpdateLocationRegionDto = z.infer<typeof UpdateLocationRegionSchema>
+export type SelectLocationRegionDto = z.infer<typeof SelectLocationRegionSchema>

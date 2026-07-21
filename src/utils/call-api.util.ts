@@ -66,10 +66,16 @@ export const apiCall = async <T>(
       if (statusCode === 401) {
         deleteStorage("customer")
       }
-    } else if ([401].includes(statusCode)) {
+    } else if (statusCode === 401 && message === "Unauthorized") {
       // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho staff login lại
       deleteStorage("staff")
       await fetch("/api/auth/signout", {
+        method: "POST",
+      })
+    } else if (statusCode === 401 && message === "Unauthorized Customer") {
+      // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho customer login lại
+      deleteStorage("customer")
+      await fetch("/api/customers/signout", {
         method: "POST",
       })
     }

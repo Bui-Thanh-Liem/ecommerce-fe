@@ -25,27 +25,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useCustomerContext } from "@/context/customer.context"
-import {
-  useCreateCustomerAddress,
-  useFindOneIsDefaultCustomerAddress,
-} from "@/hooks/apis/customer/user-customer-address"
-import { convertAddressToString } from "@/utils/convert-address-to-string.util"
+import z from "zod"
+import { SelectLocationRegionSchema } from "@/shared/dtos/req/location-region.dto"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 export function Address() {
   //
-  const { data: defaultAddress } = useFindOneIsDefaultCustomerAddress()
-  const address = defaultAddress?.metadata
-  const createAddressApi = useCreateCustomerAddress()
-  const { customer } = useCustomerContext()
-
-  //
-  const form = useForm({
+  const form = useForm<z.infer<typeof SelectLocationRegionSchema>>({
+    resolver: zodResolver(SelectLocationRegionSchema),
     defaultValues: {
       country: "",
+      wardCommune: "",
       provinceCity: "",
       districtTown: "",
-      wardCommune: "",
       addressDetail: "",
     },
   })
@@ -66,7 +58,7 @@ export function Address() {
   }
 
   //
-  async function onSubmit(data: any) {
+  async function onSubmit(data: z.infer<typeof SelectLocationRegionSchema>) {
     //
     const session = Cookies.get("e_session")
 
@@ -83,24 +75,21 @@ export function Address() {
     // Gọi api để BE xử lý về khu vực, cửa hàng gần nhất (khuyến mãi, ...)
     const res = await selectionLocationRegion()
     if (res?.statusCode === 201 && res.metadata) {
+      const {
+        country,
+        wardCommune,
+        districtTown,
+        provinceCity,
+        addressDetail,
+      } = res.metadata
       setOpen(false)
       setLocation(
-        `${res.metadata.addressDetail}, ${res.metadata.districtTown.name}, ${res.metadata.wardCommune.name}`
+        `${addressDetail}, ${districtTown.name}, ${wardCommune.name}, ${provinceCity.name}, ${country.name}`
       )
     }
-
-    // Nếu customer đã login, thì gọi api để lưu địa chỉ giao hàng của customer
-    if (customer?.id) {
-      data.address = data.addressDetail
-      delete data.addressDetail
-      const res = await createAddressApi.mutateAsync({
-        ...data,
-        recipientPhone: customer.phone,
-        recipientName: customer.fullname,
-      })
-      console.log("res create address :::", res)
-    }
   }
+
+  const locationString = location || "Vui lòng chọn khu vực"
 
   return (
     <>
@@ -113,24 +102,19 @@ export function Address() {
             className="ml-4 flex-1 cursor-pointer bg-sky-50/20 text-white hover:bg-sky-50/30 hover:text-white data-[state=open]:bg-sky-50/30"
           >
             <MapPin />
-            <p className="line-clamp-1 max-w-42 truncate">
-              {location || "Vui lòng chọn địa chỉ giao hàng"}
-            </p>
+            <p className="line-clamp-1 max-w-42 truncate">{locationString}</p>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>
-            {convertAddressToString(address, location) ||
-              "Vui lòng chọn địa chỉ giao hàng"}
-          </p>
+          <p>{locationString}</p>
         </TooltipContent>
       </Tooltip>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent>
           <DialogHeaderAction
-            title="Chọn địa chỉ giao hàng"
-            desc="Vui lòng chọn địa chỉ giao hàng để chúng tôi có thể cung cấp thông tin về khu vực, cửa hàng gần bạn nhất và các khuyến mãi liên quan."
+            title="Chọn khu vực"
+            desc="Vui lòng chọn tỉnh, thành phố để chúng tôi có thể cung cấp thông tin về khu vực, cửa hàng gần bạn nhất và các khuyến mãi liên quan."
           />
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -172,8 +156,8 @@ export function Address() {
             <DialogFooterAction
               contentCancel="Hủy"
               isPending={isPending}
-              contentOk="Lưu thay đổi"
-              contentPending="Đang lưu..."
+              contentOk="Chọn"
+              contentPending="Đang tải các thông tin..."
               onClose={() => setOpen(false)}
             />
           </form>

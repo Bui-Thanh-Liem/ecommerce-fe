@@ -3,5 +3,7 @@ import { ILocationRegion } from "@/shared/interfaces/models/inventory/location-r
 export interface ISelectLocationRegion {
   wardCommune: ILocationRegion
   districtTown: ILocationRegion
+  provinceCity: ILocationRegion
+  country: ILocationRegion
   addressDetail: string
 }
