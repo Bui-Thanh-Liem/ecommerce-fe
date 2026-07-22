@@ -4,6 +4,8 @@ export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
   const tokenStaff = req.cookies.get("e_token")?.value || ""
   const tokenCustomer = req.cookies.get("e_token_customer")?.value || ""
+  console.log("pathname :::", pathname)
+  console.log("tokenCustomer :::", tokenCustomer)
 
   // ==========================================
   // 1. LUỒNG CUSTOMER (Xử lý riêng biệt)

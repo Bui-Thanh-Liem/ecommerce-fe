@@ -10,19 +10,7 @@ import { PurchaseCouponTab } from "./purchase-coupon-tab"
 export function CustomerPage() {
   const { customer } = useCustomerContext()
 
-  if (!customer) {
-    return (
-      <div className="grid grid-cols-12 py-12">
-        <div className="col-span-2"></div>
-        <div className="col-span-8 flex min-h-120 items-center justify-center">
-          <p className="text-muted-foreground">
-            Đang tải thông tin tài khoản và đơn hàng của bạn
-          </p>
-        </div>
-        <div className="col-span-2"></div>
-      </div>
-    )
-  }
+  if (!customer) return null
 
   return (
     <div className="grid grid-cols-12 py-12">
