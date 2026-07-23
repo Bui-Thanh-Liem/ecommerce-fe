@@ -6,8 +6,8 @@ async function handler(
   { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const path = (await params)?.path?.join("/")
     const url = new URL(req.url)
+    const path = (await params)?.path?.join("/")
     const hasBody = req.method !== "GET" && req.method !== "HEAD"
 
     const headers: Record<string, string> = {
@@ -26,11 +26,13 @@ async function handler(
       headers["Cookie"] = cookieHeader
     }
 
+    //
+    const text = await req.text()
     const res = await fetch(`${BE_URL}/${path}?${url.searchParams}`, {
       method: req.method,
       headers,
       ...(hasBody && {
-        body: req.body,
+        body: text,
         duplex: "half",
       }),
     } as RequestInit)
@@ -59,7 +61,7 @@ async function handler(
   } catch (error) {
     console.error("Error occurred while fetching API:", error)
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
-      status: 500,
+      status: 400,
       headers: { "Content-Type": "application/json" },
     })
   }

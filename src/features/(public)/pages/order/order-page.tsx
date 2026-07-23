@@ -12,6 +12,11 @@ import { Button } from "@/components/ui/button"
 import { MapPin, Phone, User } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 
+interface OrderItemCardProps {
+  item: IOrderItem
+  onQuantityChange: (item: IOrderItem, type: "increase" | "decrease") => void
+}
+
 export function OrderPage() {
   const orderId = Cookies.get("e_order_session") || ""
   const { data, refetch } = useFindOneOwnedOrder(orderId)
@@ -39,7 +44,7 @@ export function OrderPage() {
 
   if (!order) {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-4">
         <p className="text-xl font-medium text-gray-500">
           Đơn hàng không tồn tại hoặc đã bị xóa.
         </p>
@@ -145,14 +150,7 @@ export function OrderPage() {
   )
 }
 
-interface OrderItemCardProps {
-  item: IOrderItem
-  onQuantityChange: (item: IOrderItem, type: "increase" | "decrease") => void
-}
-
 function OrderItemCard({ item, onQuantityChange }: OrderItemCardProps) {
-  console.log("item :::", item)
-
   const variant = item.product
   const prod = variant.product
   const skuInfo = item.product
