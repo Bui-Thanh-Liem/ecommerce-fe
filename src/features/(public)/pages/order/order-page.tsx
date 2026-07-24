@@ -57,9 +57,9 @@ export function OrderPage() {
         paymentMethod: PaymentMethod.BANK_TRANSFER,
         description: `Thanh toán đơn hàng #${order.id}`,
       }
+
+      // 1. Gọi API Backend của bạn để xin checkoutURL và checkoutFormFields
       const res = await checkout(payload)
-      console.log("res :::", res)
-      // return true
 
       if (
         !res ||
@@ -72,21 +72,31 @@ export function OrderPage() {
 
       const { checkoutURL, checkoutFormFields } = res.metadata
       console.log({ checkoutURL, checkoutFormFields })
+      // return true
 
-      // Tạo form ẩn và auto-submit sang SePay
+      // 2. Tạo HTML Form ẩn
       const form = document.createElement("form")
       form.method = "POST"
       form.action = checkoutURL
+      form.enctype = "application/x-www-form-urlencoded"
       form.style.display = "none"
 
+      // 3. Map CHÍNH XÁC các field động từ backend trả về
       Object.entries(checkoutFormFields).forEach(([key, value]) => {
         const input = document.createElement("input")
         input.type = "hidden"
         input.name = key
-        input.value = value.toString()
+        input.value = String(value ?? "")
         form.appendChild(input)
       })
 
+      console.log(
+        "Object.entries(checkoutFormFields) :: ",
+        Object.entries(checkoutFormFields)
+      )
+      return
+
+      // 4. Submit form để trình duyệt REDIRECT hẳn sang SePay (Bỏ qua được CORS)
       document.body.appendChild(form)
       form.submit()
     } catch (error) {
@@ -180,7 +190,7 @@ export function OrderPage() {
               phẩm):
             </span>
             <span className="text-xl font-bold text-red-600">
-              {formatVND(order.totalAmount)}
+              {formatVND(order?.totalAmount)}
             </span>
           </div>
         </div>
@@ -189,7 +199,9 @@ export function OrderPage() {
         <div className="rounded-4xl bg-white p-6 shadow-sm">
           <h3 className="mb-4 text-lg font-bold">
             Tổng thanh toán:{" "}
-            <span className="text-red-600">{formatVND(order.totalAmount)}</span>
+            <span className="text-red-600">
+              {formatVND(order?.totalAmount)}
+            </span>
           </h3>
           <Button
             size="lg"
