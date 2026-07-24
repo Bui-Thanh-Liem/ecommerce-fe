@@ -63,8 +63,6 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
 
   const isNormalStatus = variant.status === ProductVariantStatus.NORMAL
 
-  console.log("thumbnail :::", thumbnail)
-
   return (
     <Card
       className="min-h-120 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2 shadow-sm transition-all duration-300 ease-out select-none hover:-translate-y-1 hover:shadow-xl"

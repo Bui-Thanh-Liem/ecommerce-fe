@@ -22,7 +22,7 @@ export const useCreateOrder = () => {
 
 export const useFindAllOwnedOrders = (query?: QueryDto) => {
   return useQuery({
-    queryKey: ["orders-owned"],
+    queryKey: ["orders-owned", JSON.stringify(query)],
     queryFn: () => orderService.findAllOwned(query),
   })
 }

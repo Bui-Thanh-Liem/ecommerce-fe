@@ -2,21 +2,18 @@
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useFindAllOwnedOrders } from "@/hooks/apis/customer/use-order"
 import { OrderStatus } from "@/shared/enums/order-status.enum"
-import { IOrder } from "@/shared/interfaces/models/customer/order.interface"
 import { CalendarDays, ShoppingBag } from "lucide-react"
-
-const STATUS_LABEL: Record<OrderStatus, string> = {
-  [OrderStatus.SUCCESS]: "Thành công",
-  [OrderStatus.PENDING]: "Chờ xử lý",
-  [OrderStatus.CONFIRMED]: "Đã xác nhận",
-  [OrderStatus.SHIPPING]: "Đang chuyển hàng",
-  [OrderStatus.DELIVERING]: "Đang giao hàng",
-  [OrderStatus.CANCELLED]: "Đã huỷ",
-}
+import { ORDER_STATUS_LABEL, OrderCard } from "./order-card"
+import { useState } from "react"
 
 export function PurchaseOrderTab() {
-  const orders: IOrder[] = []
+  const [status, setStatus] = useState<OrderStatus>(OrderStatus.SUCCESS)
+
+  const { data } = useFindAllOwnedOrders({ filters: { status } })
+  const orders = data?.metadata?.data || []
+  console.log("orders :::", orders)
 
   return (
     <div className="space-y-6">
@@ -35,8 +32,9 @@ export function PurchaseOrderTab() {
               key={status}
               value={status}
               className="data-[state=active]:border-primary w-fit shrink-0 rounded-md border px-5 py-2"
+              onClick={() => setStatus(status)}
             >
-              {STATUS_LABEL[status]}
+              {ORDER_STATUS_LABEL[status]}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -46,7 +44,11 @@ export function PurchaseOrderTab() {
             {orders.length === 0 ? (
               <EmptyOrder />
             ) : (
-              <div className="space-y-4">{/* <OrderCard /> */}</div>
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <OrderCard key={order.id} order={order} />
+                ))}
+              </div>
             )}
           </TabsContent>
         ))}
