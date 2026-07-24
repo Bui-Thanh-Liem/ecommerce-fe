@@ -11,6 +11,8 @@ import { formatVND } from "@/utils/format-vnd.util"
 import { Button } from "@/components/ui/button"
 import { MapPin, Phone, User } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { useSepayCheckout } from "@/hooks/apis/payment/use-sepay"
+import { PaymentMethod } from "@/shared/enums/payment-method.enum"
 
 interface OrderItemCardProps {
   item: IOrderItem
@@ -19,9 +21,11 @@ interface OrderItemCardProps {
 
 export function OrderPage() {
   const orderId = Cookies.get("e_order_session") || ""
-  const { data, refetch } = useFindOneOwnedOrder(orderId)
+  const { mutateAsync: checkout } = useSepayCheckout()
+  const { data, refetch, isLoading } = useFindOneOwnedOrder(orderId)
   const { mutateAsync: updateQuantity } = useChangeQuantityItemOrder()
   const order = data?.metadata || null
+  const orderItems = order?.orderItems || []
 
   // Hàm xử lý khi nhấn nút Tăng / Giảm
   async function handleQuantityChange(
@@ -42,7 +46,56 @@ export function OrderPage() {
     refetch() // Refresh lại data client
   }
 
-  if (!order) {
+  //
+  async function handleBuyNow() {
+    if (!order) return
+
+    try {
+      const payload = {
+        order: order.id,
+        amount: order.totalAmount,
+        paymentMethod: PaymentMethod.BANK_TRANSFER,
+        description: `Thanh toán đơn hàng #${order.id}`,
+      }
+      const res = await checkout(payload)
+      console.log("res :::", res)
+      // return true
+
+      if (
+        !res ||
+        !res.metadata?.checkoutURL ||
+        !res.metadata?.checkoutFormFields
+      ) {
+        console.error("Invalid response from checkout:", res)
+        return
+      }
+
+      const { checkoutURL, checkoutFormFields } = res.metadata
+      console.log({ checkoutURL, checkoutFormFields })
+
+      // Tạo form ẩn và auto-submit sang SePay
+      const form = document.createElement("form")
+      form.method = "POST"
+      form.action = checkoutURL
+      form.style.display = "none"
+
+      Object.entries(checkoutFormFields).forEach(([key, value]) => {
+        const input = document.createElement("input")
+        input.type = "hidden"
+        input.name = key
+        input.value = value.toString()
+        form.appendChild(input)
+      })
+
+      document.body.appendChild(form)
+      form.submit()
+    } catch (error) {
+      console.error("Error occurred while processing payment:", error)
+    }
+  }
+
+  //
+  if (!order && !isLoading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-4">
         <p className="text-xl font-medium text-gray-500">
@@ -52,7 +105,9 @@ export function OrderPage() {
     )
   }
 
-  const orderItems = order.orderItems || []
+  if (isLoading) {
+    return <OrderPageSkeleton />
+  }
 
   return (
     <div className="grid min-h-screen grid-cols-12 bg-gray-50 py-8">
@@ -139,7 +194,7 @@ export function OrderPage() {
           <Button
             size="lg"
             className="w-full bg-amber-600 hover:bg-amber-700"
-            onClick={() => {}}
+            onClick={handleBuyNow}
           >
             Mua ngay
           </Button>
@@ -236,6 +291,102 @@ function OrderItemCard({ item, onQuantityChange }: OrderItemCardProps) {
           >
             +
           </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function OrderPageSkeleton() {
+  return (
+    <div className="grid min-h-screen grid-cols-12 bg-gray-50 py-8">
+      <div className="col-span-4" />
+
+      <div className="col-span-4 animate-pulse space-y-6">
+        {/* Địa chỉ */}
+        <div className="rounded-4xl bg-white p-6 shadow-sm">
+          <div className="mb-6 h-6 w-44 rounded bg-gray-200" />
+
+          <div className="rounded-4xl border p-5">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-gray-200" />
+              <div className="space-y-2">
+                <div className="h-4 w-40 rounded bg-gray-200" />
+                <div className="h-3 w-24 rounded bg-gray-200" />
+              </div>
+            </div>
+
+            <div className="my-5 h-px bg-gray-200" />
+
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <div className="mt-1 h-5 w-5 rounded bg-gray-200" />
+                <div className="h-4 w-full rounded bg-gray-200" />
+              </div>
+
+              <div className="flex gap-3">
+                <div className="h-5 w-5 rounded bg-gray-200" />
+                <div className="h-4 w-40 rounded bg-gray-200" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Danh sách sản phẩm */}
+        <div className="rounded-4xl bg-white shadow-sm">
+          <div className="p-6">
+            <div className="h-6 w-48 rounded bg-gray-200" />
+          </div>
+
+          <div className="space-y-6 p-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <OrderItemSkeleton key={index} />
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between bg-gray-50 p-6">
+            <div className="h-5 w-48 rounded bg-gray-200" />
+            <div className="h-6 w-32 rounded bg-gray-200" />
+          </div>
+        </div>
+
+        {/* Thanh toán */}
+        <div className="rounded-4xl bg-white p-6 shadow-sm">
+          <div className="mb-6 h-7 w-64 rounded bg-gray-200" />
+
+          <div className="h-12 w-full rounded-xl bg-gray-200" />
+        </div>
+      </div>
+
+      <div className="col-span-4" />
+    </div>
+  )
+}
+
+function OrderItemSkeleton() {
+  return (
+    <div className="flex items-start gap-4 border-b border-gray-100 pb-6 last:border-none">
+      {/* Image */}
+      <div className="h-24 w-24 rounded-lg bg-gray-200" />
+
+      {/* Content */}
+      <div className="flex-1 space-y-3">
+        <div className="h-5 w-4/5 rounded bg-gray-200" />
+        <div className="h-4 w-3/5 rounded bg-gray-200" />
+        <div className="h-3 w-20 rounded bg-gray-200" />
+      </div>
+
+      {/* Price */}
+      <div className="flex flex-col items-end justify-between gap-4">
+        <div className="space-y-2">
+          <div className="h-5 w-24 rounded bg-gray-200" />
+          <div className="h-4 w-16 rounded bg-gray-200" />
+        </div>
+
+        <div className="flex h-9 w-28 overflow-hidden rounded border border-gray-200">
+          <div className="w-9 bg-gray-200" />
+          <div className="flex-1 bg-gray-100" />
+          <div className="w-9 bg-gray-200" />
         </div>
       </div>
     </div>
