@@ -9,8 +9,6 @@ export const CreateCheckoutSchema = z.object({
     .min(1000, "Số tiền tối thiểu là 1000 VND")
     .max(1000000000, "Số tiền tối đa là 1 tỷ VND"),
 
-  description: z.string().min(1, "Description is required."),
-
   paymentMethod: z.enum(PaymentMethod),
 })
 

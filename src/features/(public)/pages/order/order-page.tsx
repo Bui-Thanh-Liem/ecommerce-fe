@@ -55,7 +55,6 @@ export function OrderPage() {
         order: order.id,
         amount: order.totalAmount,
         paymentMethod: PaymentMethod.BANK_TRANSFER,
-        description: `Thanh toán đơn hàng #${order.id}`,
       }
 
       // 1. Gọi API Backend của bạn để xin checkoutURL và checkoutFormFields
@@ -71,8 +70,6 @@ export function OrderPage() {
       }
 
       const { checkoutURL, checkoutFormFields } = res.metadata
-      console.log({ checkoutURL, checkoutFormFields })
-      // return true
 
       // 2. Tạo HTML Form ẩn
       const form = document.createElement("form")
@@ -89,12 +86,6 @@ export function OrderPage() {
         input.value = String(value ?? "")
         form.appendChild(input)
       })
-
-      console.log(
-        "Object.entries(checkoutFormFields) :: ",
-        Object.entries(checkoutFormFields)
-      )
-      return
 
       // 4. Submit form để trình duyệt REDIRECT hẳn sang SePay (Bỏ qua được CORS)
       document.body.appendChild(form)
