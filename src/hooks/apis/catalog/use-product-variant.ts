@@ -20,6 +20,14 @@ export const useFindOptionsProductVariants = (query?: QueryDto) => {
   })
 }
 
+export const useFindAttributesByCategorySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["attributes-by-category", slug],
+    queryFn: () => productVariantServices.findAttributesByCategorySlug(slug),
+    enabled: !!slug,
+  })
+}
+
 export const useFindProductVariantBySlug = (slug: string) => {
   return useQuery({
     queryKey: ["product-variants", slug],

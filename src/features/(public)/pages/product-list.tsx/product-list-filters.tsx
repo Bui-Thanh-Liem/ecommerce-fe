@@ -12,12 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
-import { useCountProductsByCategorySlug } from "@/hooks/apis/catalog/use-product-variant"
+import { useFindAllByCategorySlug } from "@/hooks/apis/catalog/use-brand"
+import { useFindChildrenCategoryBySlug } from "@/hooks/apis/catalog/use-category"
 import {
+  useCountProductsByCategorySlug,
   useFindAttributesByCategorySlug,
-  useFindBrandsByCategorySlug,
-  useFindChildrenCategoryBySlug,
-} from "@/hooks/apis/use-filter"
+} from "@/hooks/apis/catalog/use-product-variant"
 import { useDebounce } from "@/hooks/use-debounce"
 import { useUrlParams } from "@/hooks/use-url-params"
 import { cn } from "@/lib/utils"
@@ -64,7 +64,7 @@ export function ProductListFilters({
 
   //
   const slugToUse = c || pC || ""
-  const { data: brandsData } = useFindBrandsByCategorySlug(slugToUse)
+  const { data: brandsData } = useFindAllByCategorySlug(slugToUse)
   const { data } = useFindChildrenCategoryBySlug(slugToUse)
   const categories = data?.metadata?.data || []
   const brands = brandsData?.metadata?.data || []

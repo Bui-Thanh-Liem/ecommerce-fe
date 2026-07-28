@@ -38,6 +38,19 @@ export const brandServices = {
     return handleResponse<ResMetadataDto<IBrand>>(res)
   },
 
+  findAllByCategorySlug: async (categorySlug?: string, query?: QueryDto) => {
+    const queryParams = generateQueryParams({ params: query })
+
+    const res = await apiCall<ResMetadataDto<IBrand>>(
+      `/brands/category/${categorySlug}?${queryParams}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<ResMetadataDto<IBrand>>(res)
+  },
+
   findOptions: async (query?: QueryDto) => {
     const queryParams = generateQueryParams({ params: query, isOption: true })
 

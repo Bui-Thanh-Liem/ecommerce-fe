@@ -3,6 +3,7 @@ import {
   CreateProductVariantDto,
   UpdateProductVariantDto,
 } from "@/shared/dtos/req/product-variant.dto"
+import { IFilterAttribute } from "@/shared/dtos/res/filter-attribute.dto"
 import { ResMetadataDto } from "@/shared/dtos/res/metadata.dto"
 import { IProductVariant } from "@/shared/interfaces/models/catalog/product-variant.interface"
 import { apiCall } from "@/utils/call-api.util"
@@ -30,6 +31,17 @@ export const productVariantServices = {
     )
 
     return handleResponse<ResMetadataDto<IProductVariant>>(res)
+  },
+
+  findAttributesByCategorySlug: async (slug: string) => {
+    const res = await apiCall<IFilterAttribute[]>(
+      `/product-variants/attribute/${slug}`,
+      {
+        method: "GET",
+      }
+    )
+
+    return handleResponse<IFilterAttribute[]>(res)
   },
 
   findAllByCampaign: async (campaignId: string, query?: QueryDto) => {

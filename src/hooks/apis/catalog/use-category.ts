@@ -13,6 +13,14 @@ export const useFindAllCategories = (query?: QueryDto) => {
   })
 }
 
+export const useFindChildrenCategoryBySlug = (slug: string) => {
+  return useQuery({
+    queryKey: ["categories-children", slug],
+    queryFn: () => categoryServices.findChildrenBySlug(slug),
+    enabled: !!slug,
+  })
+}
+
 export const useFindOptionsCategories = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["categories-options", JSON.stringify(query)],

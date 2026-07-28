@@ -10,6 +10,14 @@ export const useFindAllBrands = (query?: QueryDto) => {
   })
 }
 
+export const useFindAllByCategorySlug = (categorySlug?: string) => {
+  return useQuery({
+    queryKey: ["brands-by-category", categorySlug],
+    queryFn: () => brandServices.findAllByCategorySlug(categorySlug),
+    enabled: !!categorySlug,
+  })
+}
+
 export const useFindOptionsBrands = (query?: QueryDto) => {
   return useQuery({
     queryKey: ["brands-options", JSON.stringify(query)],
