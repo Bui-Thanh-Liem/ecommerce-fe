@@ -19,6 +19,8 @@ const formatSoldCount = (count: number) => {
 
 //
 export function ProductItem({ variant }: { variant: IProductVariant }) {
+  console.log("ProductItem :::", variant)
+
   const product = variant.product || {}
   const specifications =
     product.specifications
