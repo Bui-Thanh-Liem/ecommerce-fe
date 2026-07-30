@@ -1,4 +1,4 @@
-import { authServices } from "@/services/auth.service"
+import { staffAuthServices } from "@/services/auth/staff-auth.service"
 import { SignInDto } from "@/shared/dtos/req/sign-in.dto"
 import { useStaffContext } from "@/context/staff.context"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -9,7 +9,7 @@ export const useSignIn = () => {
 
   return useMutation({
     //
-    mutationFn: (payload: SignInDto) => authServices.signIn(payload),
+    mutationFn: (payload: SignInDto) => staffAuthServices.signIn(payload),
 
     //
     onSuccess: (data) => {
@@ -25,7 +25,7 @@ export const useSignIn = () => {
 export const useRefreshToken = () => {
   return useMutation({
     //
-    mutationFn: () => authServices.refreshToken(),
+    mutationFn: () => staffAuthServices.refreshToken(),
 
     //
     onSuccess: () => {},
@@ -36,7 +36,7 @@ export const useRefreshToken = () => {
 export const useWhoami = () => {
   return useQuery({
     queryKey: ["whoami"],
-    queryFn: authServices.whoami,
+    queryFn: staffAuthServices.whoami,
 
     // --- Các options phổ biến ---
     enabled: true, // Tự động chạy khi component mount (false thì phải gọi refetch thủ công)
@@ -60,7 +60,7 @@ export const useSignOut = () => {
 
   return useMutation({
     //
-    mutationFn: () => authServices.signout(),
+    mutationFn: () => staffAuthServices.signout(),
 
     //
     onSuccess: (data) => {

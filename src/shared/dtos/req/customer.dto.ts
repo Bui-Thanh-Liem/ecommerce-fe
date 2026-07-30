@@ -1,6 +1,6 @@
 import z from "zod"
 
-export const LoginCustomerSchema = z.object({
+export const SigninCustomerSchema = z.object({
   phone: z
     .string()
     .min(1, "Phone number is required.")
@@ -8,7 +8,7 @@ export const LoginCustomerSchema = z.object({
     .max(20, "Phone number must be at most 20 characters."),
 })
 
-export const UpdateCustomerSchema = LoginCustomerSchema.partial().extend({
+export const UpdateCustomerSchema = SigninCustomerSchema.partial().extend({
   fullname: z
     .string()
     .min(1, "Full name is required.")
@@ -25,14 +25,14 @@ export const UpdateCustomerSchema = LoginCustomerSchema.partial().extend({
   isActive: z.boolean().optional(),
 })
 
-export const VerifyLoginOtpCustomerSchema = LoginCustomerSchema.extend({
+export const VerifyLoginOtpCustomerSchema = SigninCustomerSchema.extend({
   otp: z
     .string()
     .min(6, "OTP must be at least 6 characters.")
     .max(6, "OTP must be at most 6 characters."),
 })
 
-export type LoginCustomerDto = z.infer<typeof LoginCustomerSchema>
+export type SigninCustomerDto = z.infer<typeof SigninCustomerSchema>
 export type UpdateCustomerDto = z.infer<typeof UpdateCustomerSchema>
 export type VerifyLoginOtpCustomerDto = z.infer<
   typeof VerifyLoginOtpCustomerSchema

@@ -3,9 +3,10 @@ import { ResSignInStaffDto } from "@/shared/dtos/res/sign-in.dto"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
 
-export const authServices = {
+const route = "/staff-auth"
+export const staffAuthServices = {
   signIn: async (payload: SignInDto) => {
-    const res = await apiCall<ResSignInStaffDto>("/auth/signin", {
+    const res = await apiCall<ResSignInStaffDto>(`${route}/signin`, {
       method: "POST",
       body: JSON.stringify(payload),
     })
@@ -14,14 +15,14 @@ export const authServices = {
   },
 
   refreshToken: async () => {
-    const res = await apiCall<boolean>("/auth/refresh-token", {
+    const res = await apiCall<boolean>(`${route}/refresh-token`, {
       method: "POST",
     })
     return handleResponse<boolean>(res)
   },
 
   whoami: async () => {
-    const res = await apiCall("/auth/whoami", {
+    const res = await apiCall(`${route}/whoami`, {
       method: "GET",
     })
 
@@ -29,7 +30,7 @@ export const authServices = {
   },
 
   signout: async () => {
-    const res = await apiCall("/auth/signout", {
+    const res = await apiCall(`${route}/signout`, {
       method: "POST",
     })
 

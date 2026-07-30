@@ -10,17 +10,7 @@ import { cn } from "@/lib/utils"
 import { randomColorByString } from "@/utils/random-color-by-string.util"
 
 //
-const formatSoldCount = (count: number) => {
-  if (count >= 1000) {
-    return `Đã bán ${(count / 1000).toFixed(1).replace(".", ",")}k`
-  }
-  return `Đã bán ${count}`
-}
-
-//
 export function ProductItem({ variant }: { variant: IProductVariant }) {
-  console.log("ProductItem :::", variant)
-
   const product = variant.product || {}
   const specifications =
     product.specifications
@@ -42,6 +32,14 @@ export function ProductItem({ variant }: { variant: IProductVariant }) {
   //
   const router = useRouter()
   const { setData } = useRedirectCategoryContext()
+
+  //
+  function formatSoldCount(count: number) {
+    if (count >= 1000) {
+      return `Đã bán ${(count / 1000).toFixed(1).replace(".", ",")}k`
+    }
+    return `Đã bán ${count}`
+  }
 
   //
   function handleClick() {

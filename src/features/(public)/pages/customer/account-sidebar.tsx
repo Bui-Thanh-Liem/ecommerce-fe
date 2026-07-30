@@ -11,11 +11,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {
-  useSignOutCustomer,
-  useUpdateProfileCustomer,
-} from "@/hooks/apis/customer/use-customer"
+import { useUpdateProfileCustomer } from "@/hooks/apis/customer/use-customer"
 import { useCustomerContext } from "@/context/customer.context"
+import { useSignOutCustomer } from "@/hooks/apis/auth/use-csutomer-auth"
 
 export function AccountSidebar({ customer }: { customer: ICustomer }) {
   const { mutateAsync } = useUpdateProfileCustomer()

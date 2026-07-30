@@ -24,12 +24,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 import {
-  useLoginCustomer,
+  useSigninCustomer,
   useVerifyLoginOtpCustomer,
-} from "@/hooks/apis/customer/use-customer"
+} from "@/hooks/apis/auth/use-csutomer-auth"
 import {
-  LoginCustomerDto,
-  LoginCustomerSchema,
+  SigninCustomerDto,
+  SigninCustomerSchema,
   VerifyLoginOtpCustomerDto,
   VerifyLoginOtpCustomerSchema,
 } from "@/shared/dtos/req/customer.dto"
@@ -459,7 +459,7 @@ function OtpForm({
 }) {
   const { mutateAsync, isPending } = useVerifyLoginOtpCustomer()
   const { mutateAsync: loginMutate, isPending: isLoginPending } =
-    useLoginCustomer()
+    useSigninCustomer()
 
   //
   const form = useForm<VerifyLoginOtpCustomerDto>({
@@ -572,18 +572,18 @@ function OtpForm({
 }
 
 function PhoneForm({ onSuccess }: { onSuccess?: (phone: string) => void }) {
-  const { mutateAsync, isPending } = useLoginCustomer()
+  const { mutateAsync, isPending } = useSigninCustomer()
 
   //
-  const form = useForm<LoginCustomerDto>({
-    resolver: zodResolver(LoginCustomerSchema),
+  const form = useForm<SigninCustomerDto>({
+    resolver: zodResolver(SigninCustomerSchema),
     defaultValues: {
       phone: "",
     },
   })
 
   //
-  const onSubmit = async (data: LoginCustomerDto) => {
+  const onSubmit = async (data: SigninCustomerDto) => {
     await mutateAsync(data)
     onSuccess?.(data.phone)
   }

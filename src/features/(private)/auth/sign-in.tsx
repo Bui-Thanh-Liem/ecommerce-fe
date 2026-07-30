@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { SignInFormSchema } from "@/shared/dtos/req/sign-in.dto"
-import { useSignIn } from "@/hooks/apis/use-auth"
+import { useSignIn } from "@/hooks/apis/auth/use-staff-auth"
 import { useRouter } from "next/navigation"
 
 export function SignInPage() {
