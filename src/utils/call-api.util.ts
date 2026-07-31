@@ -2,10 +2,7 @@
 import { OkResponse } from "@/shared/classes/response.class"
 import { deleteStorage } from "./delete-storage.util"
 
-export const apiCall = async <T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<OkResponse<T>> => {
+export const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<OkResponse<T>> => {
   try {
     // Tạo headers object
     const headers: HeadersInit = {}
@@ -34,7 +31,7 @@ export const apiCall = async <T>(
     if (statusCode === 401) {
       if (message === ("TokenExpiredError" as const)) {
         // Gọi API refresh token để  lấy access_token mới
-        await fetch("/api/auth/refresh-token", {
+        await fetch("/api/staff-auth/refresh-token", {
           ...config,
           method: "POST",
         })
@@ -53,7 +50,7 @@ export const apiCall = async <T>(
       //
       if (message === ("TokenCustomerExpiredError" as const)) {
         // Gọi API refresh token để  lấy access_token mới
-        await fetch("/api/customers/refresh-token", {
+        await fetch("/api/customer-auth/refresh-token", {
           ...config,
           method: "POST",
         })
@@ -73,7 +70,7 @@ export const apiCall = async <T>(
       if (message === "Unauthorized") {
         // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho staff login lại
         deleteStorage("staff")
-        await fetch("/api/auth/signout", {
+        await fetch("/api/staff-auth/signout", {
           method: "POST",
         })
       }
@@ -82,7 +79,7 @@ export const apiCall = async <T>(
       if (message === "Unauthorized Customer") {
         // 2. Nếu 401 mà mesage không phải "TokenExpiredError" là token không hợp lệ, cho customer login lại
         deleteStorage("customer")
-        await fetch("/api/customers/signout", {
+        await fetch("/api/customer-auth/signout", {
           method: "POST",
         })
       }

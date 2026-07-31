@@ -1,7 +1,4 @@
-import {
-  SigninCustomerDto,
-  VerifyLoginOtpCustomerDto,
-} from "@/shared/dtos/req/customer.dto"
+import { SigninCustomerDto, VerifyLoginOtpCustomerDto } from "@/shared/dtos/req/customer.dto"
 import { ResLoginCustomerDto } from "@/shared/dtos/res/sign-in.dto"
 import { apiCall } from "@/utils/call-api.util"
 import { handleResponse } from "@/utils/handle-response.util"
@@ -25,13 +22,10 @@ export const customerAuthServices = {
   },
 
   verifyLoginOtp: async (payload: VerifyLoginOtpCustomerDto) => {
-    const res = await apiCall<ResLoginCustomerDto>(
-      `${route}/verify-login-otp`,
-      {
-        method: "POST",
-        body: JSON.stringify(payload),
-      }
-    )
+    const res = await apiCall<ResLoginCustomerDto>(`${route}/verify-login-otp`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
 
     return handleResponse<ResLoginCustomerDto>(res)
   },
