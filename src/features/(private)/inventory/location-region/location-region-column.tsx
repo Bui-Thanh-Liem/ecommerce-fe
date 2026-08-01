@@ -28,4 +28,12 @@ export const locationRegionColumns: ColumnDef<ILocationRegion>[] = [
       return <p>{parent ? parent.name : "-"}</p>
     },
   },
+  {
+    accessorKey: "area",
+    header: "Area",
+    cell: ({ row }) => {
+      const area = row.original.area
+      return <p>{area ? area.type : "-"}</p>
+    },
+  },
 ]

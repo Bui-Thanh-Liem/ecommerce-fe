@@ -7,7 +7,7 @@ export function GuestProvider() {
     const sessionId = Cookies.get("e_session") !== undefined
 
     if (!sessionId) {
-      Cookies.set("e_session", crypto.randomUUID(), {
+      Cookies.set("e_session", `crypto.randomUUID()`, {
         expires: 365,
         path: "/",
       })

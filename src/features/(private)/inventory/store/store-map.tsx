@@ -6,24 +6,16 @@ import L, { LatLngExpression } from "leaflet"
 import { Clock, MapPin, PencilIcon, Phone, Trash2, User, X } from "lucide-react"
 import Image from "next/image"
 import React from "react"
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMapEvents,
-} from "react-leaflet"
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
+import { toast } from "sonner"
 
 // Chỉ cấu hình icon lỗi của Leaflet khi đang ở môi trường Client (Browser)
 if (typeof window !== "undefined") {
   delete (L.Icon.Default.prototype as any)._getIconUrl
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-    iconUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+    iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   })
 }
 
@@ -64,7 +56,7 @@ function LocationMarker() {
       map.flyTo(e.latlng, map.getZoom())
     },
     locationerror() {
-      alert("Không thể truy cập vị trí của bạn. Vui lòng cấp quyền.")
+      toast.warning("Không thể truy cập vị trí của bạn. Vui lòng cấp quyền.")
     },
   })
 
@@ -82,7 +74,7 @@ function LocationMarker() {
 
 const handleGetLocation = (map: L.Map) => {
   if (!navigator.geolocation) {
-    alert("Trình duyệt của bạn không hỗ trợ định vị.")
+    toast.warning("Trình duyệt của bạn không hỗ trợ định vị.")
     return
   }
   navigator.geolocation.getCurrentPosition(
@@ -91,7 +83,7 @@ const handleGetLocation = (map: L.Map) => {
       map.flyTo([latitude, longitude], 15)
     },
     () => {
-      alert("Không thể lấy vị trí. Hãy kiểm tra cài đặt quyền truy cập.")
+      toast.warning("Không thể lấy vị trí. Hãy kiểm tra cài đặt quyền truy cập.")
     }
   )
 }
@@ -103,12 +95,7 @@ interface StoreMapProps {
   onDelete?: (store: IStore) => void
 }
 
-export function StoreMap({
-  stores,
-  onCreate,
-  onEdit,
-  onDelete,
-}: StoreMapProps) {
+export function StoreMap({ stores, onCreate, onEdit, onDelete }: StoreMapProps) {
   const [map, setMap] = React.useState<L.Map | null>(null)
   const [selectedInfo, setSelectedInfo] = React.useState<{
     address: string
@@ -120,10 +107,8 @@ export function StoreMap({
 
   // Tạo icon đỏ tĩnh cho marker click chọn vị trí
   const redIcon = L.icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -134,21 +119,13 @@ export function StoreMap({
     <div className="relative overflow-hidden rounded-2xl">
       {selectedInfo && (
         <div className="absolute top-4 left-12 z-1000 max-w-sm space-y-2 rounded-xl bg-white p-4 shadow-md">
-          <X
-            className="ml-auto cursor-pointer"
-            onClick={() => setSelectedInfo(null)}
-          />
+          <X className="ml-auto cursor-pointer" onClick={() => setSelectedInfo(null)} />
           <p className="text-sm font-bold">Selected address:</p>
           <p className="text-sm">{selectedInfo.address}</p>
           <p className="text-xs text-gray-500">
-            Coordinates: {selectedInfo.lat.toFixed(5)},{" "}
-            {selectedInfo.lng.toFixed(5)}
+            Coordinates: {selectedInfo.lat.toFixed(5)}, {selectedInfo.lng.toFixed(5)}
           </p>
-          <Button
-            onClick={() => onCreate && onCreate({ ...selectedInfo } as IStore)}
-          >
-            Add Store
-          </Button>
+          <Button onClick={() => onCreate && onCreate({ ...selectedInfo } as IStore)}>Add Store</Button>
         </div>
       )}
 
@@ -159,12 +136,7 @@ export function StoreMap({
         📍 Vị trí hiện tại
       </button>
 
-      <MapContainer
-        zoom={13}
-        center={center}
-        ref={setMap}
-        style={{ height: "calc(100vh - 180px)", width: "100%" }}
-      >
+      <MapContainer zoom={13} center={center} ref={setMap} style={{ height: "calc(100vh - 180px)", width: "100%" }}>
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -174,10 +146,7 @@ export function StoreMap({
         <ClickHandler setAddressInfo={setSelectedInfo} />
 
         {selectedInfo && (
-          <Marker
-            position={[selectedInfo.lat, selectedInfo.lng]}
-            icon={redIcon}
-          >
+          <Marker position={[selectedInfo.lat, selectedInfo.lng]} icon={redIcon}>
             <Popup>
               <span className="font-bold text-red-500">Vị trí đã chọn:</span>
               <br />
@@ -197,18 +166,12 @@ export function StoreMap({
             iconSize: [35, 35],
             iconAnchor: [17, 35],
             popupAnchor: [0, -35],
-            className:
-              "rounded-full border-2 border-white object-cover bg-white shadow-md",
+            className: "rounded-full border-2 border-white object-cover bg-white shadow-md",
           })
 
           return (
             <Marker key={store.id} position={position} icon={dynamicStoreIcon}>
-              <Popup
-                minWidth={320}
-                maxWidth={420}
-                closeButton={false}
-                className="custom-popup rounded-2xl"
-              >
+              <Popup minWidth={320} maxWidth={420} closeButton={false} className="custom-popup rounded-2xl">
                 <div className="space-y-3">
                   {store.image?.url && (
                     <Image
@@ -244,10 +207,8 @@ export function StoreMap({
                   </div>
 
                   <div className="text-muted-foreground text-sm">
-                    {store.country?.name || "N/A"},{" "}
-                    {store.wardCommune?.name || "N/A"},{" "}
-                    {store.districtTown?.name || "N/A"},{" "}
-                    {store.provinceCity?.name || "N/A"}
+                    {store.country?.name || "N/A"}, {store.wardCommune?.name || "N/A"},{" "}
+                    {store.districtTown?.name || "N/A"}, {store.provinceCity?.name || "N/A"}
                   </div>
 
                   <div className="flex items-center gap-2 text-sm">
@@ -262,11 +223,7 @@ export function StoreMap({
                   {store.phone && store.phone.length > 0 && (
                     <div className="space-y-1 text-sm">
                       {store.phone.map((p, index: number) => (
-                        <a
-                          key={index}
-                          href={`tel:${p.phone}`}
-                          className="flex items-center gap-2"
-                        >
+                        <a key={index} href={`tel:${p.phone}`} className="flex items-center gap-2">
                           <Phone size={18} /> {p.name ? `${p.name}: ` : ""}
                           <span className="font-medium">{p.phone}</span>
                         </a>
@@ -277,9 +234,7 @@ export function StoreMap({
                   {store.manager && (
                     <div className="text-muted-foreground flex items-center gap-2 text-sm">
                       <User size={20} /> Quản lý:{" "}
-                      <span className="text-foreground font-medium">
-                        {store.manager.fullName}
-                      </span>
+                      <span className="text-foreground font-medium">{store.manager.fullName}</span>
                     </div>
                   )}
 

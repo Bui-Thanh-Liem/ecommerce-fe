@@ -32,9 +32,9 @@ export function Address() {
   const { mutateAsync: selectionLocationRegion, isPending } = useSelectionLocationRegion()
 
   //
-  const [coordinates, setCoordinates] = useState({ lat: 0, long: 0 })
-  const { location, setLocation } = useRLCustomerContext()
   const [open, setOpen] = useState(false)
+  const { location, setLocation } = useRLCustomerContext()
+  const [coordinates, setCoordinates] = useState({ lat: 0, long: 0 })
 
   //
   const handleOpenChange = (open: boolean) => {
@@ -82,7 +82,9 @@ export function Address() {
     const location = res?.metadata
     if (res?.statusCode === 201 && location) {
       const { country, wardCommune, districtTown, provinceCity, addressDetail } = location
-      setLocation(`${addressDetail}, ${districtTown?.name}, ${wardCommune?.name}, ${provinceCity?.name}, ${country?.name}`)
+      setLocation(
+        `${addressDetail}, ${districtTown?.name}, ${wardCommune?.name}, ${provinceCity?.name}, ${country?.name}`
+      )
 
       //
       setOpen(false)
