@@ -59,4 +59,3 @@ export const config = {
     "/customer/:path*",
   ],
 }
-https://prod.liveshare.vsengsaas.visualstudio.com/join?7F05D9506AB77439B92692DEE393BA8E3125
