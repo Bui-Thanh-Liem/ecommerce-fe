@@ -9,6 +9,13 @@ import React from "react"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
 import { toast } from "sonner"
 
+interface StoreMapProps {
+  stores: IStore[]
+  onEdit?: (store: IStore) => void
+  onCreate?: (store: IStore) => void
+  onDelete?: (store: IStore) => void
+}
+
 // Chỉ cấu hình icon lỗi của Leaflet khi đang ở môi trường Client (Browser)
 if (typeof window !== "undefined") {
   delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -86,13 +93,6 @@ const handleGetLocation = (map: L.Map) => {
       toast.warning("Không thể lấy vị trí. Hãy kiểm tra cài đặt quyền truy cập.")
     }
   )
-}
-
-interface StoreMapProps {
-  stores: IStore[]
-  onCreate?: (store: IStore) => void
-  onEdit?: (store: IStore) => void
-  onDelete?: (store: IStore) => void
 }
 
 export function StoreMap({ stores, onCreate, onEdit, onDelete }: StoreMapProps) {
