@@ -9,6 +9,8 @@ export function convertEnumToVN(status: string) {
     [ProductVariantStatus.OUT_OF_STOCK]: "Hết hàng",
     [ProductVariantStatus.STANDOUT]: "Nổi bật",
     [ProductVariantStatus.DISCONTINUED]: "Ngừng kinh doanh",
+
+    // 
     [ProductVariantCondition.RETURNED]: "Hàng đổi trả",
     [ProductVariantCondition.DISPLAY]: "Hàng trưng bày",
   }
