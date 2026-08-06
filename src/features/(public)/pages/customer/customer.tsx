@@ -4,7 +4,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useCustomerContext } from "@/context/customer.context"
 import { AccountSidebar } from "./account-sidebar"
 import { PurchaseOrderTab } from "./purchase-order-tab"
-import { PurchaseAddressTab } from "./purchase-address-tab"
+import { PurchaseAddressTab } from "./purchase-address-tab/purchase-address-tab"
 import { PurchaseCouponTab } from "./purchase-coupon-tab"
 
 export function CustomerPage() {

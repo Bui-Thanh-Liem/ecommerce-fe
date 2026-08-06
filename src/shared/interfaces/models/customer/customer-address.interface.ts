@@ -12,4 +12,6 @@ export interface ICustomerAddress extends IBase {
   recipientName: string
   recipientPhone: string
   isDefault: boolean
+  lng: number
+  lat: number
 }

@@ -19,6 +19,7 @@ export const apiCall = async <T>(endpoint: string, options: RequestInit = {}): P
       headers: {
         ...headers,
         ...options.headers, // Allow override từ options
+        "idempotency-key": crypto.randomUUID(),
       },
     }
 

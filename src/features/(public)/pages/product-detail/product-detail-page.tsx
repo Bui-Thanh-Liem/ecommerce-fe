@@ -1,12 +1,7 @@
 "use client"
 
 import Cookies from "js-cookie"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,13 +19,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldTitle,
-} from "@/components/ui/field"
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRedirectCategoryContext } from "@/context/redirect-category.context"
@@ -44,10 +33,7 @@ import { PaymentMethod } from "@/shared/enums/payment-method.enum"
 import { ISlugPageProps } from "@/shared/interfaces/common/category-slug-page-detail.interface"
 import { IProductImage } from "@/shared/interfaces/models/catalog/product-image.interface"
 import { IVariantAttribute } from "@/shared/interfaces/models/catalog/product-variant.interface"
-import {
-  IProduct,
-  ISpecification,
-} from "@/shared/interfaces/models/catalog/product.interface"
+import { IProduct, ISpecification } from "@/shared/interfaces/models/catalog/product.interface"
 import { formatVND } from "@/utils/format-vnd.util"
 import {
   Home,
@@ -60,13 +46,13 @@ import {
   ShoppingCart,
   Truck,
   MapPinned,
-  Store,
 } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { convertAddressToString } from "@/utils/convert-address-to-string.util"
+import { useCustomerContext } from "@/context/customer.context"
 
 type GroupedSalesAttributes = Record<
   string,
@@ -78,12 +64,9 @@ type GroupedSalesAttributes = Record<
   }[]
 >
 
-export function ProductDetailPage({
-  variantSlug,
-  categorySlug,
-  parentCategorySlug,
-}: ISlugPageProps) {
+export function ProductDetailPage({ variantSlug, categorySlug, parentCategorySlug }: ISlugPageProps) {
   const route = useRouter()
+  const { customer } = useCustomerContext()
   const createOrderApi = useCreateOrder()
   const { data } = useRedirectCategoryContext()
   const productSlug = data?.productSlug || ""
@@ -124,10 +107,13 @@ export function ProductDetailPage({
 
   //
   async function handleBuyNow() {
+    if (!customer) {
+      toast.error("Vui lòng đăng nhập để mua sản phẩm")
+      return
+    }
+
     if (!address) {
-      toast.error(
-        "Vui lòng đăng nhập và chọn địa chỉ nhận hàng để mua sản phẩm"
-      )
+      toast.error("Vui lòng chọn địa chỉ nhận hàng để mua sản phẩm")
       return
     }
 
@@ -177,15 +163,11 @@ export function ProductDetailPage({
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${parentCategorySlug}`}>
-                  {data?.parentCategoryName}
-                </BreadcrumbLink>
+                <BreadcrumbLink href={`/${parentCategorySlug}`}>{data?.parentCategoryName}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${parentCategorySlug}/${categorySlug}`}>
-                  {data?.categoryName}
-                </BreadcrumbLink>
+                <BreadcrumbLink href={`/${parentCategorySlug}/${categorySlug}`}>{data?.categoryName}</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -199,9 +181,7 @@ export function ProductDetailPage({
               <span className="text-[14px] leading-none">★</span>
               <span className="text-sm font-normal text-[#333]">4.9</span>
             </div>
-            <p className="text-sm text-gray-500">
-              Đã bán: {variant?.soldCount}
-            </p>
+            <p className="text-sm text-gray-500">Đã bán: {variant?.soldCount}</p>
           </div>
         </div>
 
@@ -227,34 +207,30 @@ export function ProductDetailPage({
                 parentCategorySlug={parentCategorySlug}
                 salesAttributesWithoutSKU={salesAttributesWithoutSKU}
               />
-              <ServicePackage
-                price={variant?.price}
-                discountPercent={variant?.discountPercent}
-              />
+              <ServicePackage price={variant?.price} discountPercent={variant?.discountPercent} />
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p className="font-bold">Thông tin vận chuyển</p>
                 <p className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
-                  <strong className="flex items-center gap-x-1">
-                    <span>
+                  <p className="">
+                    <span className="flex gap-x-1">
                       <MapPinned size={18} className="text-red-400" />
+                      <strong>Giao đến:</strong>
                     </span>
-                    Giao đến:
-                  </strong>
-                  {address
-                    ? convertAddressToString(address)
-                    : "Vui lòng đăng nhập và chọn địa chỉ nhận hàng để xem chi phí vận chuyển"}
-                </p>
 
-                <p className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+                    {address
+                      ? convertAddressToString(address)
+                      : "Vui lòng đăng nhập và chọn địa chỉ nhận hàng để xem chi phí vận chuyển"}
+                  </p>
+                </p>
+                <p className="gap-1 text-sm text-gray-600">
                   <strong className="flex items-center gap-x-1">
                     <span className="animate-truck alignment-baseline inline-block">
                       <Truck size={18} className="text-blue-600" />
                     </span>
                     Giao tiết kiệm:
                   </strong>
-                  Giao từ 12h - 14h, ngày làm việc trong tuần:{" "}
-                  <span className="font-medium text-green-600">Miễn phí</span>
+                  Giao từ 12h - 14h, ngày làm việc trong tuần: <span className="text-green-600">Miễn phí</span>
                 </p>
               </div>
 
@@ -266,11 +242,7 @@ export function ProductDetailPage({
                 >
                   <ShoppingCart /> Thêm vào giỏ hàng
                 </Button>
-                <Button
-                  size="lg"
-                  className="bg-amber-600 hover:bg-amber-700"
-                  onClick={handleBuyNow}
-                >
+                <Button size="lg" className="bg-amber-600 hover:bg-amber-700" onClick={handleBuyNow}>
                   Mua ngay
                 </Button>
               </div>
@@ -348,12 +320,7 @@ function ImageCarousel({ images }: { images: IProductImage[] }) {
                 : "border-transparent opacity-60 hover:opacity-100"
             )}
           >
-            <Image
-              fill
-              src={image.image.url}
-              className="object-cover"
-              alt={`Thumbnail ${index + 1}`}
-            />
+            <Image fill src={image.image.url} className="object-cover" alt={`Thumbnail ${index + 1}`} />
           </button>
         ))}
       </div>
@@ -380,14 +347,7 @@ function InfoDetail({
           .map((item, index) => (
             <div key={index} className="flex justify-between border-b pb-2">
               <span className="min-w-52">{item.label}</span>
-              <span
-                className={cn(
-                  "flex-1 text-gray-500",
-                  item.isHighlight && "text-sky-400"
-                )}
-              >
-                {item.desc}
-              </span>
+              <span className={cn("flex-1 text-gray-500", item.isHighlight && "text-sky-400")}>{item.desc}</span>
             </div>
           ))}
       </div>
@@ -411,33 +371,19 @@ function InfoDetail({
 
   return (
     <div className="overflow-hidden rounded-4xl bg-white p-4">
-      <Tabs
-        className="flex flex-col items-center"
-        defaultValue="specifications"
-      >
+      <Tabs className="flex flex-col items-center" defaultValue="specifications">
         <TabsList>
           <TabsTrigger value="specifications">Thông số kỹ thuật</TabsTrigger>
           <TabsTrigger value="information">Thông tin sản phẩm</TabsTrigger>
         </TabsList>
         <TabsContent value="specifications" className="w-full space-y-3 pt-8">
-          <Accordion
-            type="multiple"
-            className="rounded-4xl"
-            defaultValue={[saleAttributeData.value]}
-          >
-            <AccordionItem
-              key={saleAttributeData.value}
-              value={saleAttributeData.value}
-            >
-              <AccordionTrigger className="bg-gray-100 font-medium">
-                {saleAttributeData.trigger}
-              </AccordionTrigger>
+          <Accordion type="multiple" className="rounded-4xl" defaultValue={[saleAttributeData.value]}>
+            <AccordionItem key={saleAttributeData.value} value={saleAttributeData.value}>
+              <AccordionTrigger className="bg-gray-100 font-medium">{saleAttributeData.trigger}</AccordionTrigger>
               {/* Đã xóa mt-2 và bg-gray-50 ở đây để không lỗi animation */}
               <AccordionContent>
                 {/* Đưa style nền và khoảng cách vào div bọc ruột bên trong */}
-                <div className="mt-2 rounded-b-md bg-gray-50 p-4">
-                  {saleAttributeData.content}
-                </div>
+                <div className="mt-2 rounded-b-md bg-gray-50 p-4">{saleAttributeData.content}</div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -451,15 +397,11 @@ function InfoDetail({
                 defaultValue={index <= 1 ? [item.trigger] : []}
               >
                 <AccordionItem key={item.value} value={item.value}>
-                  <AccordionTrigger className="bg-gray-100 font-medium">
-                    {item.trigger}
-                  </AccordionTrigger>
+                  <AccordionTrigger className="bg-gray-100 font-medium">{item.trigger}</AccordionTrigger>
                   {/* Đã xóa mt-2 và bg-gray-50 ở đây để không lỗi animation */}
                   <AccordionContent>
                     {/* Đưa style nền và khoảng cách vào div bọc ruột bên trong */}
-                    <div className="mt-2 rounded-b-md bg-gray-50 p-4">
-                      {item.content}
-                    </div>
+                    <div className="mt-2 rounded-b-md bg-gray-50 p-4">{item.content}</div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -484,8 +426,7 @@ function ProductDescription({ desc }: { desc: string }) {
           expanded ? "max-h-none" : "max-h-125"
         )}
         dangerouslySetInnerHTML={{
-          __html:
-            desc || '<p class="flex items-center justify-center">Empty</p>',
+          __html: desc || '<p class="flex items-center justify-center">Empty</p>',
         }}
       />
 
@@ -529,9 +470,7 @@ function Rating({ product }: { product: IProduct }) {
 
   return (
     <div className="rounded-4xl bg-white p-6">
-      <h2 className="mb-8 text-center font-semibold">
-        Đánh giá {product.name}
-      </h2>
+      <h2 className="mb-8 text-center font-semibold">Đánh giá {product.name}</h2>
 
       <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center">
         {/* Điểm trung bình */}
@@ -545,9 +484,7 @@ function Rating({ product }: { product: IProduct }) {
           </div>
 
           <div className="text-muted-foreground mt-3 flex items-center gap-1 text-sm">
-            <span>
-              {(total / 1000).toFixed(1).replace(".", ",")}k khách hài lòng
-            </span>
+            <span>{(total / 1000).toFixed(1).replace(".", ",")}k khách hài lòng</span>
             <Info className="size-4" />
           </div>
         </div>
@@ -570,9 +507,7 @@ function Rating({ product }: { product: IProduct }) {
                 />
               </div>
 
-              <span className="w-12 text-right text-sm font-medium">
-                {item.percent}%
-              </span>
+              <span className="w-12 text-right text-sm font-medium">{item.percent}%</span>
             </div>
           ))}
         </div>
@@ -619,16 +554,11 @@ function SalesAttributes({
   }, [salesAttributes])
 
   // Variant đang được chọn
-  const [selectedAttributes, setSelectedAttributes] = useState<
-    Record<string, string>
-  >(() => {
-    return salesAttributesWithoutSKU.reduce<Record<string, string>>(
-      (acc, attr) => {
-        acc[attr.key] = attr.value
-        return acc
-      },
-      {}
-    )
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>(() => {
+    return salesAttributesWithoutSKU.reduce<Record<string, string>>((acc, attr) => {
+      acc[attr.key] = attr.value
+      return acc
+    }, {})
   })
 
   //
@@ -662,29 +592,20 @@ function SalesAttributes({
     const matchedSlug = Object.keys(slugMap).find((slug) => {
       const attrOfSlug = slugMap[slug]
       // Kiểm tra tất cả các key trong nextAttributes có trùng với thuộc tính của slug này không
-      return Object.keys(nextAttributes).every(
-        (k) => attrOfSlug[k] === nextAttributes[k]
-      )
+      return Object.keys(nextAttributes).every((k) => attrOfSlug[k] === nextAttributes[k])
     })
 
     if (matchedSlug) {
       router.push(`/${parentCategorySlug}/${categorySlug}/${matchedSlug}`)
     } else {
-      toast.info(
-        "Sản phẩm đã hết hàng hoặc không tồn tại với lựa chọn của bạn."
-      )
+      toast.info("Sản phẩm đã hết hàng hoặc không tồn tại với lựa chọn của bạn.")
     }
   }
 
   //
   const renderColor = (key: string, value: string) => {
     if (key.toLowerCase() === "color") {
-      return (
-        <div
-          className="h-3 w-3 rounded-full"
-          style={{ backgroundColor: value }}
-        />
-      )
+      return <div className="h-3 w-3 rounded-full" style={{ backgroundColor: value }} />
     }
   }
 
@@ -702,8 +623,7 @@ function SalesAttributes({
                   key={item.value}
                   variant="outline"
                   className={cn({
-                    "border-sky-100 bg-sky-50 text-sky-500 hover:bg-sky-50 hover:text-sky-400":
-                      isSelected,
+                    "border-sky-100 bg-sky-50 text-sky-500 hover:bg-sky-50 hover:text-sky-400": isSelected,
                   })}
                   onClick={() => handleSelect(key, item.value)}
                 >
@@ -719,23 +639,13 @@ function SalesAttributes({
   )
 }
 
-function ServicePackage({
-  price,
-  discountPercent,
-}: {
-  price: number
-  discountPercent: number
-}) {
+function ServicePackage({ price, discountPercent }: { price: number; discountPercent: number }) {
   const discountedPrice = price * (1 - discountPercent / 100)
 
   const priceElement = (
     <div className="space-x-2">
-      <span className="text-sm text-gray-400 line-through">
-        {formatVND(price)}
-      </span>
-      <span className="text-lg font-bold text-red-500">
-        {formatVND(discountedPrice)}
-      </span>
+      <span className="text-sm text-gray-400 line-through">{formatVND(price)}</span>
+      <span className="text-lg font-bold text-red-500">{formatVND(discountedPrice)}</span>
     </div>
   )
 
@@ -757,16 +667,13 @@ function ServicePackage({
       description: (
         <span className="block space-y-2">
           <span className="flex gap-x-2">
-            <ChessQueen size={20} color="orange" /> BH 1 đổi 1 bởi ĐMX trong 12
-            tháng cho sản phẩm.
+            <ChessQueen size={20} color="orange" /> BH 1 đổi 1 bởi ĐMX trong 12 tháng cho sản phẩm.
           </span>
           <span className="flex gap-x-2">
-            <ChessQueen size={20} color="orange" /> BHMR 1 năm bởi ĐMX cho sản
-            phẩm.
+            <ChessQueen size={20} color="orange" /> BHMR 1 năm bởi ĐMX cho sản phẩm.
           </span>
           <span className="flex gap-x-2">
-            <ChessQueen size={20} color="orange" /> BHRV 6 tháng ĐMX cho sản
-            phẩm.
+            <ChessQueen size={20} color="orange" /> BHRV 6 tháng ĐMX cho sản phẩm.
           </span>
         </span>
       ),
@@ -783,11 +690,7 @@ function ServicePackage({
   return (
     <div className="space-y-2">
       <h3 className="font-semibold">Gói dịch vụ</h3>
-      <RadioGroup
-        defaultValue="plus"
-        className="max-w-sm"
-        onValueChange={handleSelectPackage}
-      >
+      <RadioGroup defaultValue="plus" className="max-w-sm" onValueChange={handleSelectPackage}>
         {packages.map((pkg) => (
           <FieldLabel htmlFor={`${pkg.id}-plan`} key={pkg.id}>
             <Field orientation="horizontal">
@@ -831,10 +734,7 @@ function ProductDetailSkeleton() {
               <div className="h-80 w-full rounded-4xl bg-gray-200" />
               <div className="flex justify-center gap-2 py-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="h-10 w-10 shrink-0 rounded-lg bg-gray-200"
-                  />
+                  <div key={i} className="h-10 w-10 shrink-0 rounded-lg bg-gray-200" />
                 ))}
               </div>
             </div>

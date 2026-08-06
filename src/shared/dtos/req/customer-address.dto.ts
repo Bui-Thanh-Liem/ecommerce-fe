@@ -5,10 +5,9 @@ export const CreateCustomerAddressSchema = z.object({
   provinceCity: z.uuidv4(),
   districtTown: z.uuidv4(),
   wardCommune: z.uuidv4(),
-  address: z
-    .string()
-    .min(1, "Address is required.")
-    .max(255, "Address must be at most 255 characters."),
+  address: z.string().min(1, "Address is required.").max(255, "Address must be at most 255 characters."),
+  lat: z.number(),
+  lng: z.number(),
 
   recipientName: z
     .string()
@@ -26,9 +25,5 @@ export const CreateCustomerAddressSchema = z.object({
 
 export const UpdateCustomerAddressSchema = CreateCustomerAddressSchema.partial()
 
-export type CreateCustomerAddressDto = z.infer<
-  typeof CreateCustomerAddressSchema
->
-export type UpdateCustomerAddressDto = z.infer<
-  typeof UpdateCustomerAddressSchema
->
+export type CreateCustomerAddressDto = z.infer<typeof CreateCustomerAddressSchema>
+export type UpdateCustomerAddressDto = z.infer<typeof UpdateCustomerAddressSchema>

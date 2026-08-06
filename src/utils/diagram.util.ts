@@ -4,7 +4,6 @@ const nodeWidth = 280
 const nodeHeight = 160
 
 /**
- *
  * @param nodes
  * @param edges
  * @desc Hàm này sử dụng thư viện dagre để tự động sắp xếp vị trí của các node và edge trong sơ đồ. Bạn chỉ cần truyền vào mảng nodes và edges, hàm sẽ trả về một object mới với các node đã được gán vị trí x, y phù hợp để hiển thị trên sơ đồ.
